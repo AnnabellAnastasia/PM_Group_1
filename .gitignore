@@ -1,0 +1,86 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Flask and Python specific files
+instance/
+.webassets-cache
+
+# Logs
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# dotenv environment variables file
+.env
+.env.local
+.env.*.local
+*.env
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Node.js specific files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/public/assets
+
+# Build directories
+build/
+dist/
+*.egg-info/
+.eggs/
+*.out
+*.map
+
+# Runtime files
+*.pid
+*.seed
+*.pid.lock
+
+# MacOS system files
+.DS_Store
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignoring .git files, which should be managed by Git itself
+.git/
+
+# React specific files
+build/
+coverage/
+
+# Ignore local project settings
+*.code-workspace
