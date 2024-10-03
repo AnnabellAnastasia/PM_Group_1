@@ -1,10 +1,35 @@
 import React from 'react';
+import './Navbar.css';
 
-function Navbar() {
+const Navbar = () => {
+    
     return (
-        <nav>
-            <h2 id="logo">Niner Network</h2>
-            <a href="/" className="navLink">Link</a>
+        
+        <nav className="navbar">
+            {/* <img src='logo.png' alt="logo"></img> */}
+            <div className="nav-left">
+                <img className="logo" src='logo.png' alt="logo"></img>
+                <h3>Niner Network</h3>
+            </div>
+            <div className='nav-Center'>
+                <input id="search" className='nav-search' type='text' value="search"></input>
+            </div>
+            <div className="nav-right">
+                <ul className="nav-list">
+                    <li>
+                     <h6><a href="/" className="nav-link">Link</a></h6>
+                    </li>
+                    <li>
+                     <h6><a href="/" className="nav-link">Link</a></h6>
+                    </li>
+                    <li>
+                     <h6><a href="/" className="nav-link">Link</a></h6>
+                    </li>
+                </ul>
+                <div className="profile-icon">
+
+                </div>
+            </div>
         </nav>
     );
 }
