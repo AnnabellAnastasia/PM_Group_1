@@ -4,7 +4,7 @@ const controller = {
   // GET /posts - Get all posts
   all: async (req: any, res: any, next: any) => {
     model
-      .find()
+      .find().populate('creator')
       .then((posts) => {
         if (posts && posts[0]) {
           res.json(posts);
