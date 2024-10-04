@@ -21,7 +21,13 @@ create: async (req: any, res: any, next: any) => {
 		.catch((err: any) => {
 			next(err);
 		})
-}
+},
+delete: async(req:any,res:any,next:any)=>{
+	// finds the user by username
+	model.find()
+	.then
+},
+
 };
 
 export default controller;

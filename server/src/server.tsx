@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// database
 const uri: string =
     process.env.MONGODB_URI || 'mongodb://localhost:27017/ninerNetworking';
 
@@ -24,6 +25,7 @@ const uri: string =
     }
 })();
 
+// User routes
 app.use('/users', userRoutes);
 
 app.get('/health', (_req: Request, res: Response) => {

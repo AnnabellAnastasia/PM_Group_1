@@ -7,5 +7,12 @@ const userRoutes = express.Router();
 userRoutes.get('/', controller.all);
 // POST /users - Create new user
 userRoutes.post('/', controller.create);
+// Login
+//userRoutes.get('/',controller.)
+/**
+ * Delete a user
+ * Update a user
+ */
+
 
 export default userRoutes;
