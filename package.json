@@ -1,0 +1,20 @@
+{
+  "name": "pm_group_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client && npm run start",
+    "server:dev": "cd server && npm run dev",
+		"server:start": "cd server && npm run start",
+    "dev": "concurrently \"npm run server:dev\" \"npm run client\"",
+		"start": "concurrently \"npm run server:start\" \"npm run client\"",
+    "install": "concurrently \"cd client && npm install\" \"cd server && npm install\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
