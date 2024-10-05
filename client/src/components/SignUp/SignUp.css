@@ -1,0 +1,52 @@
+/* Center the sign-up box */
+.sign-up-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #e5e5e5;
+  }
+  
+  .sign-up-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+  }
+  
+  .sign-up-box h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .sign-up-box p {
+    margin-bottom: 20px;
+  }
+  
+  .sign-up-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .sign-up-box button {
+    background-color: #064e3b; /* Green color for the button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .sign-up-box button:hover {
+    background-color: #046d4b;
+  }
+  
