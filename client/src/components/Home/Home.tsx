@@ -1,22 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
-// Define the type for the props
-interface HomeProps {
-  setCurrentPage: (page: string) => void; // setCurrentPage accepts a string argument
-}
-
-const Home: React.FC<HomeProps> = ({ setCurrentPage }) => {
-  return (
+function Home() {  
+	const navigate = useNavigate();
+	return (
     <div className="home">
       <div className="content-container">
         <h1>Let's get started</h1>
         <p className="subtext">this text says something below the bigger text</p>
         <div className="boxes-container">
-          <div className="box" onClick={() => setCurrentPage('signup')}>
+          <div className="box" onClick={() => navigate('signup')}>
             <p>Create an Account</p>
           </div>
-          <div className="box" onClick={() => setCurrentPage('login')}>
+          <div className="box" onClick={() => navigate('login')}>
             <p>Already have an account? <br /> Sign in!</p>
           </div>
           <div className="box">
