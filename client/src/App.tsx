@@ -1,29 +1,39 @@
-import React, { useState } from 'react';
-import Home from './components/Home/Home';
-import SignUp from './components/SignUp/SignUp';
-import Login from './components/Login/Login';
-import './App.css';
+import React from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar";
+import Error from "./components/Error/Error";
+import Home from "./components/Home/Home";
+import SignUp from "./components/SignUp/SignUp";
+import Login from "./components/Login/Login";
+import "./App.css";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+		errorElement: <Error />,
+		children: [
+			{ 
+				index: true,
+				element: <Home />
+			},
+			{
+				path: "login",
+				element: <Login />
+			},
+			{
+				path: "signup",
+				element: <SignUp />
+			}
+		]
+  }
+]);
 
 function App() {
-  // State to control which component is displayed
-  const [currentPage, setCurrentPage] = useState('home');
-
-  // Function to render the correct component
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'signup':
-        return <SignUp />;
-      case 'login':
-        return <Login />;
-      default:
-        return <Home setCurrentPage={setCurrentPage} />;
-    }
-  };
-
   return (
-    <div className="App">
-      {renderPage()}
-    </div>
+    <>
+      <Navbar />
+			<RouterProvider router={router} />
+    </>
   );
 }
 
