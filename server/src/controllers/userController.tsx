@@ -13,6 +13,7 @@ all: async (req: any, res: any, next: any) => {
 },
 create: async (req: any, res: any, next: any) => {
 	let user = new model(req.body);
+	user.image = "blank-profile-picture.png"
 	user.save()
 		.then(() => {
 			console.log("Saved!");

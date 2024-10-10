@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import Post from './Post'
 
 function PostFeed() {
   const [postFeed, setPostFeed] = useState<any>([]);
   const [newPost, setNewPost] = useState("");
+	const [loggedInUser, setLoggedInUser] = useState("66ec488ed6eba1e237b65bf1");
 
   // Fetch user data
   async function fetchUsers() {
@@ -27,11 +29,14 @@ function PostFeed() {
   }, [newPost]);
 
   // Submit function for username form
-  async function submitUser(event: any) {
-    const post = { body: newPost };
+  async function submitPost(event: any) {
+    const post = { 
+			body: newPost,
+			creator: loggedInUser
+		};
     let response;
     try {
-      response = await fetch(`http://localhost:8080/users`, {
+      response = await fetch(`http://localhost:8080/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,22 +53,25 @@ function PostFeed() {
 
   return (
     <>
-      <form onSubmit={submitUser}>
-        <label className="hidden" htmlFor="postEntry">Post Entry</label>
+      <form onSubmit={submitPost}>
+        <label className="hidden" htmlFor="postEntry">
+          Post Entry
+        </label>
         <input
           type="text"
           name="postEntry"
+					className="post-entry"
           placeholder="Create A Post!"
           value={newPost}
           onChange={(event) => setNewPost(event.target.value)}
         />
-        <button type="submit">Submit</button>
+        <input className="post-submit" type="submit"></input>
       </form>
-      <ul>
-        {postFeed.map(function (post: any) {
-          return <li key={post._id}>{post.body}</li>;
+      <div className="postFeed">
+        {postFeed && postFeed.map(function (post: any) {
+          return <Post postObj={post}/>;
         })}
-      </ul>
+      </div>
     </>
   );
 }
