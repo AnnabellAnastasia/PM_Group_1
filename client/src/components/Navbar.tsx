@@ -26,7 +26,7 @@ const Navbar = () => {
                      <h6><a href="/" className="nav-link">Link</a></h6>
                     </li>
                 </ul>
-               		<img src="../images/blank-profile-picture.png" className="profile-icon" alt="username"></img>
+               		<img src="../images/blank-profile-picture.png" className="profile-icon" alt=""></img>
 						</div>
         </nav>
     );

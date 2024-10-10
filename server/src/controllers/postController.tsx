@@ -4,7 +4,7 @@ const controller = {
   // GET /posts - Get all posts
   all: async (req: any, res: any, next: any) => {
     model
-      .find().populate('creator')
+      .find().populate('creator', 'firstName lastName image')
       .then((posts) => {
         if (posts && posts[0]) {
           res.json(posts);
@@ -13,7 +13,7 @@ const controller = {
         }
       })
       .catch((err: any) => {
-        res.json({ mesage: err.message });
+        res.json({ message: err.message });
       });
   },
   // GET /posts/:id - Get one post from ID param
@@ -30,7 +30,7 @@ const controller = {
         }
       })
       .catch((err: any) => {
-        res.json({ mesage: err.message });
+        res.json({ message: err.message });
       });
   },
   // POST /posts - Create new post
@@ -43,7 +43,7 @@ const controller = {
         res.json(post);
       })
       .catch((err: any) => {
-        res.json({ mesage: err.message });
+        res.json({ message: err.message });
       });
   },
   // PUT /posts/:id - Update existing post
@@ -64,7 +64,7 @@ const controller = {
         }
       })
       .catch((err: any) => {
-        res.json({ mesage: err.message });
+        res.json({ message: err.message });
       });
   },
   // DELETE /posts/:id - Delete specific post
@@ -81,7 +81,7 @@ const controller = {
         }
       })
       .catch((err: any) => {
-        res.json({ mesage: err.message });
+        res.json({ message: err.message });
       });
   },
 };

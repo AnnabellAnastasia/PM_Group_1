@@ -1,11 +1,13 @@
-import React from "react";
+import { useState } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Error from "./components/Error/Error";
 import Home from "./components/Home/Home";
 import SignUp from "./components/SignUp/SignUp";
 import Login from "./components/Login/Login";
+import PostFeed from "./components/PostFeed/PostFeed";
 import "./App.css";
+
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,10 @@ const router = createBrowserRouter([
 			{
 				path: "signup",
 				element: <SignUp />
+			},
+			{
+				path: "posts",
+				element: <PostFeed />
 			}
 		]
   }
