@@ -7,7 +7,7 @@ function Home() {
 	return (
     <div className="home">
       <div className="content-container">
-        <h1>Let's get started! Click Below!</h1>
+        <h1>Let's get started</h1>
         <p className="subtext">this text says something below the bigger text</p>
         <div className="boxes-container">
           <div className="box" onClick={() => navigate('signup')}>
