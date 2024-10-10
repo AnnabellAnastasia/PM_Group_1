@@ -3,7 +3,8 @@ import {useState, useEffect} from 'react';
 function CreateUser() {
 	const[userList, setUserList] = useState<any>([]);
 	const[newUser, setNewUser] = useState({
-		username: ""
+		username: "",
+		password:""
 	});
 
 	// Update User Info state values
@@ -38,7 +39,7 @@ function CreateUser() {
 		const user = {...newUser};
 		let response;
 		try {
-			response = await fetch(`http://localhost:8080/users`, {
+			response = await fetch(`http://localhost:8080/users/login`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -59,6 +60,8 @@ function CreateUser() {
 			<form onSubmit={submitUser}>
 				<label htmlFor="username">Username</label>
 				<input type="text" name="username" placeholder="Username" value={newUser.username} onChange={(event) => updateUserInfo({username: event.target.value})}/>
+				<label htmlFor='password'>Password</label>
+				<input type='password'name='password'placeholder='Password'value={newUser.password} onChange={(event)=>updateUserInfo({password:event.target.value})}/>
 				<button type="submit">Submit</button>
 			</form>
 			<ul>
@@ -66,7 +69,11 @@ function CreateUser() {
 					return (
 						<li key={data._id}>
 							{data.username}
+							{data.password}
 						</li>
+						// <li key={data._id}>
+						// 	{data.password}
+						// </li>
 					)
 				})}
 			</ul>
