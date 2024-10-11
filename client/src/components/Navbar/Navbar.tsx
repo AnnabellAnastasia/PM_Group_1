@@ -10,6 +10,10 @@ const Navbar = () => {
         <h3>Niner Network</h3>
       </div>
 
+      <div className='nav-Center'>
+        <input id="search" className='nav-search' type='text' placeholder='Search'></input>
+      </div>
+
       {/* Right Section (Links + Profile Icon) */}
       <div className="nav-right">
         <ul className="nav-list">

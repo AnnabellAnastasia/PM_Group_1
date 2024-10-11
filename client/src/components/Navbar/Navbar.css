@@ -1,7 +1,7 @@
 /* General Navbar styling */
 .navbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 10px 20px;
     background-color: #fff;
@@ -30,15 +30,20 @@
     flex-grow: 1;  /* Let the center grow to occupy space */
     display: flex;
     justify-content: center;
+    margin: 0 auto;
+    width: 10em;
+    position: fixed;
+
   }
   
   .nav-search {
-    width: 70%;
-    padding: 8px;
+    width: 100%;
+    padding: 1rem 2rem;
     border: 1px solid #ccc;
     border-radius: 20px;
     font-size: 14px;
     text-align: center;
+    align-self: center;
   }
   
   /* Right section: Links and Profile Icon */
