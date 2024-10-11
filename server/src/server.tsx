@@ -5,10 +5,14 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import cookieParser from 'cookie-parser';
+import { io } from "socket.io-client";
+
+
 
 dotenv.config();
 
 const app: Express = express();
+const socket = io('http://localhost:8080');
 
 app.use(cookieParser());
 app.use(cors({
