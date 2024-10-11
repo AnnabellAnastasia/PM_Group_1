@@ -1,7 +1,9 @@
 import React from 'react';
 import './Navbar.css';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <nav className="navbar">
       {/* Left Section (Logo + Name) */}
@@ -20,7 +22,9 @@ const Navbar = () => {
           <li><h6><a href="/contact" className="nav-link">Contact</a></h6></li>
         </ul>
         <div className="profile-icon">
-          {/* Placeholder for Profile Icon */}
+          <a onClick={()=>navigate('account')}>
+            <img src="../images/blank-profile-picture.png" className="profile-icon" alt=""></img>
+          </a>
         </div>
       </div>
     </nav>

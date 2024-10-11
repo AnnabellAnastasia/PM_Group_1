@@ -1,5 +1,6 @@
 import React from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Router, RouterProvider, Routes, createBrowserRouter, replace } from "react-router-dom";
+
 // Page Components
 import Navbar from "./components/Navbar/Navbar";
 import Error from "./components/Error/Error";
@@ -11,6 +12,7 @@ import PostPage from "./components/Post/PostPage";
 import VerifyAuth from "./components/Auth/VerifyAuth";
 // CSS
 import "./App.css";
+import Account from "./components/Account/Account";
 
 
 const router = createBrowserRouter([
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
 				path: "signup",
 				element: <SignUp />
 			},
+			{
+				path:"account",
+				element: <Account />
+			},
 		]
   },
   {
@@ -46,9 +52,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
-      <Navbar />
-			<RouterProvider router={router} />
+    <>	
+		<Navbar />
+		<RouterProvider router={router} />
     </>
   );
 }
