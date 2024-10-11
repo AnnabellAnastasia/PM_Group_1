@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 import { Outlet } from "react-router-dom";
 import { fetchProfile } from '../utils/userAPI';
 import Navbar from "./Navbar/Navbar";
+import Footer from "./Footer";
 
 export const UserContext = createContext({
 	user: {
@@ -43,6 +44,7 @@ export default function ContextWrapper() {
     <UserContext.Provider value={{user, setUser}}>
       <Navbar />
       <Outlet />
+			<Footer />
     </UserContext.Provider>
   );
 }
