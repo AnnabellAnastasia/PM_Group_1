@@ -73,6 +73,7 @@
   
   .nav-link:hover {
     color: hwb(125 0% 0%); /* green hover effect */
+		cursor: pointer;
   }
   
   /* Profile icon placeholder */
