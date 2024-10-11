@@ -1,96 +1,61 @@
-import { useState, useEffect } from "react";
+import React from 'react';
+import './Post.css';
+
+// interface PostProps {
+//     profileImage: string;
+//     name: string;
+//     jobTitle: string;
+//     timePosted: string;
+//     content: string;
+//     jobLink?: string;
+//     reactionsCount: number;
+//     commentsCount: number;
+//     repostsCount: number;
+// }
 
 function Post({ postKey, postObj }: any) {
-  const [editMode, setEditMode] = useState(false);
-  const [postBody, setPostBody] = useState(postObj.body);
 
-  // Edit post function
-  async function postUpdate(newPost: any, id: any) {
-    const post = {
-      body: newPost,
-    };
-    let response;
-    try {
-      response = await fetch(`http://localhost:8080/posts/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(post),
-				credentials: 'include'
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("A problem occurred with your fetch operation: ", error);
-    }
-  }
 
-  // Delete post function
-  async function postDelete(id: any) {
-    let response;
-    try {
-      response = await fetch(`http://localhost:8080/posts/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-				credentials: 'include'
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("A problem occurred with your fetch operation: ", error);
-    }
-  }
+    return (
+        <div className="post">
+            <div className="post-header">
+                <img src={`../images/${postObj.creator.image ? postObj.creator.image : 'blank-profile-picture.png'}`}  alt={`${postObj.creator.firstName} ${postObj.creator.lastName}'s profile`} className="profile-image" />
+                <div className="post-info">
+                    <h3>{postObj.creator.firstName}&nbsp;{postObj.creator.lastName}</h3>
+                    <p>{postObj.creator.email}</p>
+                    <span>{postObj.createdAt}</span>
+                </div>
+            </div>
+            <div className="post-content">
+                <p>{postObj.body}</p>
+                {/* {jobLink && (
+                    <div className="job-card">
+                        <a href={jobLink} target="_blank" rel="noopener noreferrer">
+                            <div className="job-card-content">
+                                <h4>View Job</h4>
+                                <p>Open Rank-Associate Professor or Full Professor</p>
+                                <p>Georgia Institute of Technology</p>
+                            </div>
+                        </a>
+                    </div>
+                )} */}
+            </div>
+            <div className="post-reactions">
+                {/* <span>👍 {reactionsCount}</span>
+                <span>{commentsCount} comments</span>
+                <span>{repostsCount} reposts</span> */}
+            </div>
+            <div className="post-actions">
+                <button>Like</button>
+                <button>Comment</button>
+                <button>Repost</button>
+                <button>Send</button>
+            </div>
+            <div className="post-comment">
+                <input type="text" placeholder="Add a comment..." />
+            </div>
+        </div>
+    );
+};
 
-  return (
-    <div className="post" key={postKey}>
-      <div className="post-user">
-        <div className="pic-container">
-          <img
-            className="profile-pic"
-            src={"../images/" + postObj.creator.image}
-            alt={`${postObj.creator.email}`}
-          ></img>
-        </div>
-        <div className="user-display-name">
-          {postObj.creator.firstName}&nbsp;{postObj.creator.lastName}
-        </div>
-      </div>
-      {editMode ? (
-        <form onSubmit={() => postUpdate(postBody, postObj._id)}>
-          <input
-            type="text"
-            name="postEdit"
-            className="post-entry"
-            value={postBody}
-            onChange={(event) => setPostBody(event.target.value)}
-          />
-          <input
-            className="post-submit"
-            type="submit"
-            value="Submit Changes"
-          ></input>
-        </form>
-      ) : (
-        <div className="post-body">{postObj.body}</div>
-      )}
-      {editMode ? (
-        <></>
-      ) : (
-        <div className="post-options">
-          <button className="post-button" onClick={() => setEditMode(true)}>
-            Edit
-          </button>
-          <form onSubmit={() => postDelete(postObj._id)}>
-            <input className="post-button" type="submit" value="Delete"></input>
-          </form>
-        </div>
-      )}
-    </div>
-  );
-}
 export default Post;

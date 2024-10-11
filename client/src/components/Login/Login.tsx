@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { handleLogInSubmit } from '../../utils/userAPI';
+import { handleLogIn } from '../../utils/userAPI';
+import { UserContext } from '../ContextWrapper';
 import './Login.css'; // We'll add styles here
 
 function Login() {
 	const navigate = useNavigate();
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const { setUser } = useContext(UserContext);
+	const [email, setEmail] = useState("gc@me.me");
+	const [password, setPassword] = useState("123123123");
 
   return (
     <div className="login-page">
@@ -15,7 +17,7 @@ function Login() {
         <p>
           New to Niner Network? <a href="/signup">Sign up here!</a>
         </p>
-        <form onSubmit={(event) => handleLogInSubmit(event, navigate, email, password)}>
+        <form onSubmit={(event) => handleLogIn(event, email, password, navigate, setUser)}>
           <input 
 						type="text" 
 						placeholder="Email" 

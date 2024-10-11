@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from 'react-router-dom';
 
-function VerifyAuth() {
+function IsLoggedIn() {
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
 
@@ -43,4 +43,4 @@ function VerifyAuth() {
 
 }
 
-export default VerifyAuth;
+export default IsLoggedIn;
