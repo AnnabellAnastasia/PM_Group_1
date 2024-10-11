@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 // Page Components
 import Navbar from "./components/Navbar/Navbar";
