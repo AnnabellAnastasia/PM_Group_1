@@ -1,13 +1,18 @@
 import React from "react";
+import Message from "./ChatPreview";
 
-interface ConversationProps {
-    isOpen: boolean;
-    onClose: () => void;
-  }
+// interface ConversationProps {
+//   message: typeof Message;
+//   onClose: boolean;
+// }
 
-const Conversation: React.FC<ConversationProps> = ({isOpen, onClose}) => {
-    if(!isOpen) return null;
+// const Conversation: React.FC<ConversationProps> = ({ message, onClose }) => {
+//   <div className="message-detail">
+//     <h3>{message.sender}</h3>
+//     <p>{message.content}</p>
+//     <button onClick={onClose}>Close</button>
+//   </div>;
 
-    return null;
-}
-export default Conversation;
+//   return null;
+// };
+// export default Conversation;

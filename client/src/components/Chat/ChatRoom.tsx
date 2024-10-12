@@ -17,15 +17,13 @@ interface ChatModalProps {
   triggerRef: MutableRefObject<HTMLButtonElement | null>;
 }
 
-
-
 const ChatModal: React.FC<ChatModalProps> = ({
   isOpen,
   onClose,
   triggerRef,
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
-
+  
   useLayoutEffect(() => {
     setState({
       left: (triggerRef?.current?.getBoundingClientRect().left || 0) - 436,
