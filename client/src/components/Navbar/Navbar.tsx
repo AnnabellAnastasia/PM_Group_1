@@ -23,6 +23,9 @@ const Navbar = () => {
           <li><h6><a href="/social" className="nav-link">Social</a></h6></li>
           <li><h6><a href="/contact" className="nav-link">Contact</a></h6></li>
         </ul>
+        {/* <div className='message-icon'> */}
+        <img className='message' src="messageIcon.png" alt="message icon" />
+        {/* </div> */}
         <div className="profile-icon">
           {/* Placeholder for Profile Icon */}
         </div>

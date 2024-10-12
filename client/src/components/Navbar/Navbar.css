@@ -27,7 +27,7 @@
   
   /* Center section: Search bar */
   .nav-center {
-    flex-grow: 1;  /* Let the center grow to occupy space */
+    flex-grow: 2;  /* Let the center grow to occupy space */
     display: flex;
     justify-content: center;
     margin: 0 auto;
@@ -49,6 +49,8 @@
   .nav-right {
     display: flex;
     align-items: center;
+    max-width: 30%; 
+    gap: 1.5rem;
   }
   
   .nav-list {
@@ -56,10 +58,11 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    gap: 1rem;
   }
   
   .nav-list li {
-    margin-right: 20px;
+    /* margin-right: 20px; */
   }
   
   .nav-link {
@@ -76,10 +79,22 @@
   
   /* Profile icon placeholder */
   .profile-icon {
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     background-color: #ccc;
     border-radius: 50%;
-    margin-left: 20px;
   }
+/* 
+  .message-icon {
+    display: flex;
+    margin: 0;
+    padding: 0;
+  } */
+
+  .message {
+    height: 2rem;
+    width: 2rem;
+  }
+
+
   

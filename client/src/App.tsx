@@ -11,6 +11,7 @@ import PostPage from "./components/Post/PostPage";
 import VerifyAuth from "./components/Auth/VerifyAuth";
 // CSS
 import "./App.css";
+import ChatRoom from "./components/Chat/ChatRoom";
 
 
 const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
 				path: "signup",
 				element: <SignUp />
 			},
+			{
+				path: "/chat",
+				element: <ChatRoom />
+			}
 		]
   },
   {
