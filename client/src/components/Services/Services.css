@@ -1,0 +1,73 @@
+.services {
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .services-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .services-header p {
+    font-size: 1.1rem;
+    color: #666;
+  }
+  
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 30px;
+  }
+  
+  .service-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .service-icon {
+    height: 80px;
+    width: 80px;
+    background-color: #01e423;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+  }
+  
+  .service-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .service-item p {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  .learn-more-container {
+    margin-top: 40px;
+  }
+  
+  .learn-more {
+    background-color: transparent;
+    border: 2px solid #01e423;
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    color: #01e423;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .learn-more:hover {
+    background-color: #5cc6c6;
+    color: #fff;
+  }
+  
+  @media (max-width: 768px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
