@@ -1,0 +1,24 @@
+.chatContainer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  background-color: #282c34;
+  box-shadow: 5px 8px 16px #FFFFFF;
+  width: 32em;
+  height: 42em;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.closeChat {
+    align-self: flex-end;
+    width: 100%;
+    border-radius: 8px;
+    height: 2.5rem;
+    background-color: #05A56A;
+    box-shadow: 5px 8px 16px rgba(0, 0, 0, 0.1);
+    border: none;
+}

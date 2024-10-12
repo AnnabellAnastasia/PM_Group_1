@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 // Page Components
 import Navbar from "./components/Navbar/Navbar";
@@ -11,8 +12,7 @@ import PostPage from "./components/Post/PostPage";
 import VerifyAuth from "./components/Auth/VerifyAuth";
 // CSS
 import "./App.css";
-import ChatRoom from "./components/Chat/ChatRoom";
-
+import ChatModal from "./components/Chat/ChatRoom";
 
 const router = createBrowserRouter([
   {
@@ -30,10 +30,6 @@ const router = createBrowserRouter([
 			{
 				path: "signup",
 				element: <SignUp />
-			},
-			{
-				path: "/chat",
-				element: <ChatRoom />
 			}
 		]
   },

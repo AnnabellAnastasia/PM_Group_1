@@ -1,7 +1,8 @@
 /* General Navbar styling */
 .navbar {
     display: flex;
-    justify-content: center;
+    position: sticky;
+    justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     background-color: #fff;
@@ -49,6 +50,7 @@
   .nav-right {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     max-width: 30%; 
     gap: 1.5rem;
   }
@@ -84,17 +86,17 @@
     background-color: #ccc;
     border-radius: 50%;
   }
-/* 
-  .message-icon {
-    display: flex;
-    margin: 0;
-    padding: 0;
-  } */
 
   .message {
     height: 2rem;
     width: 2rem;
   }
+
+  .openChatButton {
+    position: relative;
+  }
+
+
 
 
   
