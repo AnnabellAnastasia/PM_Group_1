@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 // Page Components
 import ContextWrapper from "./components/ContextWrapper";
@@ -16,7 +17,7 @@ import Contact from "./components/Contact/Contact";
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
 import "./App.css";
-
+import ChatModal from "./components/Chat/ChatRoom";
 
 const router = createBrowserRouter([
   {

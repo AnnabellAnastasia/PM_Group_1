@@ -5,10 +5,14 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import cookieParser from 'cookie-parser';
+import { io } from "socket.io-client";
+
+
 
 dotenv.config();
 
 const app: Express = express();
+const socket = io('http://localhost:8080');
 
 app.use(cookieParser());
 app.use(cors({
@@ -20,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB
 const uri: string =
-    process.env.MONGODB_URI || 'mongodb://localhost:27017/ninerNetworking';
+    process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ninerNetworking';
 const PORT: string | number = process.env.PORT || 8080;
 
 (async () => {
