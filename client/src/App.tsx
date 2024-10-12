@@ -7,6 +7,11 @@ import Home from "./components/Home/Home";
 import SignUp from "./components/SignUp/SignUp";
 import Login from "./components/Login/Login";
 import PostFeed from "./components/PostFeed/PostFeed";
+import About from "./components/About/About";
+import Services from "./components/Services/Services";
+import Social from "./components/Social/Social";
+import Contact from "./components/Contact/Contact";
+
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
@@ -33,6 +38,22 @@ const router = createBrowserRouter([
           {
             path: "signup",
             element: <SignUp />,
+          },
+          {
+            path: "about",
+            element: <About />,
+          },
+          {
+            path: "services",
+            element: <Services />,
+          },
+          {
+            path: "social",
+            element: <Social />,
+          },
+          {
+            path: "contact",
+            element: <Contact />,
           },
         ],
       },
