@@ -1,13 +1,15 @@
 .chatContainer {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   display: flex;
   justify-content: space-between;
   align-content: center;
   background-color: #FFFFFF;
   box-shadow: 5px 8px 16px rgba(0, 0, 0, 0.1);
-  width: 32em;
+  width: 30em;
   height: 42em;
   border-radius: 16px;
   padding: 1rem;

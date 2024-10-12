@@ -6,6 +6,8 @@ import React, {
 } from "react";
 import { io } from "socket.io-client";
 import "./ChatRoom.css";
+import ChatPreview from "./ChatPreview";
+import Message from "./ChatPreview"
 
 const socket = io("http://localhost:8080"); //set socket
 
@@ -14,6 +16,8 @@ interface ChatModalProps {
   onClose: () => void;
   triggerRef: MutableRefObject<HTMLButtonElement | null>;
 }
+
+
 
 const ChatModal: React.FC<ChatModalProps> = ({
   isOpen,
@@ -24,10 +28,15 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
   useLayoutEffect(() => {
     setState({
-      left: (triggerRef?.current?.getBoundingClientRect().left || 0) - 448,
+      left: (triggerRef?.current?.getBoundingClientRect().left || 0) - 436,
       top: (triggerRef?.current?.offsetTop || 0) + 48,
     });
   }, [triggerRef]);
+
+  const messages = [
+    { id: 1, sender: "Name 1", content: "This is the content of Message 1" },
+    { id: 2, sender: "Name 2", content: "This is the content of Message 2" },
+  ];
 
   //   const [messages, setMessages] = useState(
   //     JSON.parse(localStorage.getItem("messages")) || []
@@ -82,54 +91,14 @@ const ChatModal: React.FC<ChatModalProps> = ({
           <button className="closeChat" onClick={onClose}>
             <img src="close.png"></img>
           </button>
+        </div>       
+
+        <ChatPreview messages={messages} />
+
+        <div className="chatFooter" >
+        <button className="newChat">New Chat</button>
         </div>
-        <div className="chatMiddle">
-          <div className="chatPreviewContainer">
-            <div className="senderIcon">
-              {/* Placeholder for Profile Icon */}
-            </div>
-            <div className="chatPreview">
-              <h6 className="chatSender">User Name</h6>
-              <p className="chatContent">
-                This is some chat content for the preview
-              </p>
-            </div>
-            <button className="openChatButton">
-              <img src="forwardArrow.png"></img>
-            </button>
-          </div>
-          <div className="chatPreviewContainer">
-            <div className="senderIcon">
-              {/* Placeholder for Profile Icon */}
-            </div>
-            <div className="chatPreview">
-              <h6 className="chatSender">User Name</h6>
-              <p className="chatContent">
-                This is some chat content for the preview
-              </p>
-            </div>
-            <button className="openChatButton">
-              <img src="forwardArrow.png"></img>
-            </button>
-          </div>
-          <div className="chatPreviewContainer">
-            <div className="senderIcon">
-              {/* Placeholder for Profile Icon */}
-            </div>
-            <div className="chatPreview">
-              <h6 className="chatSender">User Name</h6>
-              <p className="chatContent">
-                This is some chat content for the preview
-              </p>
-            </div>
-            <button className="openChatButton">
-              <img src="forwardArrow.png"></img>
-            </button>
-          </div>
-        </div>
-        <div className="chatFooter">
-          <button className="newChat">New Chat</button>
-        </div>
+        
       </div>
     );
   }
