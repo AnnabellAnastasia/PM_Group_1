@@ -77,11 +77,59 @@ const ChatModal: React.FC<ChatModalProps> = ({
         className="chatContainer"
         style={{ top: state.top, left: state.left }}
       >
-        
+        <div className="chatHeader">
+          <h4 className="chatTitle">Chat</h4>
           <button className="closeChat" onClick={onClose}>
-            Close
+            <img src="close.png"></img>
           </button>
-        
+        </div>
+        <div className="chatMiddle">
+          <div className="chatPreviewContainer">
+            <div className="senderIcon">
+              {/* Placeholder for Profile Icon */}
+            </div>
+            <div className="chatPreview">
+              <h6 className="chatSender">User Name</h6>
+              <p className="chatContent">
+                This is some chat content for the preview
+              </p>
+            </div>
+            <button className="openChatButton">
+              <img src="forwardArrow.png"></img>
+            </button>
+          </div>
+          <div className="chatPreviewContainer">
+            <div className="senderIcon">
+              {/* Placeholder for Profile Icon */}
+            </div>
+            <div className="chatPreview">
+              <h6 className="chatSender">User Name</h6>
+              <p className="chatContent">
+                This is some chat content for the preview
+              </p>
+            </div>
+            <button className="openChatButton">
+              <img src="forwardArrow.png"></img>
+            </button>
+          </div>
+          <div className="chatPreviewContainer">
+            <div className="senderIcon">
+              {/* Placeholder for Profile Icon */}
+            </div>
+            <div className="chatPreview">
+              <h6 className="chatSender">User Name</h6>
+              <p className="chatContent">
+                This is some chat content for the preview
+              </p>
+            </div>
+            <button className="openChatButton">
+              <img src="forwardArrow.png"></img>
+            </button>
+          </div>
+        </div>
+        <div className="chatFooter">
+          <button className="newChat">New Chat</button>
+        </div>
       </div>
     );
   }
