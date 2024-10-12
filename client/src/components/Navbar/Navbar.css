@@ -85,6 +85,7 @@
     height: 2.5rem;
     background-color: #ccc;
     border-radius: 50%;
+    flex-shrink: 0;
   }
 
   .message {
