@@ -1,12 +1,12 @@
 import React from "react";
 import Message from "./ChatPreview";
 
-// interface ConversationProps {
+// interface ChatDetailProps {
 //   message: typeof Message;
 //   onClose: boolean;
 // }
 
-// const Conversation: React.FC<ConversationProps> = ({ message, onClose }) => {
+// const ChatDetail: React.FC<ChatDetailProps> = ({ message, onClose }) => {
 //   <div className="message-detail">
 //     <h3>{message.sender}</h3>
 //     <p>{message.content}</p>
@@ -15,4 +15,4 @@ import Message from "./ChatPreview";
 
 //   return null;
 // };
-// export default Conversation;
+// export default ChatDetailProps;
