@@ -8,6 +8,7 @@ import { io } from "socket.io-client";
 import "./ChatRoom.css";
 import ChatPreview from "./ChatPreview";
 import Message from "./ChatPreview"
+import ChatDetail from "./ChatDetail";
 
 const socket = io("http://localhost:8080"); //set socket
 
@@ -84,7 +85,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
         className="chatContainer"
         style={{ top: state.top, left: state.left }}
       >
-        <div className="chatHeader">
+        {/* <div className="chatHeader">
           <h4 className="chatTitle">Chat</h4>
           <button className="closeChat" onClick={onClose}>
             <img src="close.png"></img>
@@ -96,7 +97,9 @@ const ChatModal: React.FC<ChatModalProps> = ({
         <div className="chatFooter" >
         <button className="newChat">New Chat</button>
         </div>
-        
+         */}
+
+        <ChatDetail />
       </div>
     );
   }

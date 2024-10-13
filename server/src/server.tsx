@@ -29,7 +29,7 @@ const PORT: string | number = process.env.PORT || 8080;
 
 (async () => {
     try {
-        await mongoose.connect(uri);
+        await mongoose.connect('mongodb://127.0.0.1:27017/ninerNetworking');
         console.log('Connected to the database');
 				app.listen(PORT, () => {
 					console.log(`Server is running on PORT: ${PORT}`);

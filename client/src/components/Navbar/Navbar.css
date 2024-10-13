@@ -40,7 +40,7 @@
     width: 100%;
     padding: 1rem 2rem;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 16px;
     font-size: 14px;
     text-align: center;
   }
@@ -87,10 +87,12 @@
   .message {
     height: 2rem;
     width: 2rem;
+    flex-shrink: 0;
   }
 
   .openChatButton {
     position: relative;
+    flex-shrink: 0;
   }
 
 
