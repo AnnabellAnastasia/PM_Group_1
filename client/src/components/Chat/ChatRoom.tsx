@@ -35,6 +35,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const messages = [
     { id: 1, sender: "Name 1", content: "This is the content of Message 1" },
     { id: 2, sender: "Name 2", content: "This is the content of Message 2" },
+    { id: 6, sender: "Name 2", content: "This is the content of Message 2" }
   ];
 
   //   const [messages, setMessages] = useState(
@@ -85,19 +86,19 @@ const ChatModal: React.FC<ChatModalProps> = ({
         className="chatContainer"
         style={{ top: state.top, left: state.left }}
       >
-        {/* <div className="chatHeader">
-          <h4 className="chatTitle">Chat</h4>
+        <div className="chatHeader">
+          <h4 className="chatTitle">Messages</h4>
           <button className="closeChat" onClick={onClose}>
             <img src="close.png"></img>
           </button>
         </div>       
 
-        <ChatPreview messages={messages} />
+        {/* <ChatPreview messages={messages} />
 
         <div className="chatFooter" >
         <button className="newChat">New Chat</button>
-        </div>
-         */}
+        </div> */}
+        
 
         <ChatDetail />
       </div>

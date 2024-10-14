@@ -1,5 +1,6 @@
 import React from "react";
 import Message from "./ChatPreview";
+import './ChatDetail.css'
 
 interface ChatDetailProps {
   message: typeof Message;
