@@ -1,7 +1,8 @@
 import { error } from "console";
+import mongoose from "mongoose";
 
-export async function fetchMessages() {
-    const response = fetch(`http://localhost:8080/messages`, {
+export async function fetchMessages(otherUserId:any) {
+    const response = fetch(`http://localhost:8080/messages/${otherUserId}`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
@@ -25,9 +26,11 @@ export async function fetchMessages() {
 }
 
 //add loggedInUser
-export async function submitMesssage(event:any, newMessage: string) {
+export async function submitMesssage(event:any, newMessage: string, loggedInUser:mongoose.Types.ObjectId, otherUserId:mongoose.Types.ObjectId) {
     const message = {
-        content: newMessage
+        body: newMessage,
+        creator: loggedInUser,
+        recipient: otherUserId
     };
     let response;
     response = fetch(`http://localhost:8080/posts`, {

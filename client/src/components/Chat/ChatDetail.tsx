@@ -1,109 +1,62 @@
 import React from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../ContextWrapper";
 import Message from "./ChatPreview";
 import "./ChatDetail.css";
 import MessagesList from "./ChatMessage";
 import MessagesData from "./ChatMessage";
+import mongoose from "mongoose";
+import { fetchMessages, submitMesssage } from "../../utils/messageAPI";
 
 interface ChatDetailProps {
   message: typeof Message;
   onClose: boolean;
 }
+
+interface Message {
+  body: string;
+  creator: mongoose.Types.ObjectId;
+  recipient: mongoose.Types.ObjectId;
+}
+
 // const ChatDetail: React.FC<ChatDetailProps> = ({ message, onClose }) => {
 const ChatDetail = () => {
-  const chatMessages: MessagesData = {
-    messages: [
-      {
-        id: 1,
-        sender: "Alice",
-        content: "Hello, how are you?",
-      },
-      {
-        id: 2,
-        sender: "Bob",
-        content: "I'm good, thanks! How about you?",
-      },
-      {
-        id: 3,
-        sender: "Alice",
-        content: "I'm great! Thanks for asking.",
-      },
-    ],
-  };
-  return (
-    // <div className="message-detail">
-    //   <MessagesList {...messages}/>
-    // </div>
+  const [chatList, setChatList] = useState<any>([]);
+  const [newMessage, setNewmessage] = useState("");
+  const [otherUserId, setOtherUserId] = useState<mongoose.Types.ObjectId>();
+  const { user } = useContext(UserContext);
 
+  useEffect(() => {
+    const getAllMessages = async () => {
+      setChatList(await fetchMessages(otherUserId));
+    };
+    getAllMessages();
+  }, []);
+
+  async function handleMessageSubmit(event: any) {
+    if (otherUserId && user.id) {
+      await submitMesssage(
+        event,
+        newMessage,
+        new mongoose.Types.ObjectId(user.id),
+        new mongoose.Types.ObjectId(otherUserId)
+      ); 
+    }
+  }
+
+  return (
     <div className="message-detail">
       <h6 className="detailSenderName">Sender Name</h6>
       <div className="messageAndEditTextContainer">
         <div className="chatDetailMessageContainer">
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxSender">
-            <p className="content">
-              This is some content for the message!This is some content for the
-              message!This is some content for the message!This is some content
-              for the message!
-            </p>
-          </div>
-          <div className="messageBoxClient">
+          {chatList &&
+            chatList.map(function (message: any) {
+              return <MessagesList key={message._id} messageObj={message} />;
+            })}
+
+          {/* <div className="messageBoxClient">
             <p className="content">messageBoxClient message</p>
-          </div>
+          </div> */}
         </div>
         <div className="inputContainer" tabIndex={0}>
           <textarea className="messageInput" placeholder="Message"></textarea>
