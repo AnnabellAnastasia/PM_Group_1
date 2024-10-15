@@ -9,3 +9,22 @@ import React from "react";
 //     </div>
 //   );
 // }
+
+export interface Message {
+    id: number;
+    sender: string;
+    content: string;
+  }
+
+export interface MessagesData {
+    messages: Message[];
+}
+
+
+export default function MessagesList({messages}:MessagesData) {
+    messages.forEach((message) => {
+        <div className="messageBoxSender">
+            <p className="content">{message.content}</p>
+          </div>
+    });
+}
