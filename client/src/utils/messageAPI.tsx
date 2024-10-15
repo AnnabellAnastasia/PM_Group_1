@@ -23,3 +23,27 @@ export async function fetchMessages() {
         }
     });
 }
+
+//add loggedInUser
+export async function submitMesssage(event:any, newMessage: string) {
+    const message = {
+        content: newMessage
+    };
+    let response;
+    response = fetch(`http://localhost:8080/posts`, {
+        method: "POST", 
+        headers: {
+            "Content-Type": "application/json", 
+        },
+        body: JSON.stringify(message),
+        credentials: 'include'
+    })
+    .then((response) => {
+        if(!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    })
+    .catch((error) => {
+        console.error("A problem occurred with your fetch operation: ", error);
+    });
+}
