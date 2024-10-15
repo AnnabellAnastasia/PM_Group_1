@@ -40,7 +40,7 @@ const ChatDetail = () => {
         newMessage,
         new mongoose.Types.ObjectId(user.id),
         new mongoose.Types.ObjectId(otherUserId)
-      ); 
+      );
     }
   }
 
@@ -53,22 +53,25 @@ const ChatDetail = () => {
             chatList.map(function (message: any) {
               return <MessagesList key={message._id} messageObj={message} />;
             })}
-
-          {/* <div className="messageBoxClient">
-            <p className="content">messageBoxClient message</p>
-          </div> */}
         </div>
-        <div className="inputContainer" tabIndex={0}>
-          <textarea className="messageInput" placeholder="Message"></textarea>
-          {/* <div className="sendButton"><h6>send</h6></div> */}
-          <button className="sendButton">send</button>
-          {/* <img src="send.png"></img> */}
-        </div>
+        <form
+          className="inputContainer"
+          onSubmit={(event) => handleMessageSubmit(event)}
+        >
+          <textarea
+            name="messageEntry"
+            value={newMessage}
+            onChange={(event) => {
+              setNewmessage(event.target.value);
+            }}
+            className="messageInput"
+            placeholder="Message"
+          ></textarea>
+          <input type="submit" className="sendButton">
+            send
+          </input>
+        </form>
       </div>
-
-      {/* <h3>{message.sender}</h3>
-    <p>{message.content}</p>
-    <button onClick={onClose}>Close</button> */}
     </div>
   );
 };
