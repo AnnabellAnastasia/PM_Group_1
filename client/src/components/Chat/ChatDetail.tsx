@@ -7,38 +7,24 @@ import MessagesList from "./ChatMessage";
 import MessagesData from "./ChatMessage";
 import mongoose from "mongoose";
 import { io } from "socket.io-client";
-import { fetchMessages, submitMesssage, closeMessage } from "../../utils/messageAPI";
+import { fetchMessages, closeMessage } from "../../utils/messageAPI";
 
 const socket = io("http://localhost:8080"); //set socket
 
-// interface ChatDetailProps {
-//   message: typeof Message;
-//   onClose: boolean;
-// }
-
-interface Message {
-  body: string;
-  creator: mongoose.Types.ObjectId;
-  recipient: mongoose.Types.ObjectId;
-}
-
 interface chatDetailProps {
-  otherUserId:string,
-  isOpen: boolean, 
+  otherUserId: string;
+  isOpen: boolean;
   onClose: () => void;
 }
 
-// const ChatDetail: React.FC<ChatDetailProps> = ({ message, onClose }) => {
-const ChatDetail:React.FC<chatDetailProps> = (
-{otherUserId,
-isOpen,
-onClose}
-) => {
- 
+const ChatDetail: React.FC<chatDetailProps> = ({
+  otherUserId,
+  isOpen,
+  onClose,
+}) => {
   const [chatList, setChatList] = useState<any>([]);
   const [newChatList, setNewChatList] = useState<any>([]);
   const [newMessage, setNewmessage] = useState("");
-  // const [otherUserId, setOtherUserId] = useState<string>();
   const { user } = useContext(UserContext);
 
   if (!isOpen) return null;
@@ -59,31 +45,18 @@ onClose}
 
   async function handleMessageSubmit(event: any) {
     if (otherUserId && user.id) {
-      // await submitMesssage(
-      //   event,
-      //   newMessage,
-      //   new mongoose.Types.ObjectId(user.id),
-      //   new mongoose.Types.ObjectId(otherUserId)
-      // );
-
-      socket.emit("message", [
-        event,
-        newMessage,
-        user.id,
-        otherUserId,
-      ]);
+      socket.emit("message", [event, newMessage, user.id, otherUserId]);
     }
   }
 
   socket.on("message", (data) => {
     setChatList([...chatList, data]);
     setNewChatList([...newChatList, data]);
-  })
+  });
 
-  function handleBack(event:any) {
-    if(newChatList) closeMessage(event, newChatList);//save messages b4 leaving
+  function handleBack(event: any) {
+    if (newChatList) closeMessage(event, newChatList); //save messages b4 leaving
     onClose;
-
   }
 
   return (
@@ -121,3 +94,20 @@ onClose}
 };
 export default ChatDetail;
 
+// await submitMesssage(
+//   event,
+//   newMessage,
+//   new mongoose.Types.ObjectId(user.id),
+//   new mongoose.Types.ObjectId(otherUserId)
+// );
+
+// interface ChatDetailProps {
+//   message: typeof Message;
+//   onClose: boolean;
+// }
+
+// interface Message {
+//   body: string;
+//   creator: mongoose.Types.ObjectId;
+//   recipient: mongoose.Types.ObjectId;
+// }

@@ -13,10 +13,10 @@ interface ChatMessagePreviewProps {
 
 const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-   //for opening chat detail
-   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
-   const openDetail = () => setIsDetailOpen(true);
-   const closeDetail = () => setIsDetailOpen(false);
+  //for opening chat detail
+  const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
+  const openDetail = () => setIsDetailOpen(true);
+  const closeDetail = () => setIsDetailOpen(false);
 
   const handleOpenChatDetail = (message: Message) => {
     setSelectedMessage(message);
@@ -26,8 +26,6 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
     setSelectedMessage(null);
   };
 
-
-  // onClick={() => handleOpenChatDetail(message)
   return (
     <div className="chatMiddle">
       {messages.map((message: Message) => (
@@ -35,7 +33,6 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
           key={message.id}
           className="chatPreviewContainer"
           onClick={openDetail}
-          
         >
           <div className="senderIcon">{/* Placeholder for Profile Icon */}</div>
           <div className="chatPreview">
@@ -48,18 +45,18 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
         </div>
       ))}
 
-      <ChatDetail isOpen={isDetailOpen} onClose={closeDetail} ></ChatDetail>
-{/* 
-      {selectedMessage && (
-        <div className="message-details">
-          <h4>Message Details</h4>
-          <h5>From: {selectedMessage.sender}</h5>
-          <p>{selectedMessage.content}</p>
-          <button onClick={closeChatDetail}>Close</button>
-        </div>
-      )} */}
+      <ChatDetail isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
     </div>
   );
 };
 
 export default ChatPreview;
+
+// {selectedMessage && (
+//   <div className="message-details">
+//     <h4>Message Details</h4>
+//     <h5>From: {selectedMessage.sender}</h5>
+//     <p>{selectedMessage.content}</p>
+//     <button onClick={closeChatDetail}>Close</button>
+//   </div>
+// )}
