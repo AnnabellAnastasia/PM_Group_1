@@ -6,12 +6,15 @@ import "./ChatDetail.css";
 import MessagesList from "./ChatMessage";
 import MessagesData from "./ChatMessage";
 import mongoose from "mongoose";
-import { fetchMessages, submitMesssage } from "../../utils/messageAPI";
+import { io } from "socket.io-client";
+import { fetchMessages, submitMesssage, closeMessage } from "../../utils/messageAPI";
 
-interface ChatDetailProps {
-  message: typeof Message;
-  onClose: boolean;
-}
+const socket = io("http://localhost:8080"); //set socket
+
+// interface ChatDetailProps {
+//   message: typeof Message;
+//   onClose: boolean;
+// }
 
 interface Message {
   body: string;
@@ -19,34 +22,75 @@ interface Message {
   recipient: mongoose.Types.ObjectId;
 }
 
+interface chatDetailProps {
+  otherUserId:string,
+  isOpen: boolean, 
+  onClose: () => void;
+}
+
 // const ChatDetail: React.FC<ChatDetailProps> = ({ message, onClose }) => {
-const ChatDetail = () => {
+const ChatDetail:React.FC<chatDetailProps> = (
+{otherUserId,
+isOpen,
+onClose}
+) => {
+ 
   const [chatList, setChatList] = useState<any>([]);
+  const [newChatList, setNewChatList] = useState<any>([]);
   const [newMessage, setNewmessage] = useState("");
-  const [otherUserId, setOtherUserId] = useState<mongoose.Types.ObjectId>();
+  // const [otherUserId, setOtherUserId] = useState<string>();
   const { user } = useContext(UserContext);
 
+  if (!isOpen) return null;
+
+  const getAllMessages = async () => {
+    fetchMessages(otherUserId)
+      .then((response) => {
+        setChatList(response);
+      })
+      .catch((error) => {
+        console.log("error getting messages");
+      });
+  };
+
   useEffect(() => {
-    const getAllMessages = async () => {
-      setChatList(await fetchMessages(otherUserId));
-    };
     getAllMessages();
   }, []);
 
   async function handleMessageSubmit(event: any) {
     if (otherUserId && user.id) {
-      await submitMesssage(
+      // await submitMesssage(
+      //   event,
+      //   newMessage,
+      //   new mongoose.Types.ObjectId(user.id),
+      //   new mongoose.Types.ObjectId(otherUserId)
+      // );
+
+      socket.emit("message", [
         event,
         newMessage,
-        new mongoose.Types.ObjectId(user.id),
-        new mongoose.Types.ObjectId(otherUserId)
-      );
+        user.id,
+        otherUserId,
+      ]);
     }
+  }
+
+  socket.on("message", (data) => {
+    setChatList([...chatList, data]);
+    setNewChatList([...newChatList, data]);
+  })
+
+  function handleBack(event:any) {
+    if(newChatList) closeMessage(event, newChatList);//save messages b4 leaving
+    onClose;
+
   }
 
   return (
     <div className="message-detail">
+      <button onClick={handleBack}>Back</button>
       <h6 className="detailSenderName">Sender Name</h6>
+
       <div className="messageAndEditTextContainer">
         <div className="chatDetailMessageContainer">
           {chatList &&
@@ -67,12 +111,13 @@ const ChatDetail = () => {
             className="messageInput"
             placeholder="Message"
           ></textarea>
-          <input type="submit" className="sendButton">
+          <button type="submit" className="sendButton">
             send
-          </input>
+          </button>
         </form>
       </div>
     </div>
   );
 };
 export default ChatDetail;
+

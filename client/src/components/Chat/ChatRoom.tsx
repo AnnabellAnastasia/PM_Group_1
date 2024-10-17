@@ -4,13 +4,12 @@ import React, {
   useLayoutEffect,
   MutableRefObject,
 } from "react";
-import { io } from "socket.io-client";
+
 import "./ChatRoom.css";
 import ChatPreview from "./ChatPreview";
 import Message from "./ChatPreview"
 import ChatDetail from "./ChatDetail";
 
-const socket = io("http://localhost:8080"); //set socket
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -24,19 +23,14 @@ const ChatModal: React.FC<ChatModalProps> = ({
   triggerRef,
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
-  
+ 
+
   useLayoutEffect(() => {
     setState({
       left: (triggerRef?.current?.getBoundingClientRect().left || 0) - 436,
       top: (triggerRef?.current?.offsetTop || 0) + 48,
     });
   }, [triggerRef]);
-
-  const messages = [
-    { id: 1, sender: "Name 1", content: "This is the content of Message 1" },
-    { id: 2, sender: "Name 2", content: "This is the content of Message 2" },
-    { id: 6, sender: "Name 2", content: "This is the content of Message 2" }
-  ];
 
   //   const [messages, setMessages] = useState(
   //     JSON.parse(localStorage.getItem("messages")) || []
@@ -98,9 +92,8 @@ const ChatModal: React.FC<ChatModalProps> = ({
         <div className="chatFooter" >
         <button className="newChat">New Chat</button>
         </div> */}
-        
 
-        <ChatDetail />
+        {/* <ChatDetail /> */}
       </div>
     );
   }

@@ -12,7 +12,7 @@ export async function fetchMessages(otherUserId:any) {
     .then((response) => {
         if (!response.ok) {
             console.error(`An error has occurred fetching messages: ${response.statusText}`);
-            return;
+            return "-1";
         } else{
             const messages = response.json();
             if(!messages){
@@ -26,14 +26,15 @@ export async function fetchMessages(otherUserId:any) {
 }
 
 //add loggedInUser
-export async function submitMesssage(event:any, newMessage: string, loggedInUser:mongoose.Types.ObjectId, otherUserId:mongoose.Types.ObjectId) {
+export async function submitMesssage(event:any, newMessage: string, loggedInUser: string, otherUserId: string) {
+    event.preventDefault();
     const message = {
         body: newMessage,
         creator: loggedInUser,
         recipient: otherUserId
     };
     let response;
-    response = fetch(`http://localhost:8080/posts`, {
+    response = fetch(`http://localhost:8080/messages`, {
         method: "POST", 
         headers: {
             "Content-Type": "application/json", 
@@ -47,6 +48,25 @@ export async function submitMesssage(event:any, newMessage: string, loggedInUser
         }
     })
     .catch((error) => {
+        console.error("A problem occurred with your fetch operation: ", error);
+    });
+}
+
+export async function closeMessage(event: any, messagesList: any[]) {
+    event.preventDefault();
+    let response;
+    response = fetch(`http://localhost:8080/messages/closeMessage`, {
+        method: "POST", 
+        headers: {
+            "Content-Type": "application/json", 
+        },
+        body: JSON.stringify(messagesList),//see if stringify works
+        credentials: 'include'
+    }).then((response) => {
+        if(!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    }).catch((error) => {
         console.error("A problem occurred with your fetch operation: ", error);
     });
 }
