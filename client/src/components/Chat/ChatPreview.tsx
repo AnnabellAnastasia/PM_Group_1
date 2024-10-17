@@ -3,9 +3,9 @@ import { useState } from "react";
 import ChatDetail from "./ChatDetail";
 
 interface Message {
-  id: number;
-  sender: string;
-  content: string;
+  id: string
+  body: string;
+  creator: string;
 }
 interface ChatMessagePreviewProps {
   messages: Message[];
@@ -18,8 +18,12 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const openDetail = () => setIsDetailOpen(true);
   const closeDetail = () => setIsDetailOpen(false);
 
-  const handleOpenChatDetail = (message: Message) => {
-    setSelectedMessage(message);
+  const handleOpenChatDetail = (event:any) => {
+    // setSelectedMessage(message);
+    let id = event.target.getAttribute('data-key');
+    return(
+      <ChatDetail messageId={id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
+    )
   };
 
   const closeChatDetail = () => {
@@ -32,12 +36,13 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
         <div
           key={message.id}
           className="chatPreviewContainer"
-          onClick={openDetail}
+          data-key={message.id}
+          onClick={handleOpenChatDetail}
         >
           <div className="senderIcon">{/* Placeholder for Profile Icon */}</div>
           <div className="chatPreview">
-            <h6 className="chatSender">{message.sender}</h6>
-            <p className="chatContent">{message.content}</p>
+            <h6 className="chatSender">{message.creator}</h6>
+            <p className="chatContent">{message.body}</p>
           </div>
           <button className="openChatButton">
             <img src="forwardArrow.png" alt="Open Chat" />
@@ -45,7 +50,7 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
         </div>
       ))}
 
-      <ChatDetail isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
+      {/* <ChatDetail messageId={message.id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail> */}
     </div>
   );
 };

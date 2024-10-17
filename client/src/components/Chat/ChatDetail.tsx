@@ -12,13 +12,13 @@ import { fetchMessages, closeMessage } from "../../utils/messageAPI";
 const socket = io("http://localhost:8080"); //set socket
 
 interface chatDetailProps {
-  otherUserId: string;
+  messageId: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const ChatDetail: React.FC<chatDetailProps> = ({
-  otherUserId,
+  messageId,
   isOpen,
   onClose,
 }) => {
@@ -30,7 +30,7 @@ const ChatDetail: React.FC<chatDetailProps> = ({
   if (!isOpen) return null;
 
   const getAllMessages = async () => {
-    fetchMessages(otherUserId)
+    fetchMessages(messageId)
       .then((response) => {
         setChatList(response);
       })
@@ -40,22 +40,32 @@ const ChatDetail: React.FC<chatDetailProps> = ({
   };
 
   useEffect(() => {
-    getAllMessages();
+    const getChats = async () => {
+      setChatList(await getAllMessages());
+    };
+    getChats();
   }, []);
 
   async function handleMessageSubmit(event: any) {
-    if (otherUserId && user.id) {
-      socket.emit("message", [event, newMessage, user.id, otherUserId]);
+    if (messageId && user.id) {
+      socket.emit("message", [event, newMessage, user.id]);
     }
   }
 
-  socket.on("message", (data) => {
-    setChatList([...chatList, data]);
-    setNewChatList([...newChatList, data]);
-  });
+  useEffect(() => {
+    const setMessage = (data:any) => {
+      setChatList((prevChatList:any) => [...prevChatList, data]);
+      setNewChatList((prevNewChatList:any) => [...prevNewChatList, data]);
+    };
+    socket.on("message", setMessage);
 
-  function handleBack(event: any) {
-    if (newChatList) closeMessage(event, newChatList); //save messages b4 leaving
+    return () => {
+      socket.off("message", setMessage);
+    };
+  }, []);
+
+  async function handleBack(event: any) {
+    if (newChatList) await closeMessage(event, newChatList); //save messages b4 leaving
     onClose;
   }
 

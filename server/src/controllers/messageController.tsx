@@ -46,41 +46,68 @@ const controller: any = {
   },
   //show conversation between two users
   details: async (req: any, res: any, next: any) => {
-    const cId = req.params.conversationId;
-    try {
-      const convo = await model
-        .find({
-          conversation: cId,
-        })
-        .populate("messages");
-      if (!convo) res.status(404).json("No messages found");
-      if (convo.messages && convo.messages.length) {
-        res.json(convo.messages);
-      } else {
-        res.status(404).json("No messages found in this conversation");
-      }
-    } catch (err: any) {
-      console.error("Error fetching conversation details", err);
-      res.status(500).json({ message: err.message });
-    }
+    const mId = req.params.messageId;
+    //const cId = req.params.conversationId;
+    let cId: any;
+    model
+      .findById(mId)
+      .populate("body", "creator")
+      .then((result) => {
+        if (result) {
+          cId = result.$parent();
+        } else {
+          res.status(404).json("Error finding conversation");
+        }
+        model
+          .findById(cId)
+          .populate("messages", "user1", "user2")
+          .then((response) => {
+            if (!response || response == null)
+              res.status(404).json("No messages found");
+            else if (response.messages && response.messages.length) {
+              res.json(response.messages);
+            } else {
+              res.status(404).json("No messages found in this conversation");
+            }
+          });
+      })
+      .catch((err: any) => {
+        console.error("Error fetching conversation details", err);
+        res.status(500).json({ message: err.message });
+      });
+    // .then(() => {
+    //     model.findById(cId).populate("messages", "user1", "user2")
+    // .then((response) => {
+    //     if (!response || response == null) res.status(404).json("No messages found");
+    //     else if (response.messages && response.messages.length) {
+    //       res.json(response.messages);
+    //     } else {
+    //       res.status(404).json("No messages found in this conversation");
+    //     }
+    // })
   },
   //save all new messages to mongodb
   close: async (req: any, res: any, next: any) => {
-    let messagesList: any[];
-    messagesList = JSON.parse(req.body); //turn the json back into an array
-    if (Array.isArray(messagesList)) {
-      //save each message in the list
-      messagesList.forEach((message) => {
-        let newMessage = new model(message);
-        newMessage
-          .save()
-          .then((newMessage: any) => {
-            res.json(newMessage);
-          })
-          .catch((err: any) => {
-            res.json({ message: err.message });
-          });
-      });
+    try {
+      let messagesList: any[];
+      messagesList = JSON.parse(req.body); //turn the json back into an array
+      if (Array.isArray(messagesList)) {
+        let conversation = messagesList[0].parent();
+        if (!conversation) {
+          return res.status(404).json("Conversation not found");
+        }
+        //save each message in the list
+        messagesList.forEach((message) => {
+          let newMessage = new model(message);
+          conversation.messages.push(newMessage);
+        });
+        await conversation.save(); // Save the conversation with the updated messages
+        res.status(200).json({ message: "Messages saved successfully." });
+      } else {
+        res.status(400).json("Invalid messages list");
+      }
+    } catch (err: any) {
+      console.error("Error saving conversation", err);
     }
   },
 };

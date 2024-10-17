@@ -2,8 +2,8 @@ import { error } from "console";
 import mongoose from "mongoose";
 
 //get messages between two users - must be fixed.
-export async function fetchMessages(otherUserId: any) {
-  const response = fetch(`http://localhost:8080/messages/${otherUserId}`, {
+export async function fetchMessages(messageId: string) {
+  const response = fetch(`http://localhost:8080/messages/${messageId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -52,6 +52,22 @@ export async function closeMessage(event: any, messagesList: any[]) {
   }
 }
 
+export async function fetchAll() {
+  try {
+    const response = await fetch(`http://localhost:8080/messages/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
+}
 
 //not required with socket.io - will remove
 // export async function submitMesssage(

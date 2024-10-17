@@ -9,6 +9,7 @@ import "./ChatRoom.css";
 import ChatPreview from "./ChatPreview";
 import Message from "./ChatPreview";
 import ChatDetail from "./ChatDetail";
+import { fetchAll } from "../../utils/messageAPI";
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   triggerRef,
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
+  const [chatList, setChatList] = useState<any>([]);
 
   useLayoutEffect(() => {
     setState({
@@ -29,6 +31,13 @@ const ChatModal: React.FC<ChatModalProps> = ({
       top: (triggerRef?.current?.offsetTop || 0) + 48,
     });
   }, [triggerRef]);
+
+  useEffect(() => {
+    const getChats = async () => {
+      setChatList(await fetchAll());
+    };
+    getChats();
+  }, []);
 
   if (!isOpen) return null;
   else {
@@ -43,6 +52,10 @@ const ChatModal: React.FC<ChatModalProps> = ({
           <button className="closeChat" onClick={onClose}>
             <img src="close.png"></img>
           </button>
+        </div>
+        <ChatPreview messages={chatList} />
+        <div className="chatFooter">
+          <button className="newChat">New Chat</button>
         </div>
       </div>
     );
