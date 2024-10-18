@@ -12,6 +12,7 @@ import About from "./components/About/About";
 import Services from "./components/Services/Services";
 import Social from "./components/Social/Social";
 import Contact from "./components/Contact/Contact";
+import Account from "./components/Account/Account";
 
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
           {
             path: "contact",
             element: <Contact />,
+          },
+          {
+            path: "account",
+            element: <Account />,
           },
         ],
       },

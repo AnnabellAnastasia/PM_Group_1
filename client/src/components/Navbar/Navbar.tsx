@@ -5,6 +5,7 @@ import { UserContext } from '../ContextWrapper';
 import ChatModal from "../Chat/ChatRoom";
 import './Navbar.css';
 
+
 const Navbar = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const openChat = () => setIsChatOpen(true);
@@ -53,7 +54,7 @@ const Navbar = () => {
           <img className="message" src="messageIcon.png" alt="message icon" />
         </a>
         {/* </div> */}
-				<img src={`../images/${user.image ? user.image : 'blank-profile-picture.png'}`} className="profile-icon" alt=""></img>
+          <img src={`../images/${user.image ? user.image : 'blank-profile-picture.png'}`} className="profile-icon" alt="" onClick={() => navigate('account')}></img>
       </div>
       <ChatModal isOpen={isChatOpen} onClose={closeChat} triggerRef={ref}></ChatModal>
     </nav>
