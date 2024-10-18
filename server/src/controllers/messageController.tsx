@@ -46,45 +46,46 @@ const controller: any = {
   },
   //show conversation between two users
   details: async (req: any, res: any, next: any) => {
-    const mId = req.params.messageId;
+    const cId = req.params.chatId;
     //const cId = req.params.conversationId;
-    let cId: any;
-    model
-      .findById(mId)
-      .populate("body", "creator")
-      .then((result) => {
-        if (result) {
-          cId = result.$parent();
-        } else {
-          res.status(404).json("Error finding conversation");
-        }
-        model
-          .findById(cId)
-          .populate("messages", "user1", "user2")
-          .then((response) => {
-            if (!response || response == null)
-              res.status(404).json("No messages found");
-            else if (response.messages && response.messages.length) {
-              res.json(response.messages);
-            } else {
-              res.status(404).json("No messages found in this conversation");
-            }
-          });
-      })
-      .catch((err: any) => {
-        console.error("Error fetching conversation details", err);
-        res.status(500).json({ message: err.message });
-      });
-    // .then(() => {
-    //     model.findById(cId).populate("messages", "user1", "user2")
-    // .then((response) => {
-    //     if (!response || response == null) res.status(404).json("No messages found");
-    //     else if (response.messages && response.messages.length) {
-    //       res.json(response.messages);
+    // let cId: any;
+    // model
+    //   .findById(mId)
+    //   .populate("body", "creator", "chatId")
+    //   .then((result) => {
+    //     if (result) {
+    //       cId = result.$parent();
     //     } else {
-    //       res.status(404).json("No messages found in this conversation");
+    //       res.status(404).json("Error finding conversation");
     //     }
-    // })
+    //     model
+    //       .findById(cId)
+    //       .populate("messages", "user1", "user2")
+    //       .then((response) => {
+    //         if (!response || response == null)
+    //           res.status(404).json("No messages found");
+    //         else if (response.messages && response.messages.length) {
+    //           res.json(response.messages);
+    //         } else {
+    //           res.status(404).json("No messages found in this conversation");
+    //         }
+    //       });
+    //   })
+    //   .catch((err: any) => {
+    //     console.error("Error fetching conversation details", err);
+    //     res.status(500).json({ message: err.message });
+    //   });
+    model.findById(cId).populate("messages", "user1", "user2")
+    .then((response) => {
+        if (!response || response == null) res.status(404).json("No messages found");
+        else if (response.messages && response.messages.length) {
+          res.json(response);//send entire chat object
+        } else {
+          res.status(404).json("No messages found in this conversation");
+        }
+    }).catch((err:any) => {
+        console.error("Error showing conversation", err);
+    })
   },
   //save all new messages to mongodb
   close: async (req: any, res: any, next: any) => {
@@ -98,6 +99,10 @@ const controller: any = {
         }
         //save each message in the list
         messagesList.forEach((message) => {
+            // var nm = {
+            //     body = message.content,
+            //     creator = message.u
+            // }
           let newMessage = new model(message);
           conversation.messages.push(newMessage);
         });
@@ -110,6 +115,41 @@ const controller: any = {
       console.error("Error saving conversation", err);
     }
   },
+  //make a new chat with a user
+  new: async(req: any, res: any, next: any) => {
+    const {userId} = req.body;
+    if(!userId) {
+        console.log("user id not sent with request");
+        return res.sendStatus(400);
+    }
+    model.find({
+        $and: [
+            { user1: req.id, user2: userId},
+            { user2: userId, user1: req.id}
+        ]
+    }).populate("messages", "user1", "user2")
+    .then((response) => {
+        if (!response || response == null){
+          var chatData = {
+            messages: [], 
+            user1: req.id, 
+            user2: userId
+          }
+          model.create(chatData)
+          .then((chat) => {
+            res.status(200).json(chat);
+          })
+        } else {
+          res.status(404).json("There was an issue loading chat");
+        }
+        // else if (response.messages && response.messages.length) {
+        //   res.json(response.messages);
+        // } 
+    }).catch((err:any) => {
+        console.error("Error showing conversation", err);
+    })
+
+  }
 };
 
 export default controller;

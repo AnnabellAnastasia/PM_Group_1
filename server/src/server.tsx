@@ -4,16 +4,16 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
+import messageRoutes from './routes/messageRoutes';
 import cookieParser from 'cookie-parser';
-import { io } from "socket.io-client";
-
-
+import http from 'http';
+import {Server} from 'socket.io';
 
 dotenv.config();
 
 const app: Express = express();
-const socket = io('http://localhost:8080');
 
+var server;
 app.use(cookieParser());
 app.use(cors({
   origin: process.env.FRONTEND_URI,
@@ -31,7 +31,7 @@ const PORT: string | number = process.env.PORT || 8080;
     try {
         await mongoose.connect("mongodb+srv://gcawley:0gn4UKWU5P0XQwP0@cluster0.sjdexg4.mongodb.net/ninerNetworking?retryWrites=true&w=majority&appName=Cluster0");
         console.log('Connected to the database');
-				app.listen(PORT, () => {
+				server = app.listen(PORT, () => {
 					console.log(`Server is running on PORT: ${PORT}`);
 			});
     } catch(error) {
@@ -39,9 +39,32 @@ const PORT: string | number = process.env.PORT || 8080;
     }
 })();
 
+const io = new Server(server, {
+    pingTimeout: 100000,
+        cors: {
+            origin: process.env.FRONTEND_URI,
+            credentials: true,
+        }
+    }
+    )
+io.on("connection", (socket) => {
+    console.log("user connected " , socket.id);
+    socket.on("join", (data) => {
+        socket.join(data);
+    })
+    socket.on("message", (data) => {
+        console.log(data);
+        //implement chat id
+        socket.to(data.chatId).emit("receive message", data);
+    });
+});
+
 // App routes
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
+
+//api routes
+app.use('/api/messages', messageRoutes);
 
 // Default Error Handling
 app.use((err: any, req: any, res: any, next: any) => {

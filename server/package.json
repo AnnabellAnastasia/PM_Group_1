@@ -21,6 +21,7 @@
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.2",
+    "socket.io": "^4.8.0",
     "tsx": "^4.19.1"
   },
   "devDependencies": {
