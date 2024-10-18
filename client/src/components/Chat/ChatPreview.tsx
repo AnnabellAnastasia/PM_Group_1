@@ -3,9 +3,9 @@ import { useState } from "react";
 import ChatDetail from "./ChatDetail";
 
 interface Message {
-  id: string
   body: string;
   creator: string;
+  chatId: string //should be chat id
 }
 interface ChatMessagePreviewProps {
   messages: Message[];
@@ -22,7 +22,7 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
     // setSelectedMessage(message);
     let id = event.target.getAttribute('data-key');
     return(
-      <ChatDetail messageId={id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
+      <ChatDetail chatId={id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
     )
   };
 
@@ -34,9 +34,9 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
     <div className="chatMiddle">
       {messages.map((message: Message) => (
         <div
-          key={message.id}
+          key={message.chatId}
           className="chatPreviewContainer"
-          data-key={message.id}
+          data-key={message.chatId}
           onClick={handleOpenChatDetail}
         >
           <div className="senderIcon">{/* Placeholder for Profile Icon */}</div>

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 //get messages between two users - must be fixed.
 export async function fetchMessages(messageId: string) {
-  const response = fetch(`http://localhost:8080/messages/${messageId}`, {
+  const response = fetch(`http://localhost:8080/api/messages/${messageId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -16,13 +16,15 @@ export async function fetchMessages(messageId: string) {
       );
       return "-1";
     } else {
-      const messages = response.json();
-      if (!messages) {
-        console.warn("no messages found");
-      } else {
-        console.log("messages", messages);
-        return messages;
-      }
+      response.json().then((messages) => {
+        if (!messages) {
+          console.warn("no messages found");
+        } else {
+          console.log("messages", messages);
+          response = JSON.parse(messages); //turn it back into an array
+          return response;
+        }
+      });
     }
   });
 }
@@ -33,7 +35,7 @@ export async function closeMessage(event: any, messagesList: any[]) {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/messages/closeMessage`,
+      `http://localhost:8080/api/messages/closeMessage`,
       {
         method: "POST",
         headers: {
@@ -54,7 +56,7 @@ export async function closeMessage(event: any, messagesList: any[]) {
 
 export async function fetchAll() {
   try {
-    const response = await fetch(`http://localhost:8080/messages/`, {
+    const response = await fetch(`http://localhost:8080/api/messages/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -64,6 +66,25 @@ export async function fetchAll() {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+    else return response;
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
+}
+
+export async function newChat(userId: string) {
+  try {
+    const response = await fetch(`http://localhost:8080/api/messages/new/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    else return response;
   } catch (error) {
     console.error("A problem occurred with your fetch operation: ", error);
   }

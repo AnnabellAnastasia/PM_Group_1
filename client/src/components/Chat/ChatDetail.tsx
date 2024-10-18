@@ -8,66 +8,67 @@ import MessagesData from "./ChatMessage";
 import mongoose from "mongoose";
 import { io } from "socket.io-client";
 import { fetchMessages, closeMessage } from "../../utils/messageAPI";
-
 const socket = io("http://localhost:8080"); //set socket
 
 interface chatDetailProps {
-  messageId: string;
+  chatId: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const ChatDetail: React.FC<chatDetailProps> = ({
-  messageId,
+  chatId,
   isOpen,
   onClose,
 }) => {
   const [chatList, setChatList] = useState<any>([]);
+  const [messageReceived, setMessageReceived] = useState("");
   const [newChatList, setNewChatList] = useState<any>([]);
   const [newMessage, setNewmessage] = useState("");
   const { user } = useContext(UserContext);
+  const [newChatId, setChatId] = useState("");
 
   if (!isOpen) return null;
 
   const getAllMessages = async () => {
-    fetchMessages(messageId)
+    fetchMessages(chatId)
       .then((response) => {
-        setChatList(response);
+        if (Array.isArray(response)) {
+          setChatList(response);
+          setChatId(response[0]);
+        }
       })
       .catch((error) => {
         console.log("error getting messages");
       });
   };
 
-  useEffect(() => {
-    const getChats = async () => {
-      setChatList(await getAllMessages());
-    };
-    getChats();
-  }, []);
-
   async function handleMessageSubmit(event: any) {
-    if (messageId && user.id) {
-      socket.emit("message", [event, newMessage, user.id]);
+    if (chatId && user.id) {
+      const m = [newMessage, user.id, chatId];
+      socket.emit("message", m);
+      setChatList((prevChatList: any) => [...prevChatList, m]);
+      setNewChatList((prevNewChatList: any) => [...prevNewChatList, m]);
     }
   }
 
-  useEffect(() => {
-    const setMessage = (data:any) => {
-      setChatList((prevChatList:any) => [...prevChatList, data]);
-      setNewChatList((prevNewChatList:any) => [...prevNewChatList, data]);
-    };
-    socket.on("message", setMessage);
-
-    return () => {
-      socket.off("message", setMessage);
-    };
-  }, []);
+  const joinChat = () => {
+    if (chatId !== "") {
+      socket.emit("join", chatId);
+    }
+  };
 
   async function handleBack(event: any) {
     if (newChatList) await closeMessage(event, newChatList); //save messages b4 leaving
     onClose;
   }
+
+  useEffect(() => {
+    socket.on("receive message", (data) => {
+      //show new message
+      setMessageReceived(data.message);
+    });
+  }, [socket]);
 
   return (
     <div className="message-detail">
@@ -121,3 +122,23 @@ export default ChatDetail;
 //   creator: mongoose.Types.ObjectId;
 //   recipient: mongoose.Types.ObjectId;
 // }
+
+// useEffect(() => {
+//   const getChats = async () => {
+//     setChatList(await getAllMessages());
+//     setChatId(chatList[0].chatId);
+//   };
+//   getChats();
+// }, []);
+
+// useEffect(() => {
+//   const setMessage = (data:any) => {
+//     setChatList((prevChatList:any) => [...prevChatList, data]);
+//     setNewChatList((prevNewChatList:any) => [...prevNewChatList, data]);
+//   };
+//   socket.on("message", setMessage);
+
+//   return () => {
+//     socket.off("message", setMessage);
+//   };
+// }, []);
