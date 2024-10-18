@@ -22,11 +22,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-<<<<<<< HEAD
-// database
-=======
 // Connect to MongoDB
->>>>>>> main
 const uri: string =
     process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ninerNetworking';
 const PORT: string | number = process.env.PORT || 8080;

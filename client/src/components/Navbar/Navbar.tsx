@@ -49,16 +49,12 @@ const Navbar = () => {
 					<li><h6><a href="/login" className="nav-link">Login</a></h6></li>
 					}
         </ul>
-<<<<<<< HEAD
-
-=======
         {/* <div className='message-icon'> */}
         <a ref={ref} className="openChatButton" onClick={openChat}>
           <img className="message" src="messageIcon.png" alt="message icon" />
         </a>
         {/* </div> */}
->>>>>>> main
-				<img src={`../images/${user.image ? user.image : 'blank-profile-picture.png'}`} className="profile-icon" alt=""></img>
+          <img src={`../images/${user.image ? user.image : 'blank-profile-picture.png'}`} className="profile-icon" alt="" onClick={() => navigate('account')}></img>
       </div>
       <ChatModal isOpen={isChatOpen} onClose={closeChat} triggerRef={ref}></ChatModal>
     </nav>
