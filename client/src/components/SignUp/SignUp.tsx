@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleSignUpSubmit } from "../../utils/userAPI";
+import { handleSignUp } from "../../utils/userAPI";
 import "./SignUp.css"; // Import SignUp-specific styles
 
 const SignUp = () => {
@@ -19,7 +19,7 @@ const SignUp = () => {
         </p>
         <form
           onSubmit={(event) =>
-            handleSignUpSubmit(
+            handleSignUp(
               event,
               navigate,
               firstName,

@@ -27,7 +27,6 @@ function CreateUser() {
 			console.warn(`No users found`);
 		}
 		setUserList(users);
-		console.log("users", users);
 	}
 
 	useEffect(() => {

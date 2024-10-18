@@ -7,13 +7,13 @@ interface PostProps {
     jobTitle: string;
     timePosted: string;
     content: string;
-    jobLink?: string;
+    jobLink: string;
     reactionsCount: number;
     commentsCount: number;
     repostsCount: number;
 }
 
-const Post: React.FC<PostProps> = ({
+const CreatePost: React.FC<PostProps> = ({
     profileImage,
     name,
     jobTitle,
@@ -36,17 +36,15 @@ const Post: React.FC<PostProps> = ({
             </div>
             <div className="post-content">
                 <p>{content}</p>
-                {jobLink && (
-                    <div className="job-card">
-                        <a href={jobLink} target="_blank" rel="noopener noreferrer">
-                            <div className="job-card-content">
-                                <h4>View Job</h4>
-                                <p>Open Rank-Associate Professor or Full Professor</p>
-                                <p>Georgia Institute of Technology</p>
-                            </div>
-                        </a>
-                    </div>
-                )}
+                <div className="job-card">
+                    <a href={jobLink} target="_blank" rel="noopener noreferrer">
+                        <div className="job-card-content">
+                            <h4>View Job</h4>
+                            <p>Open Rank-Associate Professor or Full Professor</p>
+                            <p>Georgia Institute of Technology</p>
+                        </div>
+                    </a>
+                </div>
             </div>
             <div className="post-reactions">
                 <span>👍 {reactionsCount}</span>
@@ -59,11 +57,7 @@ const Post: React.FC<PostProps> = ({
                 <button>Repost</button>
                 <button>Send</button>
             </div>
-            <div className="post-comment">
-                <input type="text" placeholder="Add a comment..." />
-            </div>
         </div>
     );
 };
-
-export default Post;
+export default CreatePost;
