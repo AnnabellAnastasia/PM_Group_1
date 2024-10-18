@@ -4,12 +4,10 @@ import React, {
   useLayoutEffect,
   MutableRefObject,
 } from "react";
-import { io } from "socket.io-client";
 import "./ChatRoom.css";
 import ChatPreview from "./ChatPreview";
 import Message from "./ChatPreview"
 
-const socket = io("http://localhost:8080"); //set socket
 
 interface ChatModalProps {
   isOpen: boolean;
