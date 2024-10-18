@@ -1,6 +1,11 @@
 import React from "react";
+<<<<<<< HEAD
 import { Router, RouterProvider, Routes, createBrowserRouter, replace } from "react-router-dom";
 
+=======
+import { useState } from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+>>>>>>> main
 // Page Components
 import ContextWrapper from "./components/ContextWrapper";
 import Error from "./components/Error/Error";
@@ -8,12 +13,21 @@ import Home from "./components/Home/Home";
 import SignUp from "./components/SignUp/SignUp";
 import Login from "./components/Login/Login";
 import PostFeed from "./components/PostFeed/PostFeed";
+import About from "./components/About/About";
+import Services from "./components/Services/Services";
+import Social from "./components/Social/Social";
+import Contact from "./components/Contact/Contact";
+
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
 import "./App.css";
+<<<<<<< HEAD
 import Account from "./components/Account/Account";
 
+=======
+import ChatModal from "./components/Chat/ChatRoom";
+>>>>>>> main
 
 const router = createBrowserRouter([
   {
@@ -35,6 +49,22 @@ const router = createBrowserRouter([
           {
             path: "signup",
             element: <SignUp />,
+          },
+          {
+            path: "about",
+            element: <About />,
+          },
+          {
+            path: "services",
+            element: <Services />,
+          },
+          {
+            path: "social",
+            element: <Social />,
+          },
+          {
+            path: "contact",
+            element: <Contact />,
           },
         ],
       },

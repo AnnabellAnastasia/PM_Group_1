@@ -7,8 +7,8 @@ import './Login.css'; // We'll add styles here
 function Login() {
 	const navigate = useNavigate();
 	const { setUser } = useContext(UserContext);
-	const [email, setEmail] = useState("gc@me.me");
-	const [password, setPassword] = useState("123123123");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
   return (
     <div className="login-page">
