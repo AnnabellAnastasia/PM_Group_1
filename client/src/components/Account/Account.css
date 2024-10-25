@@ -1,5 +1,10 @@
 .UPP{
-    border-radius: 35%;
+    border-radius: 50%;
     width: 100px;
     height:100px
+}
+
+.userInfo{
+    display:inline-flex;
+    margin-right: 25px;
 }
