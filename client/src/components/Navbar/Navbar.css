@@ -93,7 +93,23 @@
     position: relative;
   }
 
+  .errorAlert {
+    background-color: rgb(160, 0, 0);
+    color: #fff;
+    flex: 1;
+    padding: 5px;
+    padding-left: 50px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
 
+  .successAlert {
+    background-color: rgb(0, 160, 27);
+    color: #fff;
+    flex: 1;
+    padding: 5px;
+    padding-left: 50px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
 
 
   

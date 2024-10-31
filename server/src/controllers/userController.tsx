@@ -15,14 +15,16 @@ const controller: any = {
       .save()
       .then(() => {
         console.log("Saved!");
-        res.status(201).send("User Successfully Created");
+				res.status(201)
+				.json({success: "User Account Successfully Created"});
       })
       .catch((err: any) => {
 				if (err.code === 11000) {
-					console.log(err);
-					return res.status(400).send(err.errorResponse.errmsg);
-				}
-        next(err);
+          res.status(401)
+          .json({error: "Email Address has been used"});
+          return;
+					// return res.status(400).send(err.errorResponse.errmsg);
+				} else next(err);
       });
   },
 	// POST /users/login - Authenticate user login
@@ -37,6 +39,7 @@ const controller: any = {
         if (user) {
 					const { _id: id, firstName, lastName, image } = user;
           user.comparePassword(password).then((result: any) => {
+            console.log("result", result);
             if (result) {
 							const payload = { id: user._id };
 							const token = jwt.sign(payload, process.env.SECRET || "", {
@@ -49,13 +52,13 @@ const controller: any = {
 								sameSite: 'strict',
 							})
 							.status(200)
-							.json({ id, firstName, lastName, image });
+							.json({user: { id, firstName, lastName, image }, success: "You Have Successfully Logged In"});
             } else {
-              res.status(400).send("Password Incorrect");
+              res.status(401).json({error: "Incorrect Password"});
             }
           });
         } else {
-          res.status(400).send("Email Address Not Found");
+          res.status(401).json({error: "Email Address Not Found"});
         }
       })
       .catch((err) => next(err));
