@@ -1,6 +1,5 @@
 import React from 'react';
 import './Post.css';
-
 // interface PostProps {
 //     profileImage: string;
 //     name: string;

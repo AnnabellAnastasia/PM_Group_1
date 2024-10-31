@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
+import commentRoutes from './routes/commentRoutes';
 import cookieParser from 'cookie-parser';
 
 
@@ -40,6 +41,7 @@ const PORT: string | number = process.env.PORT || 8080;
 // App routes
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
+app.use('/comments',commentRoutes);
 
 // Default Error Handling
 app.use((err: any, req: any, res: any, next: any) => {
