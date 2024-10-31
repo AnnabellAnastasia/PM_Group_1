@@ -7,8 +7,6 @@ import postRoutes from './routes/postRoutes';
 import cookieParser from 'cookie-parser';
 import { io } from "socket.io-client";
 
-
-
 dotenv.config();
 
 const app: Express = express();
@@ -45,10 +43,10 @@ app.use('/posts', postRoutes);
 
 // Default Error Handling
 app.use((err: any, req: any, res: any, next: any) => {
-	console.log(err.stack);
+	console.error(err.stack);
 	if (!err.status) {
 		err.status = 500;
 		err.message = ("Internal Server Error");
 	}
-	res.send(err).status(err.status);
+	res.status(err.status).send(err);
 })

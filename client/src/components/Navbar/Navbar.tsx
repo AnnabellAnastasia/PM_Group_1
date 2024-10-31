@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { fetchProfile, handleLogOut } from '../../utils/userAPI';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../ContextWrapper';
+import { AlertContext, UserContext } from '../ContextWrapper';
 import ChatModal from "../Chat/ChatRoom";
 import './Navbar.css';
 
@@ -13,12 +13,14 @@ const Navbar = () => {
   const ref = useRef(null);
 	const navigate = useNavigate();
 	const { user, setUser } = useContext(UserContext);
+	const { pageAlert, setPageAlert } = useContext(AlertContext);
 
   useEffect(() => {
 			console.log("Nav user", user);
   }, []);
 
   return (
+    <>
     <nav className="navbar">
       {/* Left Section (Logo + Name) */}
       <div className="nav-left">
@@ -58,6 +60,9 @@ const Navbar = () => {
       </div>
       <ChatModal isOpen={isChatOpen} onClose={closeChat} triggerRef={ref}></ChatModal>
     </nav>
+    {pageAlert.error ? <div className="errorAlert">{pageAlert.error}</div> : <></>}
+    {pageAlert.success ? <div className="successAlert">{pageAlert.success}</div> : <></>}
+    </>
   );
 };
 
