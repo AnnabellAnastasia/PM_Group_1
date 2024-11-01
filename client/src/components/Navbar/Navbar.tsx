@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { fetchProfile, handleLogOut } from '../../utils/userAPI';
+import { fetchProfile, handleLogOut, searchUser } from '../../utils/userAPI';
 import { useNavigate } from 'react-router-dom';
 import { AlertContext, UserContext } from '../ContextWrapper';
 import ChatModal from "../Chat/ChatRoom";
@@ -14,7 +14,7 @@ const Navbar = () => {
 	const navigate = useNavigate();
 	const { user, setUser } = useContext(UserContext);
 	const { pageAlert, setPageAlert } = useContext(AlertContext);
-
+  const [searchTerm, setsearchTerm] = useState("");
   useEffect(() => {
 			console.log("Nav user", user);
   }, []);
@@ -34,7 +34,10 @@ const Navbar = () => {
           className="nav-search"
           type="text"
           placeholder="Search"
+          value={searchTerm}
+          onChange={(e)=>setsearchTerm(e.target.value)}
         ></input>
+        <button type='submit' onClick={(e)=>searchUser(e,searchTerm)}>Submit</button>
       </div>
 
       {/* Right Section (Links + Profile Icon) */}
@@ -45,6 +48,7 @@ const Navbar = () => {
           <li><h6><a href="/services" className="nav-link">Services</a></h6></li>
           <li><h6><a href="/social" className="nav-link">Social</a></h6></li>
           <li><h6><a href="/contact" className="nav-link">Contact</a></h6></li>
+          <li onClick={()=> navigate('search')}><h6>Contact</h6></li>
           { user.id ?
           <li><h6><span className="nav-link" onClick={(event) => handleLogOut(event, navigate, setUser)}>Logout</span></h6></li>
 					:

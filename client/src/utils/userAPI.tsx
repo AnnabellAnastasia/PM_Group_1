@@ -165,3 +165,25 @@ export async function handleLogOut(
     console.error(err);
   }
 }
+
+export async function searchUser(
+  event: any,
+  input: String
+  ){
+    event.preventDefault();
+    const term = input;
+    try{
+      const response = await fetch(process.env.REACT_APP_SERVER_URI + `/users/search?searchterm=${term}`,
+        {
+          method : "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+
+      )
+    }catch (err) {
+      console.error(err);
+    }
+}

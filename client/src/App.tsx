@@ -13,6 +13,7 @@ import Services from "./components/Services/Services";
 import Social from "./components/Social/Social";
 import Contact from "./components/Contact/Contact";
 import Account from "./components/Account/Account";
+//import SearchBar from "./components/SearchBar/Searchbar";
 
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";

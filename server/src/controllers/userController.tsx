@@ -81,7 +81,24 @@ const controller: any = {
         }
       })
       .catch((err) => next(err));
-	}
+	},
+
+  search: async (req: any, res: any, next: any) => {
+    let searchterm = req.query.searchterm;
+    model
+      .find({$text: {$search: searchterm}})
+      .then((user) => {
+        if (user && user[0]) {
+          res.json(user);
+          console.log(user);
+        } else {
+          res.status(404).json("No Posts Found");
+        }
+      })
+      .catch((err: any) => {
+        res.json({ message: err.message });
+      });
+  }
 };
 
 export default controller;
