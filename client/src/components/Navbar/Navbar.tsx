@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { fetchProfile, handleLogOut, searchUser } from '../../utils/userAPI';
+import { handleLogOut, searchUser } from '../../utils/userAPI';
 import { useNavigate } from 'react-router-dom';
 import { AlertContext, UserContext } from '../ContextWrapper';
 import ChatModal from "../Chat/ChatRoom";
@@ -13,11 +13,15 @@ const Navbar = () => {
   const ref = useRef(null);
 	const navigate = useNavigate();
 	const { user, setUser } = useContext(UserContext);
-	const { pageAlert, setPageAlert } = useContext(AlertContext);
+	const { pageAlert,  } = useContext(AlertContext);
   const [searchTerm, setsearchTerm] = useState("");
   useEffect(() => {
 			console.log("Nav user", user);
   }, []);
+
+  async function handleSearchUsers(e:any){
+    console.log("search input: ",await searchUser(e,searchTerm));
+  }
 
   return (
     <>
@@ -37,7 +41,7 @@ const Navbar = () => {
           value={searchTerm}
           onChange={(e)=>setsearchTerm(e.target.value)}
         ></input>
-        <button type='submit' onClick={(e)=>searchUser(e,searchTerm)}>Submit</button>
+        <button type='submit' onClick={(e)=>handleSearchUsers(e)}>Submit</button>
       </div>
 
       {/* Right Section (Links + Profile Icon) */}
