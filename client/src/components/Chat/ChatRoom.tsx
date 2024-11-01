@@ -42,26 +42,25 @@ const ChatModal: React.FC<ChatModalProps> = ({
       setChatList(await fetchAll());
     };
     getChats();
-    if(!chatList.length) setIsNewOpen(true);
+    if (!chatList) setIsNewOpen(true);
   }, [chatList]);
 
   if (!isOpen) return null;
   else {
     console.log("chat opened");
     return (
-
       <div
-      className="chatContainer"
-      style={{ top: state.top, left: state.left }}
+        className="chatContainer"
+        style={{ top: state.top, left: state.left }}
       >
-        <div className="chatHeader">
-          <h4 className="chatTitle">Messages</h4>
-          <button className="closeChat" onClick={onClose}>
-            <img src="close.png"></img>
-          </button>
-        </div>
-        {(!isNewOpen) ? (
+        {!isNewOpen ? (
           <>
+            <div className="chatHeader">
+              <h4 className="chatTitle">Messages</h4>
+              <button className="closeChat" onClick={onClose}>
+                <img src="close.png"></img>
+              </button>
+            </div>
             <ChatPreview messages={chatList} />
             <div className="chatFooter">
               <button className="newChat" onClick={openNew}>
@@ -69,10 +68,17 @@ const ChatModal: React.FC<ChatModalProps> = ({
               </button>
             </div>
           </>
-          ) : (
+        ) : (
+          <>
+            <div className="chatHeader">
+              <h4 className="chatTitle">New Message</h4>
+              <button className="closeChat" onClick={onClose}>
+                <img src="close.png"></img>
+              </button>
+            </div>
             <NewChat isOpen={isNewOpen} onClose={closeNew} />
-          )}
-      
+          </>
+        )}
       </div>
     );
   }

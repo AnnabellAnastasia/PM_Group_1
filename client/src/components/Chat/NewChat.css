@@ -1,0 +1,68 @@
+.newChatContainer {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.newTop {
+    justify-content: space-between;
+    align-items: center;
+    align-self: flex-start;
+    max-height: 2rem;
+    width: 100%;
+    flex-direction: row;
+    align-content: flex-start;
+    margin: 0;
+    padding: 0;
+}
+
+.newTop h6 {
+    margin: 0;
+    padding: 0;
+}
+
+.newMiddle {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    gap: .4rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    height: 100%;
+}
+
+.friendContainer {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+    height: 10%;
+    justify-self: flex-start;
+    border-radius: 8px;
+    padding: .2rem;
+    background-color: white;
+    z-index: 2;
+    border-style: solid;
+    border-color: #e7e7e7;
+    border-width: 1px;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.friendContainer p {
+    padding: 0;
+    margin: 0;
+}
+
+.friendContainer:hover {
+    box-shadow: 4px 0px 16px 8px rgba(0, 0, 0, 0.1);
+    /* border: none; */
+    z-index: 1;
+    transition: box-shadow 0.2s ease-in-out;
+}

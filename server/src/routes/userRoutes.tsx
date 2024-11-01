@@ -15,4 +15,7 @@ userRoutes.get('/logout', userLoggedIn, controller.logout)
 // GET /users/profile - Get info from logged in user
 userRoutes.get('/profile', userLoggedIn, controller.profile);
 
+//TEST - get all users in db
+userRoutes.get('/everyUserTest', controller.everyUserTest);
+
 export default userRoutes;

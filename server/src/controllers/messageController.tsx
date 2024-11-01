@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import mongoose, { connection, Types } from "mongoose";
 
 const controller: any = {
+  //TODO: fix json responses
   /*
    *    Get all messages between user and anyone else
    */
@@ -43,7 +44,7 @@ const controller: any = {
             res.status(204).json("No messsages found");
           }
         } else {
-          res.status(404).json("no conversations");
+          res.status(204).json("no conversations");
         }
       })
       .catch((err: any) => {

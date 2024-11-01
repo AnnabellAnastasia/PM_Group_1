@@ -81,7 +81,20 @@ const controller: any = {
         }
       })
       .catch((err) => next(err));
-	}
+	}, 
+  //TODO: get rid of this
+  everyUserTest: async (req: any, res:any, next:any) => {
+    model.find()
+    .then((response) => {
+      let users: any[] = [];
+      response.forEach((user) => {
+        const { _id: id, firstName, lastName, image } = user;
+        users.push({ _id: id, firstName, lastName, image });
+      })
+      res.json(JSON.stringify(users));
+    })
+    .catch((err) => next(err));
+  }
 };
 
 export default controller;

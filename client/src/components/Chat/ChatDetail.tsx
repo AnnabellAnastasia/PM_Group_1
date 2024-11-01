@@ -6,47 +6,59 @@ import { UserContext } from "../ContextWrapper";
 import { io } from "socket.io-client";
 import { closeMessage, fetchMessages } from "../../utils/messageAPI";
 import MessagesList from "./ChatMessage";
+import { JsxElement } from "typescript";
 const socket = io("http://localhost:8080"); //set socket
 
-interface chatDetailProps {
-  chatId: string;
+type CommonChatDetailProps = {
   isOpen: boolean;
   onClose: () => void;
+};
+
+type ChatDetailProps = {
+  chatId: string;
+};
+
+//just make it a state variable
+
+type NewChatDetailProps = {
+    otherUserId: any;
 }
 
-const ChatDetail: React.FC<chatDetailProps> = ({ chatId, isOpen, onClose }) => {
+function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) : JSX.Element;
+function ChatDetail(props: CommonChatDetailProps & NewChatDetailProps) : JSX.Element; 
+
+export function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) {
   const [chatList, setChatList] = useState<any>([]);
   const [messageReceived, setMessageReceived] = useState("");
-  const [newChatList, setNewChatList] = useState<any>([]);
-  const [newMessage, setNewmessage] = useState("");
   const { user } = useContext(UserContext);
   const [newChatId, setChatId] = useState("");
+  const [newChatList, setNewChatList] = useState<any>([]);
+  const [newMessage, setNewmessage] = useState("");
 
-  if (!isOpen) return null;
+  //   const getAllMessages = async () => {
+  //     fetchMessages(chatId)
+  //       .then((response) => {
+  //         if (Array.isArray(response)) {
+  //           setChatList(response);
+  //           setChatId(response[0]);
+  //         } else if(response.status)
+  //       })
+  //       .catch((error) => {
+  //         console.log("error getting messages");
+  //       });
+  //   };
 
-//   const getAllMessages = async () => {
-//     fetchMessages(chatId)
-//       .then((response) => {
-//         if (Array.isArray(response)) {
-//           setChatList(response);
-//           setChatId(response[0]);
-//         } else if(response.status)
-//       })
-//       .catch((error) => {
-//         console.log("error getting messages");
-//       });
-//   };
-
+  //change the way you get all the messages
   useEffect(() => {
     const getAllMessages = async () => {
-        setChatList(await fetchMessages(chatId));
-    }
+      setChatList(await fetchMessages(props.chatId));
+    };
     getAllMessages();
-}, []);
+  }, []);
 
   async function handleMessageSubmit(event: any) {
-    if (chatId && user.id) {
-      const m = [newMessage, user.id, chatId];
+    if (props.chatId && user.id) {
+      const m = [newMessage, user.id, props.chatId];
       socket.emit("message", m);
       setChatList((prevChatList: any) => [...prevChatList, m]);
       setNewChatList((prevNewChatList: any) => [...prevNewChatList, m]);
@@ -54,14 +66,14 @@ const ChatDetail: React.FC<chatDetailProps> = ({ chatId, isOpen, onClose }) => {
   }
 
   const joinChat = () => {
-    if (chatId !== "") {
-      socket.emit("join", chatId);
+    if (props.chatId !== "") {
+      socket.emit("join", props.chatId);
     }
   };
 
   async function handleBack(event: any) {
     if (newChatList) await closeMessage(event, newChatList); //save messages b4 leaving
-    onClose();
+    props.onClose();
   }
 
   useEffect(() => {
@@ -70,6 +82,8 @@ const ChatDetail: React.FC<chatDetailProps> = ({ chatId, isOpen, onClose }) => {
       setMessageReceived(data.message);
     });
   }, [socket]);
+
+  if (!props.isOpen) return null;
 
   return (
     <div className="message-detail">
@@ -103,5 +117,8 @@ const ChatDetail: React.FC<chatDetailProps> = ({ chatId, isOpen, onClose }) => {
       </div>
     </div>
   );
-};
-export default ChatDetail;
+}
+
+export function ChatDetail(props: CommonChatDetailProps & NewChatDetailProps) {
+
+}
