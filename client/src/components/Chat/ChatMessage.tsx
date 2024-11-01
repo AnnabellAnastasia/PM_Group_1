@@ -1,11 +1,9 @@
 import React from "react";
 
-// function ChatMessage({ message }) {
-//   return (
-//     <div className="messageContainer">
-//       <p>
-//         {message.user}: {message.text}
-//       </p>
-//     </div>
-//   );
-// }
+export default function MessagesList({ messageKey, messageObj }: any) {
+  return (
+    <div className="messageBoxSender" key={messageKey}>
+      <p className="content">{messageObj.body}</p>
+    </div>
+  );
+}

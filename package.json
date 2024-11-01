@@ -18,6 +18,7 @@
     "concurrently": "^9.0.1"
   },
   "dependencies": {
+    "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.0"
   }
 }

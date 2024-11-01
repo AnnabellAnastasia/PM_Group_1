@@ -1,57 +1,69 @@
 .chatContainer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
-  background-color: #FFFFFF;
-  box-shadow: 5px 8px 16px rgba(0, 0, 0, 0.1);
-  width: 30em;
-  height: 42em;
-  border-radius: 16px;
-  padding: 1rem;
-  flex-direction: column;
-}
-
-.chatFooter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    background-color: white;
+    /* background-color: #f2f2f2; */
+    box-shadow: 5px 8px 16px rgba(0, 0, 0, 0.1);
+    width: 30em;
+    height: 42em;
+    border-radius: 16px;
+    padding: 1rem;
+    margin: 0;
+    flex-direction: column;
+    border-style: solid;
+    border-color: #cccccc;
+    border-width: 1px;
+    z-index: 2;
+  }
+  
+  .chatFooter {
     display: flex;
     align-self: flex-end;
     width: 100%;
-}
-
-/*use this for the new chat button oopsie*/
-.newChat {
+  }
+  
+  /*use this for the new chat button oopsie*/
+  .newChat {
     align-self: flex-end;
     width: 100%;
     border-radius: 8px;
     height: 2.5rem;
-    background-color: #05A56A;
+    background-color: #05a56a;
     box-shadow: 5px 8px 16px rgba(0, 0, 0, 0.1);
     border: none;
-    color: #FFFFFF;
+    color: #ffffff;
     font-size: 1.2rem;
     font-weight: 800;
-}
-
-.newChat:hover {
-    background-color: #085F3F;
-}
-
-.chatHeader {
+    transition: background-color 0.2s ease-out, box-shadow 0.5s ease-out;
+    z-index: 2;
+  }
+  
+  .newChat:hover {
+    background-color: #0be595;
+    color: #333333;
+    box-shadow: 4px 0px 16px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chatHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     align-self: flex-start;
-    max-height: 10%;
+    max-height: 2rem;
     width: 100%;
     flex-direction: row;
     align-content: flex-start;
-}
-
-.closeChat {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .closeChat {
     /* align-self: flex-start; */
     border-radius: 1rem;
     border: none;
@@ -59,44 +71,50 @@
     font-size: 1rem;
     color: white;
     background-color: white;
-}
-
-.closeChat img {
+  }
+  
+  .closeChat:hover {
+    transform: scale(1.12);
+    transition: transform 0.2s ease;
+  }
+  
+  .closeChat img {
     height: 1rem;
-}
-
-.chatPreview {
+  }
+  
+  .chatPreview {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
     justify-content: center;
     height: 16%;
     width: 100%;
-}
-
-.chatSender {
+    
+  }
+  
+  .chatSender {
     padding: 0;
     justify-self: center;
     margin: 0;
-}
-
-.chatContent {
+  }
+  
+  .chatContent {
     padding: 0;
     justify-self: center;
     margin: 0;
-}
-
-.openChatButton {
+  }
+  
+  .openChatButton {
     border: none;
     background-color: white;
     padding: 0;
-}
-
-.openChatButton img {
+  }
+  
+  .openChatButton img {
     height: 2rem;
-}
-
-.chatPreviewContainer {
+  }
+  
+  .chatPreviewContainer {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -110,28 +128,38 @@
     background-color: white;
     z-index: 2;
     border-style: solid;
-    border-color: #E7E7E7;
+    border-color: #e7e7e7;
     border-width: 1px;
-}
-
-.chatPreviewContainer:hover {
+    z-index: 2;
+    flex-shrink: 0;
+  }
+  
+  .chatPreviewContainer:hover {
     box-shadow: 4px 0px 16px 8px rgba(0, 0, 0, 0.1);
-    border: none;
-    z-index: 3;
-}
-
-.chatMiddle {
+    /* border: none; */
+    z-index: 1;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  
+  .chatMiddle {
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: .3rem;
-}
-
-.senderIcon {
+    gap: 0.3rem;
+    overflow:visible;
+    margin-bottom: 1rem;
+  }
+  
+  .senderIcon {
     background-color: #ccc;
     border-radius: 50%;
     width: 2.5em;
     height: 2.5em;
     align-self: center;
     flex-shrink: 0;
-}
+  }
+  
+  .newChat:hover{
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+  }

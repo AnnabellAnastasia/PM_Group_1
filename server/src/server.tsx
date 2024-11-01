@@ -5,12 +5,14 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import cookieParser from 'cookie-parser';
-
+import {Server} from 'socket.io';
+import messageRoutes from './routes/messageRoutes';
 
 
 dotenv.config();
 
 const app: Express = express();
+var server;
 
 app.use(cookieParser());
 app.use(cors({
@@ -29,7 +31,7 @@ const PORT: string | number = process.env.PORT || 8080;
     try {
         await mongoose.connect(uri);
         console.log('Connected to the database');
-				app.listen(PORT, () => {
+        server = app.listen(PORT, () => {
 					console.log(`Server is running on PORT: ${PORT}`);
 			});
     } catch(error) {
@@ -37,9 +39,34 @@ const PORT: string | number = process.env.PORT || 8080;
     }
 })();
 
+
+const io = new Server(server, {
+    pingTimeout: 100000,
+        cors: {
+            origin: process.env.FRONTEND_URI,
+            credentials: true,
+        }
+    }
+    );
+
+io.on("connection", (socket) => {
+    console.log("user connected " , socket.id);
+    socket.on("join", (data) => {
+        socket.join(data);
+    });
+    socket.on("message", (data) => {
+        console.log(data);
+        //implement chat id
+        socket.to(data.chatId).emit("receive message", data);
+    });
+});
+
 // App routes
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
+
+// API routes
+app.use('/api/messages', messageRoutes);
 
 // Default Error Handling
 app.use((err: any, req: any, res: any, next: any) => {
