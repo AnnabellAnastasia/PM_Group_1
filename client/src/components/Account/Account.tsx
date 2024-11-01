@@ -110,7 +110,7 @@ function Account() {
           </div>
         </div>
 
-        {/* Profile Details and Project Status */}
+        {/* Profile Details and Skills */}
         <div className="col-md-8">
           {/* Editable Contact Information */}
           <div className="card mb-4">
@@ -170,10 +170,10 @@ function Account() {
             </div>
           </div>
 
-          {/* Editable Project Status */}
+          {/* Editable Skills */}
           <div className="card mb-4">
             <div className="card-header">
-              <h5>Project Status</h5>
+              <h5>Skills</h5>
             </div>
             <div className="card-body">
               {projects.map((project, index) => (
