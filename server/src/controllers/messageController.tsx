@@ -3,6 +3,7 @@ import model from "../models/conversation";
 import message from "../models/message";
 import jwt from "jsonwebtoken";
 import mongoose, { connection, Types } from "mongoose";
+import { IConversation } from "../models/conversation";
 
 const controller: any = {
   //TODO: fix json responses
@@ -39,7 +40,7 @@ const controller: any = {
             });
           });
           if (mList && mList[0]) {
-            res.json(mList);
+            res.json(JSON.stringify(mList));
           } else {
             res.status(204).json("No messsages found");
           }
@@ -59,7 +60,6 @@ const controller: any = {
     const cId = req.params.chatId;
     model
       .findById(cId)
-      .populate("messages", "user1", "user2")
       .then((response) => {
         if (!response || response == null)
           res.status(204).json("No messages found");
@@ -71,7 +71,7 @@ const controller: any = {
             });
           });
           if (mList) {
-            res.json(mList); //send entire chat object
+            res.json(JSON.stringify(mList)); //send entire chat object
           } else {
             res.status(404).json("error fetching conversation");
           }
@@ -113,44 +113,81 @@ const controller: any = {
     }
   },
 
-  /*
-   *    Make a new chat with a new user
-   */
   new: async (req: any, res: any, next: any) => {
-    const { userId } = req.body;
-    if (!userId) {
+    const { usr1 } = req.body._id1;
+    const { usr2 } = req.body._id2;
+    if (!usr1 || !usr2) {
       console.log("user id not sent with request");
       return res.sendStatus(400);
     }
     model
       .find({
         $and: [
-          { user1: req.id, user2: userId },
-          { user2: userId, user1: req.id },
+          { user1: usr1, user2: usr2 },
+          { user2: usr2, user1: usr1 },
         ],
       })
-      .populate("messages", "user1", "user2")
       .then((response) => {
         if (!response || response == null) {
-          var chatData = {
+          const chatData = {
             messages: [],
-            user1: req.id,
-            user2: userId,
+            user1: usr1,
+            user2: usr2,
           };
           model.create(chatData).then((chat) => {
-            res.status(200).json(chat);
+            res.status(200).json(JSON.stringify(chat._id)); //return chat id
           });
-        } else {
-          res.status(404).json("There was an issue loading chat");
-        }
-        // else if (response.messages && response.messages.length) {
-        //   res.json(response.messages);
+        } //setupif there is already messages found
+        // else if (typeof response.messages === [Types.ObjectId], )) {
+        //   //chat found
+        //   let mList: any[] = [];
+        //   response.messages.forEach((msg: Types.ObjectId) => {
+        //     message.findById(msg).then((rMsg: any) => {
+        //       mList.push(rMsg);
+        //     });
+        //   });
         // }
-      })
-      .catch((err: any) => {
-        console.error("Error showing conversation", err);
       });
   },
+
+  /*
+   *    Make a new chat with a new user
+   */
+  // new: async (req: any, res: any, next: any) => {
+  //   const { userId } = req.body;
+  //   if (!userId) {
+  //     console.log("user id not sent with request");
+  //     return res.sendStatus(400);
+  //   }
+  //   model
+  //     .find({
+  //       $and: [
+  //         { user1: req.id, user2: userId },
+  //         { user2: userId, user1: req.id },
+  //       ],
+  //     })
+  //     .populate("messages", "user1", "user2")
+  //     .then((response) => {
+  //       if (!response || response == null) {
+  //         var chatData = {
+  //           messages: [],
+  //           user1: req.id,
+  //           user2: userId,
+  //         };
+  //         model.create(chatData).then((chat) => {
+  //           res.status(200).json(chat);
+  //         });
+  //       } else {
+  //         res.status(404).json("There was an issue loading chat");
+  //       }
+  //       // else if (response.messages && response.messages.length) {
+  //       //   res.json(response.messages);
+  //       // }
+  //     })
+  //     .catch((err: any) => {
+  //       console.error("Error showing conversation", err);
+  //     });
+  // },
 };
 
 export default controller;

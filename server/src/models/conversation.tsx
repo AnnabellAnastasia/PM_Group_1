@@ -12,7 +12,7 @@ interface IMessage {
   chatId: Types.ObjectId;
 }
 
-interface IConversation extends Document {
+export interface IConversation extends Document {
   _id: Types.ObjectId;
   messages: Types.ObjectId[];
   user1: Types.ObjectId;

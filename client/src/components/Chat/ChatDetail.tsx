@@ -4,30 +4,26 @@ import "./ChatDetail.css";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../ContextWrapper";
 import { io } from "socket.io-client";
-import { closeMessage, fetchMessages } from "../../utils/messageAPI";
+import { closeMessage, fetchMessages, newChat } from "../../utils/messageAPI";
 import MessagesList from "./ChatMessage";
 import { JsxElement } from "typescript";
 const socket = io("http://localhost:8080"); //set socket
 
-type CommonChatDetailProps = {
+interface CommonChatDetailProps {
   isOpen: boolean;
   onClose: () => void;
-};
-
-type ChatDetailProps = {
-  chatId: string;
-};
-
-//just make it a state variable
-
-type NewChatDetailProps = {
-    otherUserId: any;
+  chatId?: string;
+  otherUserId?: string;
+  isNew: boolean;
 }
 
-function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) : JSX.Element;
-function ChatDetail(props: CommonChatDetailProps & NewChatDetailProps) : JSX.Element; 
-
-export function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) {
+const ChatDetail: React.FC<CommonChatDetailProps> = ({
+  isOpen,
+  onClose,
+  chatId,
+  otherUserId,
+  isNew,
+}) => {
   const [chatList, setChatList] = useState<any>([]);
   const [messageReceived, setMessageReceived] = useState("");
   const { user } = useContext(UserContext);
@@ -48,17 +44,34 @@ export function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) {
   //       });
   //   };
 
-  //change the way you get all the messages
-  useEffect(() => {
-    const getAllMessages = async () => {
-      setChatList(await fetchMessages(props.chatId));
-    };
-    getAllMessages();
-  }, []);
+  //if if is a new chat
+  // do not fetch messages.
+  //call api for create new chat
+  //if it is not a new chat
+  //call api to get messages and populate
+  //etc
+
+  //if is not a new chat fetch all messages
+  if (!isNew && chatId) {
+    useEffect(() => {
+      const getAllMessages = async () => {
+        setChatList(await fetchMessages(chatId));
+      };
+      getAllMessages();
+    }, []);
+  } else if (isNew && otherUserId) {
+    //if is a new chat call api to start a new conversation and get the chat id.
+    useEffect(() => {
+      const startNewChat = async () => {
+        setChatList(await newChat(user.id, otherUserId));
+      };
+      startNewChat();
+    }, []);
+  }
 
   async function handleMessageSubmit(event: any) {
-    if (props.chatId && user.id) {
-      const m = [newMessage, user.id, props.chatId];
+    if (chatId && user.id) {
+      const m = [newMessage, user.id, chatId];
       socket.emit("message", m);
       setChatList((prevChatList: any) => [...prevChatList, m]);
       setNewChatList((prevNewChatList: any) => [...prevNewChatList, m]);
@@ -66,14 +79,14 @@ export function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) {
   }
 
   const joinChat = () => {
-    if (props.chatId !== "") {
-      socket.emit("join", props.chatId);
+    if (chatId !== "") {
+      socket.emit("join", chatId);
     }
   };
 
   async function handleBack(event: any) {
     if (newChatList) await closeMessage(event, newChatList); //save messages b4 leaving
-    props.onClose();
+    onClose();
   }
 
   useEffect(() => {
@@ -83,7 +96,7 @@ export function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) {
     });
   }, [socket]);
 
-  if (!props.isOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <div className="message-detail">
@@ -117,8 +130,6 @@ export function ChatDetail(props: CommonChatDetailProps & ChatDetailProps) {
       </div>
     </div>
   );
-}
+};
 
-export function ChatDetail(props: CommonChatDetailProps & NewChatDetailProps) {
-
-}
+export default ChatDetail;

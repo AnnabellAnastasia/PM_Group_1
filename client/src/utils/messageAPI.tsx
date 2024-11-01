@@ -72,18 +72,24 @@ export async function fetchAll() {
   }
 }
 
-export async function newChat(userId: string) {
+export async function newChat(user1: any, user2: any) {
   try {
-    const response = await fetch(`http://localhost:8080/api/messages/new/${userId}`, {
-      method: "GET",
+    const users = {
+        _id1: user1,
+        _id2: user2
+    };
+    const response = await fetch(`http://localhost:8080/api/messages/new`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(users),
       credentials: "include",
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+    //TODO: return chatId
     else return response;
   } catch (error) {
     console.error("A problem occurred with your fetch operation: ", error);

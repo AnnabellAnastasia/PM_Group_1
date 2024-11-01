@@ -18,6 +18,7 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
   const openDetail = () => setIsDetailOpen(true);
   const closeDetail = () => setIsDetailOpen(false);
+  const [otherUserId, setOtherUserId] = useState<any>();
 
   const handleOpenChatDetail = (event: any) => {
     // setSelectedMessage(message);
@@ -27,6 +28,7 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
         chatId={id}
         isOpen={isDetailOpen}
         onClose={closeDetail}
+        isNew={false}
       ></ChatDetail>
     );
   };

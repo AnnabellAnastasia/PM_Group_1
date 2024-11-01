@@ -30,7 +30,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
 
   const handleClick = (event:any) => {
     let id = event.target.getAttribute("data-key");
-    return <ChatDetail isNewChat otherUserId={id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
+    return <ChatDetail isNew={true} otherUserId={id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
   }
 
   return (
