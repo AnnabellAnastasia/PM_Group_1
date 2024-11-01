@@ -1,6 +1,8 @@
 import express from 'express';
-import { userLoggedIn } from '../middleware/auth';
+import { userLoggedIn, isPostCreator } from '../middleware/auth';
 import controller from '../controllers/postController';
+import commentRoutes from './commentRoutes'
+import likeRoutes from './likeRoutes'
 
 const postRoutes = express.Router();
 
@@ -11,8 +13,13 @@ postRoutes.get('/:id', userLoggedIn, controller.show);
 // POST /posts - Create new post
 postRoutes.post('/', userLoggedIn, controller.create);
 // PUT /posts/:id - Update existing post
-postRoutes.put('/:id', userLoggedIn, controller.update);
+postRoutes.put('/:id', userLoggedIn, isPostCreator, controller.update);
 // DELETE /posts/:id - Delete existing post
-postRoutes.delete('/:id', userLoggedIn, controller.delete);
+postRoutes.delete('/:id', userLoggedIn, isPostCreator, controller.delete);
+
+// Comment Routes
+postRoutes.use("/:id/comments", commentRoutes);
+// Like Routes
+postRoutes.use("/:id/likes", likeRoutes);
 
 export default postRoutes;

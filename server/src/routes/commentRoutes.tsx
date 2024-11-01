@@ -1,15 +1,16 @@
 import express from 'express';
-import { userLoggedIn } from '../middleware/auth';
 import controller from '../controllers/commentController';
-import user from '../models/user';
+import { userLoggedIn, isCommenter } from '../middleware/auth';
 
-const commentRoutes =express.Router();
+const commentRoutes = express.Router({mergeParams: true});
 
-// get all comments from a user
-commentRoutes.get('/',userLoggedIn,controller.all);
-// Create a comment
-commentRoutes.post('/',userLoggedIn,controller.create);
-//Select a specific comment
-commentRoutes.post('/:id',userLoggedIn,controller.select);
+// GET /posts/:id/comments - Get all comments on a post
+commentRoutes.get('/', userLoggedIn, controller.all);
+// POST /posts/:id/comments - Create new comment
+commentRoutes.post('/', userLoggedIn, controller.create);
+// PUT /posts/:id/comments/:commentID - Update existing comment
+commentRoutes.put('/:commentID', userLoggedIn, isCommenter, controller.update);
+// DELETE /posts/:id/comments/:commentID - Delete existing comment
+commentRoutes.delete('/:commentID', userLoggedIn, isCommenter, controller.delete);
 
 export default commentRoutes;

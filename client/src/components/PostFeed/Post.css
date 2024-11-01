@@ -1,83 +1,139 @@
 .post {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-    background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background: #fff;
 }
 
 .post-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .profile-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 .post-info h3 {
-    margin: 0;
-    font-size: 1.1em;
+  margin: 0;
+  font-size: 1.1em;
 }
 
 .post-info p {
-    margin: 0;
-    font-size: 0.9em;
-    color: gray;
+  margin: 0;
+  font-size: 0.9em;
+  color: gray;
 }
 
 .post-info span {
-    font-size: 0.8em;
-    color: gray;
+  font-size: 0.8em;
+  color: gray;
 }
 
 .post-content {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 .job-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    background: #f9f9f9;
-    margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background: #f9f9f9;
+  margin-top: 10px;
 }
 
 .job-card-content h4 {
-    margin: 0;
-    color: #0073b1; /* LinkedIn-like blue */
+  margin: 0;
+  color: #0073b1; /* LinkedIn-like blue */
 }
 
 .post-reactions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    color: gray;
-    font-size: 0.9em;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  color: gray;
+  font-size: 0.9em;
 }
 
 .post-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .post-actions button {
-    background: none;
-    border: none;
-    color: #0073b1;
-    cursor: pointer;
+  background: none;
+  border: none;
+  color: #0073b1;
+  cursor: pointer;
 }
 
-.post-comment input {
-    width: 100%;
-    max-width: 500px; /* Adjust this to your desired maximum width */
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 10px;
+.post-comment-entry {
+  width: calc(100% - 125px);
+  max-width: 500px; /* Adjust this to your desired maximum width */
+  padding: 10px;
+  border: none;
+  border-radius: 0.4rem 0 0 0.4rem;
+  background-color: #e7e7e7;
 }
+
+.post-comment-submit {
+  width: 100px;
+  border-radius: 0 0.4rem 0.4rem 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: none;
+  background-color: #e7e7e7;
+}
+
+.post-comment button:hover {
+  background-color: #9c9c9c;
+}
+
+.post-form {
+  margin-left: 30%;
+  margin-right: 30%;
+  width: 40%;
+}
+
+.post-edit-entry {
+  width: calc(100% - 140px);
+  max-width: 500px; /* Adjust this to your desired maximum width */
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+  border: none;
+  border-radius: 0.4rem 0 0 0.4rem;
+  background-color: #e7e7e7;
+}
+
+.post-edit-submit {
+  width: 60px;
+  border-radius: 0 0.4rem 0.4rem 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: none;
+  background-color: #e7e7e7;
+}
+
+.post-edit-cancel {
+  width: 60px;
+  border-radius: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: none;
+  background-color: #e7e7e7;
+}
+
