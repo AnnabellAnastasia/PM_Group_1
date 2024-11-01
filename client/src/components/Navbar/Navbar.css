@@ -1,115 +1,26 @@
-/* General Navbar styling */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #fff;
-    border-bottom: 2px solid #d9d9d9;
-  }
-  
-  /* Left section: Logo and title */
-  .nav-left {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo {
-    height: 40px;
-    margin-right: 10px;
-  }
-  
-  h3 {
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
-  }
-  
-  /* Center section: Search bar */
-  .nav-center {
-    flex-grow: 2;  /* Let the center grow to occupy space */
-    display: flex;
-    justify-content: center;
-    margin: 0 auto;
-    width: 10em;
-    position: fixed;
+/* Logo */
+.logo {
+  height: 40px;
+  margin-right: 10px;
+}
 
-  }
-  
-  .nav-search {
-    width: 100%;
-    padding: 1rem 2rem;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    font-size: 14px;
-    text-align: center;
-  }
-  
-  /* Right section: Links and Profile Icon */
-  .nav-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    max-width: 30%; 
-    gap: 1.5rem;
-  }
-  
-  .nav-list {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 1rem;
-  }
-  
-  .nav-link {
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: bold;
-    color: black;
-    transition: color 0.3s ease;
-  }
-  
-  .nav-link:hover {
-    color: hwb(125 0% 0%); /* green hover effect */
-		cursor: pointer;
-  }
-  
-  /* Profile icon placeholder */
-  .profile-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    background-color: #ccc;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+/* Profile icon */
+.profile-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #ccc;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
-  .message {
-    height: 2rem;
-    width: 2rem;
-  }
+/* Message icon */
+.message {
+  height: 2rem;
+  width: 2rem;
+}
 
-  .openChatButton {
-    position: relative;
-  }
-
-  .errorAlert {
-    background-color: rgb(160, 0, 0);
-    color: #fff;
-    flex: 1;
-    padding: 5px;
-    padding-left: 50px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .successAlert {
-    background-color: rgb(0, 160, 27);
-    color: #fff;
-    flex: 1;
-    padding: 5px;
-    padding-left: 50px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-
-  
+/* Alerts styling (if any custom styles are needed) */
+.alert {
+  padding: 5px 50px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
