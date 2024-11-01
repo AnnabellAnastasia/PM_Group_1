@@ -15,9 +15,14 @@ const Navbar = () => {
 	const { user, setUser } = useContext(UserContext);
 	const { pageAlert, setPageAlert } = useContext(AlertContext);
   const [searchTerm, setsearchTerm] = useState("");
+
   useEffect(() => {
 			console.log("Nav user", user);
   }, []);
+
+  async function handleSearchUsers(e: any, searchTerm: string) {
+    console.log("Search", await searchUser(e, searchTerm));
+  }
 
   return (
     <>
@@ -37,7 +42,7 @@ const Navbar = () => {
           value={searchTerm}
           onChange={(e)=>setsearchTerm(e.target.value)}
         ></input>
-        <button type='submit' onClick={(e)=>searchUser(e,searchTerm)}>Submit</button>
+        <button type='submit' onClick={(e)=>handleSearchUsers(e, searchTerm)}>Submit</button>
       </div>
 
       {/* Right Section (Links + Profile Icon) */}
