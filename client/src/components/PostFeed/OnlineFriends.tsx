@@ -5,7 +5,7 @@ interface Friend {
   id: string;
   firstName: string;
   lastName: string;
-  image: string;
+  image?: string;
 }
 
 interface OnlineFriendsProps {
@@ -21,7 +21,13 @@ const OnlineFriends: React.FC<OnlineFriendsProps> = ({ friends, onChatClick }) =
   };
 
   return (
-    <div className="online-friends-sidebar">
+    <div
+      className="online-friends-sidebar"
+      style={{
+        height: isCollapsed ? "55px" : "auto",
+        minHeight: isCollapsed ? "55px" : "400px",
+      }}
+    >
       <div className="sidebar-title">
         Online Friends
         <button className="toggle-button" onClick={toggleCollapse}>
@@ -33,10 +39,15 @@ const OnlineFriends: React.FC<OnlineFriendsProps> = ({ friends, onChatClick }) =
           {friends.map((friend) => (
             <div key={friend.id} className="friend" onClick={() => onChatClick(friend.id)}>
               <img
-                src={friend.image ? friend.image : "blank-profile-picture.png"}
+                src={`../images/${
+                  friend.image ? friend.image : "blank-profile-picture.png"
+                }`}
                 alt={`${friend.firstName} ${friend.lastName}'s profile`}
+                className="friend-profile-image"
               />
-              <span className="friend-name">{friend.firstName} {friend.lastName}</span>
+              <span className="friend-name">
+                {friend.firstName} {friend.lastName}
+              </span>
               <button className="chat-button">Chat</button>
             </div>
           ))}
