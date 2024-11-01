@@ -181,8 +181,12 @@ export async function searchUser(
           },
           credentials: "include",
         }
-
       )
+      const user = await response.json();
+      if (!user) {
+        console.warn(`No user found`);
+      }
+      return user;
     }catch (err) {
       console.error(err);
     }

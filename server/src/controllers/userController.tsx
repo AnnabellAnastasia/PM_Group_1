@@ -85,12 +85,13 @@ const controller: any = {
 
   search: async (req: any, res: any, next: any) => {
     let searchterm = req.query.searchterm;
+    console.log("searchTerm", searchterm);
     model
       .find({$text: {$search: searchterm}})
       .then((user) => {
         if (user && user[0]) {
+          console.log('user', user);
           res.json(user);
-          console.log(user);
         } else {
           res.status(404).json("No Posts Found");
         }
