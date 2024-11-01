@@ -6,9 +6,12 @@ const controller = {
   // GET /posts - Get all posts
   all: async (req: any, res: any, next: any) => {
     model
-      .find().populate('creator', 'firstName lastName image')
+      .find()
+      .populate('creator', 'firstName lastName image')
       .then((posts) => {
         if (posts && posts[0]) {
+          // Sort posts by newest
+          posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
           res.json(posts);
         } else {
           res.status(404).json("No Posts Found");
