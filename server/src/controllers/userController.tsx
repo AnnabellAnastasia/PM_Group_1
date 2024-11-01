@@ -23,7 +23,6 @@ const controller: any = {
           res.status(401)
           .json({error: "Email Address has been used"});
           return;
-					// return res.status(400).send(err.errorResponse.errmsg);
 				} else next(err);
       });
   },
@@ -71,8 +70,6 @@ const controller: any = {
 	// GET /users/profile - Get info from logged in user
 	profile: async (req: any, res: any, next: any) => {
     // Get user info that matches id
-		console.log("req.id2", req.id);
-
     model
       .findOne({ _id: req.id })
       .then((user: any) => {

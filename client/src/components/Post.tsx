@@ -67,7 +67,7 @@ function Post({ postObj }: any) {
           <input
             type="text"
             name="postEdit"
-            className="post-entry"
+            className=""
             value={postBody}
             onChange={(event) => setPostBody(event.target.value)}
           />
