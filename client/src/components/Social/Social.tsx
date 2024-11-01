@@ -14,28 +14,30 @@ function Social() {
   ];
 
   return (
-    <div className="social">
+    <div className="social container py-4">
       {/* Friend Requests Section */}
-      <div className="friend-requests">
-        <button className="friend-requests-btn">
-          Friend Requests <span className="request-badge">952</span> 
+      <div className="friend-requests d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <button className="friend-requests-btn btn btn-secondary position-relative mb-2">
+          Friend Requests <span className="request-badge badge bg-danger position-absolute top-0 start-100 translate-middle">952</span>
         </button>
-        <button className="find-friends-btn">+ Find Friends</button>
+        <button className="find-friends-btn btn btn-primary mb-2">+ Find Friends</button>
       </div>
 
-      <h1>Friends</h1>
+      <h1 className="display-6 mb-4">Friends</h1>
 
-      <div className="friend-list">
+      <div className="friend-list row gy-3">
         {friends.map((friend, index) => (
-          <div key={index} className="friend-item">
-            <div className="friend-info">
-              <img src={friend.imgSrc} alt={friend.name} className="friend-avatar" />
-              <div className="friend-details">
-                <p className="friend-name">{friend.name}</p>
-                <p className="mutual-friends">{friend.mutualFriends}</p>
+          <div key={index} className="col-md-6">
+            <div className="friend-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
+              <div className="friend-info d-flex align-items-center">
+                <img src={friend.imgSrc} alt={friend.name} className="friend-avatar rounded-circle me-3" />
+                <div className="friend-details">
+                  <p className="friend-name h5 mb-1">{friend.name}</p>
+                  <p className="mutual-friends text-muted small">{friend.mutualFriends}</p>
+                </div>
               </div>
+              <button className="friend-button btn btn-outline-secondary btn-sm">Friends</button>
             </div>
-            <button className="friend-button">Friends</button>
           </div>
         ))}
       </div>

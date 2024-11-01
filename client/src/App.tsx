@@ -13,8 +13,8 @@ import Services from "./components/Services/Services";
 import Social from "./components/Social/Social";
 import Contact from "./components/Contact/Contact";
 import Account from "./components/Account/Account";
-//import SearchBar from "./components/SearchBar/Searchbar";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Footer from "./components/Footer/Footer";
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
@@ -79,9 +79,10 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <RouterProvider router={router} />
-    </>
+      <Footer />
+    </div>
   );
 }
 

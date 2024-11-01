@@ -5,8 +5,7 @@ import { AlertContext, UserContext } from '../ContextWrapper';
 import ChatModal from "../Chat/ChatRoom";
 import './Navbar.css';
 
-
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
@@ -17,7 +16,7 @@ const Navbar = () => {
   const [searchTerm, setsearchTerm] = useState("");
 
   useEffect(() => {
-			console.log("Nav user", user);
+    console.log("Nav user", user);
   }, []);
 
   async function handleSearchUsers(e: any, searchTerm: string) {

@@ -1,10 +1,14 @@
-.UPP{
-    border-radius: 50%;
+.UPP {
     width: 100px;
-    height:100px
+    height: 100px;
 }
-
-.userInfo{
-    display:inline-flex;
-    margin-right: 25px;
-}
+.form-check-inline {
+    margin-right: 10px;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-start; /* Aligns to the start (left) of the container */
+    gap: 10px; /* Adds space between buttons */
+  }
+  
