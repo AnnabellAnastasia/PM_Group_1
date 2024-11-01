@@ -10,6 +10,7 @@ import ChatPreview from "./ChatPreview";
 import Message from "./ChatPreview";
 import ChatDetail from "./ChatDetail";
 import { fetchAll } from "../../utils/messageAPI";
+import NewChat from "./NewChat";
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -24,6 +25,10 @@ const ChatModal: React.FC<ChatModalProps> = ({
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
   const [chatList, setChatList] = useState<any>([]);
+  //for opening new chat
+  const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
+  const openNew = () => setIsNewOpen(true);
+  const closeNew = () => setIsNewOpen(false);
 
   useLayoutEffect(() => {
     setState({
@@ -37,15 +42,17 @@ const ChatModal: React.FC<ChatModalProps> = ({
       setChatList(await fetchAll());
     };
     getChats();
+    if(!chatList.length) setIsNewOpen(true);
   }, [chatList]);
 
   if (!isOpen) return null;
   else {
     console.log("chat opened");
     return (
+
       <div
-        className="chatContainer"
-        style={{ top: state.top, left: state.left }}
+      className="chatContainer"
+      style={{ top: state.top, left: state.left }}
       >
         <div className="chatHeader">
           <h4 className="chatTitle">Messages</h4>
@@ -53,10 +60,19 @@ const ChatModal: React.FC<ChatModalProps> = ({
             <img src="close.png"></img>
           </button>
         </div>
-        <ChatPreview messages={chatList} />
-        <div className="chatFooter">
-          <button className="newChat">New Chat</button>
-        </div>
+        {(!isNewOpen) ? (
+          <>
+            <ChatPreview messages={chatList} />
+            <div className="chatFooter">
+              <button className="newChat" onClick={openNew}>
+                New Chat
+              </button>
+            </div>
+          </>
+          ) : (
+            <NewChat isOpen={isNewOpen} onClose={closeNew} />
+          )}
+      
       </div>
     );
   }

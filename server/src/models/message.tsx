@@ -21,14 +21,4 @@ const messageSchema = new Schema<IMessage, MessageSchemaType>({
   timestamps: true
 });
 
-
-// const messageSchema = new Schema(
-//   {
-//     body: { type: String, required: [true, "Body is required"] },
-//     creator: { type: Schema.Types.ObjectId, ref: "User" },
-//     chatId: { type: Schema.Types.ObjectId, ref: "Conversation" },
-//   },
-//   { timestamps: true }
-// );
-
 export default mongoose.model("Message", messageSchema);

@@ -19,10 +19,6 @@ interface IConversation extends Document {
   user2: Types.ObjectId;
 }
 
-type THydreatedConversationDocument = {
-  messages?: Types.DocumentArray<IMessage>;
-};
-
 type ConversationModelType = Model<IConversation>;
 const conversationSchema = new Schema<IConversation, ConversationModelType>(
   {
