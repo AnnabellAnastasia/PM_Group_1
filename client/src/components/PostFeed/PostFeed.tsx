@@ -42,7 +42,7 @@ function PostFeed() {
         <input className="post-submit" type="submit"></input>
       </form>
       <div className="post-feed">
-        {postFeed && postFeed.map(function (post: any) {
+        {postFeed && postFeed[0] && postFeed.map(function (post: any) {
           return <Post key={post._id} postObj={post} getAllPosts={getAllPosts}/>;
         })}
       </div>
