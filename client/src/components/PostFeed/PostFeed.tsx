@@ -2,16 +2,18 @@ import { useState, useEffect, useContext } from "react";
 import { fetchPosts, submitPost } from "../../utils/postAPI";
 import { UserContext } from '../ContextWrapper';
 import Post from './Post'
+import './Post.css';
 
 function PostFeed() {
   const [postFeed, setPostFeed] = useState<any>([]);
   const [newPost, setNewPost] = useState("");
 	const { user } = useContext(UserContext);
 
+  async function getAllPosts() {
+    setPostFeed(await fetchPosts());
+  }
+
 	useEffect(() => {
-		const getAllPosts = async () => {
-    	setPostFeed(await fetchPosts());
-		}
 		getAllPosts();
   }, []);
 
@@ -25,7 +27,7 @@ function PostFeed() {
 
   return (
     <>
-      <form onSubmit={(event) => handlePostSubmit(event)}>
+      <form className="post-form" onSubmit={(event) => handlePostSubmit(event)}>
         <label className="hidden" htmlFor="postEntry">
           Post Entry
         </label>
@@ -39,9 +41,9 @@ function PostFeed() {
         />
         <input className="post-submit" type="submit"></input>
       </form>
-      <div className="postFeed">
+      <div className="post-feed">
         {postFeed && postFeed.map(function (post: any) {
-          return <Post key={post._id} postObj={post}/>;
+          return <Post key={post._id} postObj={post} getAllPosts={getAllPosts}/>;
         })}
       </div>
     </>
