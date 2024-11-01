@@ -1,6 +1,7 @@
 import express from 'express';
 import { userLoggedIn } from '../middleware/auth';
 import controller from '../controllers/userController';
+import friendshipRoutes from '../routes/friendshipRoutes';
 
 const userRoutes = express.Router();
 
@@ -14,5 +15,8 @@ userRoutes.post('/login', controller.authenticate)
 userRoutes.get('/logout', userLoggedIn, controller.logout)
 // GET /users/profile - Get info from logged in user
 userRoutes.get('/profile', userLoggedIn, controller.profile);
+
+// Friendship Routes
+userRoutes.use("/:id/friendships", friendshipRoutes);
 
 export default userRoutes;
