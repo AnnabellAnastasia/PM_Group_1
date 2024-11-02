@@ -93,8 +93,10 @@ function Account() {
               />
               <h3>{`${user.firstName} ${user.lastName}`}</h3>
               <p className="text-muted">Full Stack Developer<br />Bay Area, San Francisco, CA</p>
-              <button className="btn btn-primary mb-2">Follow</button>
-              <button className="btn btn-outline-primary">Message</button>
+              <div className="button-group">
+  <button className="btn btn-primary me-2">Follow</button>
+  <button className="btn btn-outline-primary">Message</button>
+</div>
             </div>
           </div>
 
@@ -110,7 +112,7 @@ function Account() {
           </div>
         </div>
 
-        {/* Profile Details and Project Status */}
+        {/* Profile Details and Skills */}
         <div className="col-md-8">
           {/* Editable Contact Information */}
           <div className="card mb-4">
@@ -170,10 +172,10 @@ function Account() {
             </div>
           </div>
 
-          {/* Editable Project Status */}
+          {/* Editable Skills */}
           <div className="card mb-4">
             <div className="card-header">
-              <h5>Project Status</h5>
+              <h5>Skills</h5>
             </div>
             <div className="card-body">
               {projects.map((project, index) => (
