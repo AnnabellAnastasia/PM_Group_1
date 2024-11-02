@@ -21,6 +21,14 @@
 
 /* Alerts styling (if any custom styles are needed) */
 .alert {
-  padding: 5px 50px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: inline-block;
+  max-width: 100%;
+  margin: 10px 0;
+  text-align: center;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }

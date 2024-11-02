@@ -1,0 +1,12 @@
+/* Container for post feed with sidebar on the right */
+.post-feed-container {
+    display: flex;
+  }
+  
+  /* Main content area for posts */
+  .post-feed-content {
+    padding: 20px;
+    width: 100%;
+    margin-right: 250px; /* Offset for sidebar width */
+  }
+  

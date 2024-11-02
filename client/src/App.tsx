@@ -58,10 +58,6 @@ const router = createBrowserRouter([
             path: "contact",
             element: <Contact />,
           },
-          {
-            path: "account",
-            element: <Account />,
-          },
         ],
       },
       {
@@ -70,6 +66,10 @@ const router = createBrowserRouter([
           {
             path: "posts",
             element: <PostFeed />,
+          },
+          {
+            path: "account",
+            element: <Account />,
           },
         ],
       },
