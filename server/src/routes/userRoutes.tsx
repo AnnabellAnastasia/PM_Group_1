@@ -1,6 +1,7 @@
 import express from 'express';
 import { userLoggedIn } from '../middleware/auth';
 import controller from '../controllers/userController';
+import friendshipRoutes from '../routes/friendshipRoutes';
 
 const userRoutes = express.Router();
 
@@ -16,4 +17,8 @@ userRoutes.get('/logout', userLoggedIn, controller.logout)
 userRoutes.get('/profile', userLoggedIn, controller.profile);
 // GET/ look up a user
 userRoutes.get('/search',userLoggedIn,controller.search)
+
+// Friendship Routes
+userRoutes.use("/:id/friendships", friendshipRoutes);
+
 export default userRoutes;
