@@ -14,5 +14,6 @@ userRoutes.post('/login', controller.authenticate)
 userRoutes.get('/logout', userLoggedIn, controller.logout)
 // GET /users/profile - Get info from logged in user
 userRoutes.get('/profile', userLoggedIn, controller.profile);
-
+// GET/ look up a user
+userRoutes.get('/search',userLoggedIn,controller.search)
 export default userRoutes;

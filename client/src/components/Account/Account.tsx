@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../ContextWrapper';
+import { fetchAuth } from '../../utils/userAPI';
 import './Account.css';
 
 type ProfileField = 'fullName' | 'email' | 'phone' | 'mobile' | 'address';
