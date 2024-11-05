@@ -21,7 +21,32 @@ export async function fetchAuth() {
   }
 }
 
-export async function fetchProfile() {
+export async function fetchProfileFromID(userID: string) {
+  if (!userID) return;
+
+  try {
+    const response = await fetch(`http://localhost:8080/users/${userID}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      console.error(`An error has occurred: ${response.statusText}`);
+      return;
+    }
+    const user = await response.json();
+    if (!user) {
+      console.warn(`No user found`);
+    }
+    return user;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function fetchProfileFromLoggedInUser() {
   try {
     const response = await fetch(`http://localhost:8080/users/profile`, {
       method: "GET",
@@ -190,4 +215,27 @@ export async function searchUser(
     }catch (err) {
       console.error(err);
     }
+}
+
+export async function updateUser(
+  userID: string,
+  userBody: Object
+) {
+
+  let response;
+  try {
+    response = await fetch(`http://localhost:8080/users/${userID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userBody),
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
 }
