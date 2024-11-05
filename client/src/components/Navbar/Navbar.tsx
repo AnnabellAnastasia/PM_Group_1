@@ -1,77 +1,178 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
-import { handleLogOut, searchUser } from '../../utils/userAPI';
-import { useNavigate } from 'react-router-dom';
-import { AlertContext, UserContext } from '../ContextWrapper';
+import React, { useContext, useEffect, useState, useRef } from "react";
+import { handleLogOut, searchUser } from "../../utils/userAPI";
+import { useNavigate } from "react-router-dom";
+import { AlertContext, UserContext } from "../ContextWrapper";
 import ChatModal from "../Chat/ChatRoom";
-import './Navbar.css';
+import {
+  Container,
+  Nav,
+  Navbar,
+  Alert,
+  ListGroup,
+  Form,
+  NavDropdown,
+  Image,
+} from "react-bootstrap";
+import "./Navbar.css";
 
-const Navbar: React.FC = () => {
+const PageNavbar: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
-  const openChat = () => setIsChatOpen(true);
-  const closeChat = () => setIsChatOpen(false);
+  const toggleChat = () => setIsChatOpen(!isChatOpen);
   const ref = useRef(null);
-	const navigate = useNavigate();
-	const { user, setUser } = useContext(UserContext);
-	const { pageAlert,  } = useContext(AlertContext);
-  const [searchTerm, setsearchTerm] = useState("");
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
+  const { pageAlert } = useContext(AlertContext);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     console.log("Nav user", user);
-  }, []);
+  }, [user]);
 
   async function handleSearchUsers(e: any, searchTerm: string) {
-    console.log("Search", await searchUser(e, searchTerm));
+    setSearchTerm(searchTerm);
+    setSearchResults(await searchUser(e, searchTerm));
   }
 
   return (
     <>
-    <nav className="navbar">
-      {/* Left Section (Logo + Name) */}
-      <div className="nav-left">
-        <img className="logo" src="logo.png" alt="logo" />
-        <h3>Niner Network</h3>
-      </div>
+      <Navbar collapseOnSelect expand="lg" bg="light" data-bs-theme="light">
+        {/* Left Section (Logo + Name) */}
+        <Navbar.Brand href="/posts">
+          <img
+            alt="Niner Networking logo"
+            src="/logo.png"
+            width="30"
+            height="30"
+            className="logo d-inline-block align-top"
+          />{" "}
+          Niner Network
+        </Navbar.Brand>
 
-      <div className="nav-Center">
-        <input
-          id="search"
-          className="nav-search"
-          type="text"
-          placeholder="Search"
-          value={searchTerm}
-          onChange={(e)=>setsearchTerm(e.target.value)}
-        ></input>
-        <button type='submit' onClick={(e)=>handleSearchUsers(e, searchTerm)}>Submit</button>
-      </div>
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          {/* Center Section (Search Section) */}
+          <Container fluid className="position-relative">
+            <Form.Control
+              className="mt-2"
+              style={{ width: "100%" }}
+              id="search"
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => handleSearchUsers(e, e.target.value)}
+            ></Form.Control>
 
-      {/* Right Section (Links + Profile Icon) */}
-      <div className="nav-right">
-        <ul className="nav-list">
-          <li><h6><a href="/posts" className="nav-link">Home</a></h6></li>
-          <li><h6><a href="/about" className="nav-link">About</a></h6></li>
-          <li><h6><a href="/services" className="nav-link">Services</a></h6></li>
-          <li><h6><a href="/social" className="nav-link">Social</a></h6></li>
-          <li><h6><a href="/contact" className="nav-link">Contact</a></h6></li>
-          <li onClick={()=> navigate('search')}><h6>Contact</h6></li>
-          { user.id ?
-          <li><h6><span className="nav-link" onClick={(event) => handleLogOut(event, navigate, setUser)}>Logout</span></h6></li>
-					:
-					<li><h6><a href="/login" className="nav-link">Login</a></h6></li>
-					}
-        </ul>
-        {/* <div className='message-icon'> */}
-        <a ref={ref} className="openChatButton" onClick={openChat}>
-          <img className="message" src="messageIcon.png" alt="message icon" />
-        </a>
-        {/* </div> */}
-          <img src={`../images/${user.image ? user.image : 'blank-profile-picture.png'}`} className="profile-icon" alt="" onClick={() => navigate('account')}></img>
-      </div>
-      <ChatModal isOpen={isChatOpen} onClose={closeChat} triggerRef={ref}></ChatModal>
-    </nav>
-    {pageAlert.error ? <div className="errorAlert">{pageAlert.error}</div> : <></>}
-    {pageAlert.success ? <div className="successAlert">{pageAlert.success}</div> : <></>}
+            {searchResults && searchResults[0] ? (
+              <ListGroup
+                className="position-absolute top-100 start-0 translate-left px-3"
+                style={{ width: "100%" }}
+              >
+                <ListGroup.Item disabled style={{ width: "100%" }}>
+                  Users
+                </ListGroup.Item>
+                {searchResults.map((result: any) => (
+                  <ListGroup.Item
+                    action
+                    variant="light"
+                    key={result.id}
+                    style={{ width: "100%" }}
+                    href={`/account/${result.id}`}
+                  >
+                    <Image
+                      src={`../images/${
+                        result.image
+                          ? result.image
+                          : "blank-profile-picture.png"
+                      }`}
+                      roundedCircle
+                      className="profile-icon me-3"
+                    />
+                    {result.firstName}&nbsp;{result.lastName}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            ) : (
+              <></>
+            )}
+          </Container>
+
+          {/* Right Section (Links + Profile Icon) */}
+          <Nav className="mr-auto px-2">
+            <Nav.Link href="/posts">Home</Nav.Link>
+            <Nav.Link href="/about">About</Nav.Link>
+            <Nav.Link href="/services">Services</Nav.Link>
+            <Nav.Link href="/social">Social</Nav.Link>
+            <Nav.Link href="/contact">Contact</Nav.Link>
+            <Nav.Link className="openChatButton" ref={ref} onClick={toggleChat}>
+              <Image
+                className="message"
+                src="/messageIcon.png"
+                alt="message icon"
+              />
+            </Nav.Link>
+            <NavDropdown
+              className="px-2"
+              align={{ xs: "start" }}
+              title={
+                <Image
+                  src={`../images/${
+                    user.image ? user.image : "blank-profile-picture.png"
+                  }`}
+                  roundedCircle
+                  className="profile-icon"
+                />
+              }
+            >
+              {user.id ? (
+                <>
+                  <NavDropdown.Item className="px-2" disabled>
+                    {user.firstName}&nbsp;{user.lastName}
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    className="px-2"
+                    href={`/account/${user.id}`}
+                  >
+                    Profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    className="px-2"
+                    onClick={(event) => handleLogOut(event, navigate, setUser)}
+                  >
+                    Logout
+                  </NavDropdown.Item>
+                </>
+              ) : (
+                <Nav.Link className="px-2" href="/login">
+                  Login
+                </Nav.Link>
+              )}
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+        {/* ----- CHAT MODAL ----- */}
+        <ChatModal
+          isOpen={isChatOpen}
+          onClose={toggleChat}
+          triggerRef={ref}
+        ></ChatModal>
+      </Navbar>
+      {pageAlert.error ? (
+        <Alert className="errorAlert" variant="danger">
+          {pageAlert.error}
+        </Alert>
+      ) : (
+        <></>
+      )}
+      {pageAlert.success ? (
+        <Alert className="successAlert" variant="success">
+          {pageAlert.success}
+        </Alert>
+      ) : (
+        <></>
+      )}
     </>
   );
 };
 
-export default Navbar;
+export default PageNavbar;
