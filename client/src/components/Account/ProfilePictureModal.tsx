@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Button, Modal, Card, Form, InputGroup } from "react-bootstrap";
 import { uploadImage } from "../../utils/userAPI";
+import { AlertContext } from "../ContextWrapper";
 
 export default function BasicInfoModal({
   isEditingPhoto,
@@ -8,6 +9,7 @@ export default function BasicInfoModal({
   handleEditPhotoSave,
   accountUserID,
 }: any) {
+  const { setPageAlert } = useContext(AlertContext);
   const [file, setFile] = useState<any>();
 
   useEffect(() => {
@@ -20,13 +22,14 @@ export default function BasicInfoModal({
     }
   }
 
-  function handleUploadImage() {
+  async function handleUploadImage() {
     const imageData = new FormData()
     imageData.append("image", file);
 
-    console.log("imageData", imageData);
-    uploadImage(accountUserID, imageData);
 
+    const returnValue = await uploadImage(accountUserID, imageData) || "";
+    if (returnValue.error) setPageAlert({ error: returnValue.error, success: ""});
+    console.log("returnValue", returnValue);
     handleEditPhotoSave();
   }
 

@@ -212,7 +212,9 @@ const controller: any = {
   // POST /users/:id - Upload image existing post
   image: async (req: any, res: any, next: any) => {
     let id = req.params.id;
-    let image = { "image": req.file.filename }
+    if (!req.file) return res.json({ message: "no file found" });
+
+    let image = { "image": req.file.filename };
 
     model
       .findByIdAndUpdate(id, image, {

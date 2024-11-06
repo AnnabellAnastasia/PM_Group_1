@@ -92,7 +92,7 @@ function Post({ postKey, postObj, getAllPosts }: any) {
     <div className="post">
       <div className="post-header">
         <img
-          src={`../images/${
+          src={`http://localhost:8080/images/${
             postObj.creator.image
               ? postObj.creator.image
               : "blank-profile-picture.png"

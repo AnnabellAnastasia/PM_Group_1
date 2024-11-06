@@ -21,7 +21,7 @@ userRoutes.get('/search', controller.search)
 // GET /users/:id - Get info from user id
 userRoutes.get('/:id', controller.show);
 // PUT /users/:id - Edit user from user id
-userRoutes.put('/:id/', controller.update);
+userRoutes.put('/:id/', userLoggedIn ,controller.update);
 // POST /users/:id/image - Upload image from user id
 userRoutes.post('/:id/image', userLoggedIn, upload, controller.image);
 

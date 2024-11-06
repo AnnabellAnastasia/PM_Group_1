@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
 import cookieParser from 'cookie-parser';
+import multer from 'multer';
 
 dotenv.config();
 
@@ -44,7 +45,14 @@ app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/comments',commentRoutes);
 
-
+// Multer file too large error handling
+app.use((err: any, req: any, res: any, next: any) => {
+	if (err.code === 'LIMIT_FILE_SIZE') {
+		err.status = 400;
+		res.status(err.status).send({error: 'File Too Large'});
+	}
+	else next(err);
+});
 
 // Default Error Handling
 app.use((err: any, req: any, res: any, next: any) => {

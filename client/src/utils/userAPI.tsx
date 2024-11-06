@@ -253,10 +253,8 @@ export async function uploadImage(
       body: imageData,
       credentials: "include",
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
     const image = await response.json();
+    console.log("fnreturn", image);
     if (!image) {
       console.warn(`No image found`);
     }
