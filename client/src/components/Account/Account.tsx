@@ -214,17 +214,6 @@ function Account() {
   const handleEditProjectsClick = () =>
     setIsEditingProjects(!isEditingProjects);
 
-  const [showOverlay, setShowOverlay] = useState(false);
-
-  const handleEmailValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.includes("@")) {
-      setShowOverlay(true);
-    } else {
-      setShowOverlay(false);
-    }
-    handleInputChange(e);
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -572,8 +561,6 @@ function Account() {
               renderVisibilityButtons={renderVisibilityButtons}
               formData={formData}
               handleInputChange={handleInputChange}
-              handleEmailValidation={handleEmailValidation}
-              showOverlay={showOverlay}
             />
           )}
           {checkDisplayField(

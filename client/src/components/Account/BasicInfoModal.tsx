@@ -17,7 +17,10 @@ export default function BasicInfoModal({
       <Modal.Body>
         <Form>
           <Form.Group>
-            <Form.Label>Name</Form.Label>
+            <Form.Text>* Indicates a Required Field</Form.Text>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Name *</Form.Label>
             <InputGroup>
               <Form.Control
                 type="firstName"

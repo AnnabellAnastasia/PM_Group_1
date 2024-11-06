@@ -7,9 +7,7 @@ export default function ContactInfoModal({
   handleEditContactSave,
   renderVisibilityButtons,
   formData,
-  handleInputChange,
-  handleEmailValidation,
-  showOverlay
+  handleInputChange
 }: any) {
   return (
     <Modal show={isEditingContact} onHide={handleEditContactClose}>
@@ -23,21 +21,13 @@ export default function ContactInfoModal({
           </Form.Group>
           <Form.Group>
             <Form.Label>UNC Charlotte Email *</Form.Label>
-            <InputGroup className="mb-2">
-              <Form.Control
-                type="email"
-                name="email"
-                value={formData["email"]}
-                onChange={handleEmailValidation}
-              />
-              <InputGroup.Text>@charlotte.edu</InputGroup.Text>
-            </InputGroup>
-            {showOverlay && (
-              <Form.Text>
-                A UNC Charlotte Email Address is required. Please enter only
-                your UNC Charlotte Email prefix.
-              </Form.Text>
-            )}
+            <Form.Control
+              type="email"
+              name="email"
+              value={formData["email"]}
+              onChange={handleInputChange}
+              className="mb-2"
+            />
           </Form.Group>
           {renderVisibilityButtons("emailVisibility")}
           <Form.Group>
