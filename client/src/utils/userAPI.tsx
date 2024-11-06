@@ -239,3 +239,29 @@ export async function updateUser(
     console.error("A problem occurred with your fetch operation: ", error);
   }
 }
+
+export async function uploadImage(
+  userID: string,
+  imageData: FormData
+) {
+  console.log("userBody", imageData);
+  let response;
+  try {
+    response = await fetch(`http://localhost:8080/users/${userID}/image`, {
+      method: "POST",
+      headers: {},
+      body: imageData,
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const image = await response.json();
+    if (!image) {
+      console.warn(`No image found`);
+    }
+    return image;
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
+}

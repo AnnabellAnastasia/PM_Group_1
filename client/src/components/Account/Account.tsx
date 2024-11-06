@@ -7,6 +7,7 @@ import BasicInfoModal from "./BasicInfoModal";
 import SocialInfoModal from "./SocialInfoModal";
 import EducationInfoModal from "./EducationInfoModal";
 import ContactInfoModal from "./ContactInfoModal";
+import ProfilePictureModal from "./ProfilePictureModal";
 
 import "./Account.css";
 import {
@@ -178,6 +179,7 @@ function Account() {
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isEditingEducation, setIsEditingEducation] = useState(false);
   const [isEditingSocial, setIsEditingSocial] = useState(false);
+  const [isEditingPhoto, setIsEditingPhoto] = useState(false);
   const [isEditingProjects, setIsEditingProjects] = useState(false);
 
   const [projects, setProjects] = useState<Project[]>([
@@ -195,6 +197,7 @@ function Account() {
   };
   const handleEditBasicSave = async () => {
     await updateUser(accountUserID, formData);
+    await getAccountUserInfo();
     setIsEditingBasic(false);
   };
   const handleEditContactOpen = () => setIsEditingContact(true);
@@ -204,6 +207,7 @@ function Account() {
   };
   const handleEditContactSave = async () => {
     await updateUser(accountUserID, formData);
+    await getAccountUserInfo();
     setIsEditingContact(false);
   };
   const handleEditEducationOpen = () => setIsEditingEducation(true);
@@ -213,6 +217,7 @@ function Account() {
   };
   const handleEditEducationSave = async () => {
     await updateUser(accountUserID, formData);
+    await getAccountUserInfo();
     setIsEditingEducation(false);
   };
   const handleEditSocialOpen = () => setIsEditingSocial(true);
@@ -222,7 +227,18 @@ function Account() {
   };
   const handleEditSocialSave = async () => {
     await updateUser(accountUserID, formData);
+    await getAccountUserInfo();
     setIsEditingSocial(false);
+  };
+  const handleEditPhotoOpen = () => setIsEditingPhoto(true);
+  const handleEditPhotoClose = async () => {
+    await getAccountUserInfo();
+    setIsEditingPhoto(false);
+  };
+  const handleEditPhotoSave = async () => {
+    await updateUser(accountUserID, formData);
+    await getAccountUserInfo();
+    setIsEditingPhoto(false);
   };
 
   const handleEditProjectsClick = () =>
@@ -325,6 +341,14 @@ function Account() {
         <Col md={4}>
           {/* Basic Info Sidebar */}
           {userStatus === userStatuses[0] && (
+            <ProfilePictureModal
+              isEditingPhoto={isEditingPhoto}
+              handleEditPhotoClose={handleEditPhotoClose}
+              handleEditPhotoSave={handleEditPhotoSave}
+              accountUserID={accountUserID}
+            />
+          )}
+          {userStatus === userStatuses[0] && (
             <BasicInfoModal
               isEditingBasic={isEditingBasic}
               handleEditBasicClose={handleEditBasicClose}
@@ -336,20 +360,33 @@ function Account() {
           )}
           <Card className="text-center mb-4">
             <Card.Body>
-              <Image
-                src={`../images/${
-                  formData.image ? formData.image : "blank-profile-picture.png"
-                }`}
-                roundedCircle
-                thumbnail
-                className="UPP m-3"
-                alt="User Profile"
-              />
+              <div className="image-wrapper">
+                <Image
+                  src={`http://localhost:8080/images/${
+                    formData.image
+                      ? formData.image
+                      : "blank-profile-picture.png"
+                  }`}
+                  roundedCircle
+                  thumbnail
+                  className="UPP m-3"
+                  alt="User Profile"
+                />
+
+                {userStatus === userStatuses[0] && (
+                  <div className="overlay-button">
+                    <Button variant="dark" onClick={handleEditPhotoOpen}>
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               <h3>
                 {`${formData.firstName} ${formData.lastName} `}
                 {userStatus === userStatuses[0] && (
                   <Button
-                    variant="outline-primary"
+                    variant="dark"
                     onClick={handleEditBasicOpen}
                   >
                     <i className="fa-solid fa-pen-to-square"></i>
@@ -412,7 +449,7 @@ function Account() {
                     Social Links{" "}
                     {userStatus === userStatuses[0] && (
                       <Button
-                        variant="outline-primary"
+                        variant="dark"
                         onClick={handleEditSocialOpen}
                       >
                         <i className="fa-solid fa-pen-to-square"></i>
@@ -522,7 +559,7 @@ function Account() {
                     Education Information{" "}
                     {userStatus === userStatuses[0] && (
                       <Button
-                        variant="outline-primary"
+                        variant="dark"
                         onClick={handleEditEducationOpen}
                       >
                         <i className="fa-solid fa-pen-to-square"></i>
@@ -586,7 +623,7 @@ function Account() {
                     Contact Information{" "}
                     {userStatus === userStatuses[0] && (
                       <Button
-                        variant="outline-primary"
+                        variant="dark"
                         onClick={handleEditContactOpen}
                       >
                         <i className="fa-solid fa-pen-to-square"></i>

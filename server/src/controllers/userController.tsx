@@ -188,13 +188,34 @@ const controller: any = {
         res.json({ message: err.message });
       });
   },
-  // PUT /users/:id - Update existing post
+  // PUT /users/:id - Update existing user
   update: async (req: any, res: any, next: any) => {
     let user = req.body;
     let id = req.params.id;
 
     model
       .findByIdAndUpdate(id, user, {
+        useFindAndModify: false,
+        runValidators: true,
+      })
+      .then((user) => {
+        if (user) {
+          res.json(user);
+        } else {
+          res.status(404).json(`No Users Found with ID ${req.params.id}`);
+        }
+      })
+      .catch((err: any) => {
+        res.json({ message: err.message });
+      });
+  },
+  // POST /users/:id - Upload image existing post
+  image: async (req: any, res: any, next: any) => {
+    let id = req.params.id;
+    let image = { "image": req.file.filename }
+
+    model
+      .findByIdAndUpdate(id, image, {
         useFindAndModify: false,
         runValidators: true,
       })

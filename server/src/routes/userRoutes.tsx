@@ -1,5 +1,6 @@
 import express from 'express';
 import { userLoggedIn } from '../middleware/auth';
+import { upload } from '../middleware/fileUpload';
 import controller from '../controllers/userController';
 import friendshipRoutes from '../routes/friendshipRoutes';
 
@@ -21,6 +22,8 @@ userRoutes.get('/search', controller.search)
 userRoutes.get('/:id', controller.show);
 // PUT /users/:id - Edit user from user id
 userRoutes.put('/:id/', controller.update);
+// POST /users/:id/image - Upload image from user id
+userRoutes.post('/:id/image', userLoggedIn, upload, controller.image);
 
 // Friendship Routes
 userRoutes.use("/:id/friendships", friendshipRoutes);

@@ -1,14 +1,31 @@
 .UPP {
-    width: 300px;
-    height: 300px;
+  width: 300px;
+  height: 300px;
 }
 .form-check-inline {
-    margin-right: 10px;
-  }
-  
-  .button-container {
-    display: flex;
-    justify-content: flex-start; /* Aligns to the start (left) of the container */
-    gap: 10px; /* Adds space between buttons */
-  }
-  
+  margin-right: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-start; /* Aligns to the start (left) of the container */
+  gap: 10px; /* Adds space between buttons */
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+.overlay-button {
+  position: absolute;
+  bottom: 15%;
+  right: 15%;
+  text-align: center;
+}
+
+.overlay-button:before {
+  content: " ";
+  display: block;
+  /* adjust 'height' to position overlay content vertically */
+  height: 33%;
+}

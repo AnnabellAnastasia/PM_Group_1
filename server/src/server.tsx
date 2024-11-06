@@ -36,10 +36,15 @@ const PORT: string | number = process.env.PORT || 8080;
     }
 })();
 
+// Serve images
+app.use('/images', express.static('images'))
+
 // App routes
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/comments',commentRoutes);
+
+
 
 // Default Error Handling
 app.use((err: any, req: any, res: any, next: any) => {

@@ -80,7 +80,7 @@ const PageNavbar: React.FC = () => {
                     href={`/account/${result.id}`}
                   >
                     <Image
-                      src={`../images/${
+                      src={`http://localhost:8080/images/${
                         result.image
                           ? result.image
                           : "blank-profile-picture.png"
@@ -116,7 +116,7 @@ const PageNavbar: React.FC = () => {
               align={{ xs: "start" }}
               title={
                 <Image
-                  src={`../images/${
+                  src={`http://localhost:8080/images/${
                     user.image ? user.image : "blank-profile-picture.png"
                   }`}
                   roundedCircle

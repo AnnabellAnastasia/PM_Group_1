@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Button, Modal, Card, Form, InputGroup } from "react-bootstrap";
 
 export default function BasicInfoModal({
-	isEditingBasic,
-	handleEditBasicClose,
-	handleEditBasicSave,
+  isEditingBasic,
+  handleEditBasicClose,
+  handleEditBasicSave,
   renderVisibilityButtons,
   formData,
   handleInputChange,
@@ -36,31 +36,31 @@ export default function BasicInfoModal({
                 className="mb-2"
               />
             </InputGroup>
-            <Form.Group>
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                type="description"
-                name="description"
-                value={formData["description"]}
-                placeholder="Description"
-                onChange={handleInputChange}
-                className="mb-2"
-              />
-            </Form.Group>
-            {renderVisibilityButtons("descriptionVisibility")}
-            <Form.Group>
-              <Form.Label>Location / Hometown</Form.Label>
-              <Form.Control
-                type="location"
-                name="location"
-                value={formData["location"]}
-                placeholder="Location / Hometown"
-                onChange={handleInputChange}
-                className="mb-2"
-              />
-            </Form.Group>
-            {renderVisibilityButtons("locationVisibility")}
           </Form.Group>
+          <Form.Group>
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              type="description"
+              name="description"
+              value={formData["description"]}
+              placeholder="Description"
+              onChange={handleInputChange}
+              className="mb-2"
+            />
+          </Form.Group>
+          {renderVisibilityButtons("descriptionVisibility")}
+          <Form.Group>
+            <Form.Label>Location / Hometown</Form.Label>
+            <Form.Control
+              type="location"
+              name="location"
+              value={formData["location"]}
+              placeholder="Location / Hometown"
+              onChange={handleInputChange}
+              className="mb-2"
+            />
+          </Form.Group>
+          {renderVisibilityButtons("locationVisibility")}
         </Form>
       </Modal.Body>
       <Modal.Footer>
