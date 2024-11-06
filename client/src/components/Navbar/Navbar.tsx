@@ -129,6 +129,7 @@ const PageNavbar: React.FC = () => {
                   <NavDropdown.Item className="px-2" disabled>
                     {user.firstName}&nbsp;{user.lastName}
                   </NavDropdown.Item>
+                  <NavDropdown.Divider />
                   <NavDropdown.Item
                     className="px-2"
                     href={`/account/${user.id}`}
