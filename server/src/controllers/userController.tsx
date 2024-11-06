@@ -192,7 +192,7 @@ const controller: any = {
   update: async (req: any, res: any, next: any) => {
     let user = req.body;
     let id = req.params.id;
-
+    console.log("params", id, user);
     model
       .findByIdAndUpdate(id, user, {
         useFindAndModify: false,
@@ -214,7 +214,8 @@ const controller: any = {
     let id = req.params.id;
     if (!req.file) return res.json({ message: "no file found" });
 
-    let image = { "image": req.file.filename };
+    let image = { image: req.file.filename };
+    console.log("params", id, image);
 
     model
       .findByIdAndUpdate(id, image, {

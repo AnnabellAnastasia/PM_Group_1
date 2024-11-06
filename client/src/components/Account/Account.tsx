@@ -66,7 +66,7 @@ function Account() {
   const { userID } = useParams();
   const accountUserID = userID ?? "";
 
-  const [formData, setFormData] = useState({
+  const blankFields = {
     firstName: "",
     lastName: "",
     description: "",
@@ -98,7 +98,9 @@ function Account() {
     phoneVisibility: "",
     address: "",
     addressVisibility: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(blankFields);
 
   useEffect(() => {
     console.log("formData", formData);
@@ -107,39 +109,7 @@ function Account() {
   const getAccountUserInfo = async () => {
     let user = await fetchProfileFromID(accountUserID);
     if (!user) {
-      user = {
-        firstName: "",
-        lastName: "",
-        description: "",
-        descriptionVisibility: "",
-        major: "",
-        majorVisibility: "",
-        minor: "",
-        minorVisibility: "",
-        concentration: "",
-        concentrationVisibility: "",
-        location: "",
-        locationVisibility: "",
-        image: "",
-        unccEmail: "",
-        unccEmailVisibility: "",
-        website: "",
-        websiteVisibility: "",
-        github: "",
-        githubVisibility: "",
-        twitter: "",
-        twitterVisibility: "",
-        instagram: "",
-        instagramVisibility: "",
-        facebook: "",
-        facebookVisibility: "",
-        secondaryEmail: "",
-        secondaryEmailVisibility: "",
-        phone: "",
-        phoneVisibility: "",
-        address: "",
-        addressVisibility: "",
-      };
+      user = blankFields;
     }
     console.log("Set Account User", user);
     setFormData(user);
@@ -344,7 +314,6 @@ function Account() {
             <ProfilePictureModal
               isEditingPhoto={isEditingPhoto}
               handleEditPhotoClose={handleEditPhotoClose}
-              handleEditPhotoSave={handleEditPhotoSave}
               accountUserID={accountUserID}
             />
           )}

@@ -79,7 +79,7 @@ export async function handleLogIn(
 ) {
   event.preventDefault();
   const postBody = {
-    email,
+    unccEmail: email,
     password,
   };
   try {
@@ -126,7 +126,7 @@ export async function handleSignUp(
   const postBody = {
     firstName,
     lastName,
-    email,
+    unccEmail: email,
     password,
   };
   try {
@@ -253,6 +253,9 @@ export async function uploadImage(
       body: imageData,
       credentials: "include",
     });
+    if (!response.ok) {
+      console.error(response);
+    }
     const image = await response.json();
     console.log("fnreturn", image);
     if (!image) {
