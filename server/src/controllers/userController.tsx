@@ -11,6 +11,7 @@ const controller: any = {
   create: async (req: any, res: any, next: any) => {
     let user = new model(req.body);
     user.image = "blank-profile-picture.png";
+    console.log("user", user);
     user
       .save()
       .then(() => {
@@ -19,6 +20,7 @@ const controller: any = {
       })
       .catch((err: any) => {
         if (err.code === 11000) {
+          console.log("user", err);
           res.status(401).json({ error: "Email Address has been used" });
           return;
         } else next(err);
@@ -47,8 +49,8 @@ const controller: any = {
             location,
             locationVisibility,
             image,
-            unccEmail,
-            unccEmailVisibility,
+            email,
+            emailVisibility,
             website,
             websiteVisibility,
             github,
@@ -80,8 +82,8 @@ const controller: any = {
             location,
             locationVisibility,
             image,
-            unccEmail,
-            unccEmailVisibility,
+            email,
+            emailVisibility,
             website,
             websiteVisibility,
             github,

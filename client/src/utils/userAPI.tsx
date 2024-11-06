@@ -79,7 +79,7 @@ export async function handleLogIn(
 ) {
   event.preventDefault();
   const postBody = {
-    unccEmail: email,
+    email,
     password,
   };
   try {
@@ -126,7 +126,7 @@ export async function handleSignUp(
   const postBody = {
     firstName,
     lastName,
-    unccEmail: email,
+    email,
     password,
   };
   try {

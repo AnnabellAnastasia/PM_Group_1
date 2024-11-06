@@ -25,9 +25,9 @@ export default function ContactInfoModal({
             <Form.Label>UNC Charlotte Email *</Form.Label>
             <InputGroup className="mb-2">
               <Form.Control
-                type="unccEmail"
-                name="unccEmail"
-                value={formData["unccEmail"]}
+                type="email"
+                name="email"
+                value={formData["email"]}
                 onChange={handleEmailValidation}
               />
               <InputGroup.Text>@charlotte.edu</InputGroup.Text>
@@ -39,7 +39,7 @@ export default function ContactInfoModal({
               </Form.Text>
             )}
           </Form.Group>
-          {renderVisibilityButtons("unccEmailVisibility")}
+          {renderVisibilityButtons("emailVisibility")}
           <Form.Group>
             <Form.Label>Secondary Email</Form.Label>
             <Form.Control

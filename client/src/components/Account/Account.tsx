@@ -38,8 +38,8 @@ type ProfileField =
   | "location"
   | "locationVisibility"
   | "image"
-  | "unccEmail"
-  | "unccEmailVisibility"
+  | "email"
+  | "emailVisibility"
   | "website"
   | "websiteVisibility"
   | "github"
@@ -80,8 +80,8 @@ function Account() {
     location: "",
     locationVisibility: "",
     image: "",
-    unccEmail: "",
-    unccEmailVisibility: "",
+    email: "",
+    emailVisibility: "",
     website: "",
     websiteVisibility: "",
     github: "",
@@ -577,8 +577,8 @@ function Account() {
             />
           )}
           {checkDisplayField(
-            formData.unccEmailVisibility,
-            formData.unccEmail
+            formData.emailVisibility,
+            formData.email
           ) &&
             checkDisplayField(
               formData.secondaryEmailVisibility,
@@ -603,11 +603,11 @@ function Account() {
                 <Card.Body>
                   <ListGroup variant="flush" className="mb-2">
                     {checkDisplayField(
-                      formData.unccEmailVisibility,
-                      formData.unccEmail
+                      formData.emailVisibility,
+                      formData.email
                     ) && (
                       <ListGroup.Item>
-                        UNC Charlotte Email: {formData.unccEmail}
+                        UNC Charlotte Email: {formData.email}
                       </ListGroup.Item>
                     )}
                     {checkDisplayField(
