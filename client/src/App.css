@@ -1,7 +1,10 @@
 /* COLORS */
+:root {
+	--niner-green: #005236;
+}
 
 a {
-	color: #005236;
+	color: var(--niner-green);
 }
 
 .form-control:focus{
@@ -10,30 +13,34 @@ a {
 }
 
 .form-check-input:checked {
-	background-color: #005236;
-	border-color: #005236;
+	background-color: var(--niner-green);
+	border-color: var(--niner-green);
 }
 
 .btn-primary {
-	--bs-btn-bg: #005236;
-	--bs-btn-border-color: #005236;
-	--bs-btn-hover-bg: #005236;
-	--bs-btn-hover-border-color: #005236;
-	--bs-btn-active-bg: #005236;
-	--bs-btn-active-border-color: #005236;
-	--bs-btn-disabled-bg: #005236;
-	--bs-btn-disabled-border-color: #005236;
+	--bs-btn-bg: var(--niner-green);
+	--bs-btn-border-color: var(--niner-green);
+	--bs-btn-hover-bg: var(--niner-green);
+	--bs-btn-hover-border-color: var(--niner-green);
+	--bs-btn-active-bg: var(--niner-green);
+	--bs-btn-active-border-color: var(--niner-green);
+	--bs-btn-disabled-bg: var(--niner-green);
+	--bs-btn-disabled-border-color: var(--niner-green);
 }
 
 .btn-outline-primary {
-	--bs-btn-color: #005236;
-	--bs-btn-border-color: #005236;
-	--bs-btn-hover-bg: #005236;
-	--bs-btn-hover-border-color: #005236;
-	--bs-btn-active-bg: #005236;
-	--bs-btn-active-border-color: #005236;
-	--bs-btn-disabled-color: #005236;
-	--bs-btn-disabled-border-color: #005236;
+	--bs-btn-color: var(--niner-green);
+	--bs-btn-border-color: var(--niner-green);
+	--bs-btn-hover-bg: var(--niner-green);
+	--bs-btn-hover-border-color: var(--niner-green);
+	--bs-btn-active-bg: var(--niner-green);
+	--bs-btn-active-border-color: var(--niner-green);
+	--bs-btn-disabled-color: var(--niner-green);
+	--bs-btn-disabled-border-color: var(--niner-green);
+}
+
+.bg-primary {
+	background-color: var(--niner-green) !important;
 }
 
 .App {
