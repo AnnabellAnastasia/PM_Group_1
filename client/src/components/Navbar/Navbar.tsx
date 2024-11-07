@@ -99,11 +99,10 @@ const PageNavbar: React.FC = () => {
 
           {/* Right Section (Links + Profile Icon) */}
           <Nav className="mr-auto px-2">
-            <Nav.Link href="/posts">Home</Nav.Link>
-            <Nav.Link href="/about">About</Nav.Link>
-            <Nav.Link href="/services">Services</Nav.Link>
-            <Nav.Link href="/social">Social</Nav.Link>
-            <Nav.Link href="/contact">Contact</Nav.Link>
+            <Nav.Link className="mt-2" href="/about">About</Nav.Link>
+            <Nav.Link className="mt-2" href="/services">Services</Nav.Link>
+            <Nav.Link className="mt-2" href="/social">Social</Nav.Link>
+            <Nav.Link className="mt-2" href="/contact">Contact</Nav.Link>
             <Nav.Link className="openChatButton" ref={ref} onClick={toggleChat}>
               <Image
                 className="message"
