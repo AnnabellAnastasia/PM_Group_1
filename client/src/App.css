@@ -43,6 +43,10 @@ a {
 	background-color: var(--niner-green) !important;
 }
 
+.dropdown-menu {
+	--bs-dropdown-link-active-bg: var(--niner-green);
+}
+
 .App {
   text-align: center;
 }
