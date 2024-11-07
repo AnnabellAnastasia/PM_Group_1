@@ -3,23 +3,38 @@ import { Button, Modal, Card, Form, InputGroup } from "react-bootstrap";
 
 export default function SocialInfoModal({
   isEditingSocial,
-  handleEditSocialClose,
-  handleEditSocialSave,
+  setIsEditingSocial,
+  closeModal,
+  saveAndCloseModal,
   renderVisibilityButtons,
   formData,
   handleInputChange,
 }: any) {
+  const [validated, setValidated] = useState(false);
+
+  const handleSubmit = (event: any) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log("Invalid Form");
+    }
+
+    setValidated(true);
+    saveAndCloseModal(setIsEditingSocial);
+  };
   return (
-    <Modal show={isEditingSocial} onHide={handleEditSocialClose}>
+    <Modal show={isEditingSocial} onHide={() => closeModal(setIsEditingSocial)}>
+      <Form validated={validated} onSubmit={(event) => handleSubmit(event)}>
       <Modal.Header closeButton>
         <Modal.Title>Edit Social Links</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        
           <Form.Group>
             <Form.Label>Website</Form.Label>
             <Form.Control
-              type="website"
+              type="text"
               name="website"
               value={formData["website"]}
               placeholder="Website"
@@ -33,7 +48,7 @@ export default function SocialInfoModal({
             <InputGroup className="mb-2">
               <InputGroup.Text>github.com/</InputGroup.Text>
               <Form.Control
-                type="github"
+                type="text"
                 name="github"
                 value={formData["github"]}
                 placeholder="Github"
@@ -47,7 +62,7 @@ export default function SocialInfoModal({
             <InputGroup className="mb-2">
               <InputGroup.Text>@</InputGroup.Text>
               <Form.Control
-                type="twitter"
+                type="text"
                 name="twitter"
                 value={formData["twitter"]}
                 placeholder="Twitter"
@@ -61,7 +76,7 @@ export default function SocialInfoModal({
             <InputGroup className="mb-2">
               <InputGroup.Text>instagram.com/</InputGroup.Text>
               <Form.Control
-                type="instagram"
+                type="text"
                 name="instagram"
                 value={formData["instagram"]}
                 placeholder="Instagram"
@@ -75,7 +90,7 @@ export default function SocialInfoModal({
             <InputGroup className="mb-2">
               <InputGroup.Text>facebook.com/</InputGroup.Text>
               <Form.Control
-                type="facebook"
+                type="text"
                 name="facebook"
                 value={formData["facebook"]}
                 placeholder="Facebook"
@@ -84,16 +99,18 @@ export default function SocialInfoModal({
             </InputGroup>
           </Form.Group>
           {renderVisibilityButtons("facebookVisibility")}
-        </Form>
+        
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleEditSocialClose}>
+        <Button variant="secondary" onClick={() => closeModal(setIsEditingSocial)}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleEditSocialSave}>
+        <Button variant="primary" 
+        type="submit">
           Save Changes
         </Button>
       </Modal.Footer>
+      </Form>
     </Modal>
   );
 }

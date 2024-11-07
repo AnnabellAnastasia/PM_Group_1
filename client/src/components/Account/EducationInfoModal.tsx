@@ -3,23 +3,40 @@ import { Button, Modal, Card, Form, InputGroup } from "react-bootstrap";
 
 export default function EducationInfoModal({
   isEditingEducation,
-  handleEditEducationClose,
-  handleEditEducationSave,
+  setIsEditingEducation,
+  closeModal,
+  saveAndCloseModal,
   renderVisibilityButtons,
   formData,
   handleInputChange,
 }: any) {
+  const [validated, setValidated] = useState(false);
+
+  const handleSubmit = (event: any) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log("Invalid Form");
+    }
+
+    setValidated(true);
+    saveAndCloseModal(setIsEditingEducation);
+  };
   return (
-    <Modal show={isEditingEducation} onHide={handleEditEducationClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit Education Information</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
+    <Modal
+      show={isEditingEducation}
+      onHide={() => closeModal(setIsEditingEducation)}
+    >
+      <Form validated={validated} onSubmit={(event) => handleSubmit(event)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Education Information</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <Form.Group>
             <Form.Label>Major</Form.Label>
             <Form.Control
-              type="major"
+              type="text"
               name="major"
               value={formData["major"]}
               onChange={handleInputChange}
@@ -30,7 +47,7 @@ export default function EducationInfoModal({
           <Form.Group>
             <Form.Label>Minor</Form.Label>
             <Form.Control
-              type="minor"
+              type="text"
               name="minor"
               value={formData["minor"]}
               onChange={handleInputChange}
@@ -41,7 +58,7 @@ export default function EducationInfoModal({
           <Form.Group>
             <Form.Label>Concentration</Form.Label>
             <Form.Control
-              type="concentration"
+              type="text"
               name="concentration"
               value={formData["concentration"]}
               onChange={handleInputChange}
@@ -49,16 +66,19 @@ export default function EducationInfoModal({
             />
           </Form.Group>
           {renderVisibilityButtons("concentrationVisibility")}
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleEditEducationClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleEditEducationSave}>
-          Save Changes
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => closeModal(setIsEditingEducation)}
+          >
+            Close
+          </Button>
+          <Button variant="primary" type="submit">
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 }

@@ -4,6 +4,7 @@ import { fetchProfileFromID } from "../../utils/userAPI";
 import { capitalize } from "../../utils/tools";
 // Edit Modals
 import BasicInfoModal from "./BasicInfoModal";
+import BiographyModal from "./BiographyModal";
 import SocialInfoModal from "./SocialInfoModal";
 import EducationInfoModal from "./EducationInfoModal";
 import ContactInfoModal from "./ContactInfoModal";
@@ -27,8 +28,10 @@ import { updateUser, fetchAuth } from "../../utils/userAPI";
 type ProfileField =
   | "firstName"
   | "lastName"
-  | "description"
-  | "descriptionVisibility"
+  | "title"
+  | "titleVisibility"
+  | "biography"
+  | "biographyVisibility"
   | "major"
   | "majorVisibility"
   | "minor"
@@ -66,11 +69,17 @@ function Account() {
   const { userID } = useParams();
   const accountUserID = userID ?? "";
 
+  const userStatuses = ["selfProfile", "friendProfile", "nonFriendProfile"];
+  const visibilityOptions = ["public", "friends", "hidden"];
+
+  const [userStatus, setUserStatus] = useState(userStatuses[2]);
   const blankFields = {
     firstName: "",
     lastName: "",
-    description: "",
-    descriptionVisibility: "",
+    title: "",
+    titleVisibility: "",
+    biography: "",
+    biographyVisibility: "",
     major: "",
     majorVisibility: "",
     minor: "",
@@ -99,12 +108,30 @@ function Account() {
     address: "",
     addressVisibility: "",
   };
-
   const [formData, setFormData] = useState(blankFields);
+
+  const [isEditingBasic, setIsEditingBasic] = useState(false);
+  const [isEditingBiography, setIsEditingBiography] = useState(false);
+  const [isEditingContact, setIsEditingContact] = useState(false);
+  const [isEditingEducation, setIsEditingEducation] = useState(false);
+  const [isEditingSocial, setIsEditingSocial] = useState(false);
+  const [isEditingPhoto, setIsEditingPhoto] = useState(false);
+  const [isEditingProjects, setIsEditingProjects] = useState(false);
+
+  // const [projects, setProjects] = useState<Project[]>([
+  //   { name: "Web Design", progress: 80 },
+  //   { name: "Website Markup", progress: 72 },
+  //   { name: "One Page", progress: 89 },
+  //   { name: "Mobile Template", progress: 55 },
+  //   { name: "Backend API", progress: 66 },
+  // ]);
 
   useEffect(() => {
     console.log("formData", formData);
   }, [formData]);
+  useEffect(() => {
+    console.log("USER STATUS", userStatus);
+  }, [userStatus]);
 
   const getAccountUserInfo = async () => {
     let user = await fetchProfileFromID(accountUserID);
@@ -114,14 +141,6 @@ function Account() {
     console.log("Set Account User", user);
     setFormData(user);
   };
-
-  const userStatuses = ["selfProfile", "friendProfile", "nonFriendProfile"];
-
-  const [userStatus, setUserStatus] = useState(userStatuses[2]);
-
-  useEffect(() => {
-    console.log("USER STATUS", userStatus);
-  }, [userStatus]);
 
   const checkUserStatus = async () => {
     const { user } = (await fetchAuth()) || {};
@@ -145,74 +164,20 @@ function Account() {
     getAccountUserInfo();
   }, [accountUserID]);
 
-  const [isEditingBasic, setIsEditingBasic] = useState(false);
-  const [isEditingContact, setIsEditingContact] = useState(false);
-  const [isEditingEducation, setIsEditingEducation] = useState(false);
-  const [isEditingSocial, setIsEditingSocial] = useState(false);
-  const [isEditingPhoto, setIsEditingPhoto] = useState(false);
-  const [isEditingProjects, setIsEditingProjects] = useState(false);
+  function openModal(stateFunction: Function) {
+    stateFunction(true);
+  }
 
-  const [projects, setProjects] = useState<Project[]>([
-    { name: "Web Design", progress: 80 },
-    { name: "Website Markup", progress: 72 },
-    { name: "One Page", progress: 89 },
-    { name: "Mobile Template", progress: 55 },
-    { name: "Backend API", progress: 66 },
-  ]);
+  async function closeModal(stateFunction: Function) {
+    await getAccountUserInfo();
+    stateFunction(false);
+  }
 
-  const handleEditBasicOpen = () => setIsEditingBasic(true);
-  const handleEditBasicClose = async () => {
-    await getAccountUserInfo();
-    setIsEditingBasic(false);
-  };
-  const handleEditBasicSave = async () => {
+  async function saveAndCloseModal(stateFunction: Function) {
     await updateUser(accountUserID, formData);
     await getAccountUserInfo();
-    setIsEditingBasic(false);
-  };
-  const handleEditContactOpen = () => setIsEditingContact(true);
-  const handleEditContactClose = async () => {
-    await getAccountUserInfo();
-    setIsEditingContact(false);
-  };
-  const handleEditContactSave = async () => {
-    await updateUser(accountUserID, formData);
-    await getAccountUserInfo();
-    setIsEditingContact(false);
-  };
-  const handleEditEducationOpen = () => setIsEditingEducation(true);
-  const handleEditEducationClose = async () => {
-    await getAccountUserInfo();
-    setIsEditingEducation(false);
-  };
-  const handleEditEducationSave = async () => {
-    await updateUser(accountUserID, formData);
-    await getAccountUserInfo();
-    setIsEditingEducation(false);
-  };
-  const handleEditSocialOpen = () => setIsEditingSocial(true);
-  const handleEditSocialClose = async () => {
-    await getAccountUserInfo();
-    setIsEditingSocial(false);
-  };
-  const handleEditSocialSave = async () => {
-    await updateUser(accountUserID, formData);
-    await getAccountUserInfo();
-    setIsEditingSocial(false);
-  };
-  const handleEditPhotoOpen = () => setIsEditingPhoto(true);
-  const handleEditPhotoClose = async () => {
-    await getAccountUserInfo();
-    setIsEditingPhoto(false);
-  };
-  const handleEditPhotoSave = async () => {
-    await updateUser(accountUserID, formData);
-    await getAccountUserInfo();
-    setIsEditingPhoto(false);
-  };
-
-  const handleEditProjectsClick = () =>
-    setIsEditingProjects(!isEditingProjects);
+    stateFunction(false);
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -221,31 +186,6 @@ function Account() {
       [name]: value,
     }));
   };
-
-  const handleProjectChange = (
-    index: number,
-    field: "name" | "progress",
-    value: string | number
-  ) => {
-    setProjects((prevProjects) => {
-      const updatedProjects = [...prevProjects];
-      updatedProjects[index] = {
-        ...updatedProjects[index],
-        [field]: value,
-      };
-      return updatedProjects;
-    });
-  };
-
-  // Function to add a new skill/project
-  const handleAddSkill = () => {
-    setProjects((prevProjects) => [
-      ...prevProjects,
-      { name: "New Skill", progress: 0 },
-    ]);
-  };
-
-  const visibilityOptions = ["public", "friends", "hidden"];
 
   const renderVisibilityButtons = (field: ProfileField) => {
     return (
@@ -294,28 +234,37 @@ function Account() {
     return false;
   };
 
+  // const handleEditProjectsClick = () =>
+  //   setIsEditingProjects(!isEditingProjects);
+
+  // const handleProjectChange = (
+  //   index: number,
+  //   field: "name" | "progress",
+  //   value: string | number
+  // ) => {
+  //   setProjects((prevProjects) => {
+  //     const updatedProjects = [...prevProjects];
+  //     updatedProjects[index] = {
+  //       ...updatedProjects[index],
+  //       [field]: value,
+  //     };
+  //     return updatedProjects;
+  //   });
+  // };
+
+  // // Function to add a new skill/project
+  // const handleAddSkill = () => {
+  //   setProjects((prevProjects) => [
+  //     ...prevProjects,
+  //     { name: "New Skill", progress: 0 },
+  //   ]);
+  // };
+
   return (
     <Container className="py-5">
       <Row>
         <Col md={4}>
           {/* Basic Info Sidebar */}
-          {userStatus === userStatuses[0] && (
-            <ProfilePictureModal
-              isEditingPhoto={isEditingPhoto}
-              handleEditPhotoClose={handleEditPhotoClose}
-              accountUserID={accountUserID}
-            />
-          )}
-          {userStatus === userStatuses[0] && (
-            <BasicInfoModal
-              isEditingBasic={isEditingBasic}
-              handleEditBasicClose={handleEditBasicClose}
-              handleEditBasicSave={handleEditBasicSave}
-              renderVisibilityButtons={renderVisibilityButtons}
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
-          )}
           <Card className="text-center mb-4">
             <Card.Body>
               <div className="image-wrapper">
@@ -333,7 +282,10 @@ function Account() {
 
                 {userStatus === userStatuses[0] && (
                   <div className="overlay-button">
-                    <Button variant="dark" onClick={handleEditPhotoOpen}>
+                    <Button
+                      variant="light"
+                      onClick={() => openModal(setIsEditingPhoto)}
+                    >
                       <i className="fa-solid fa-pen-to-square"></i>
                     </Button>
                   </div>
@@ -344,19 +296,16 @@ function Account() {
                 {`${formData.firstName} ${formData.lastName} `}
                 {userStatus === userStatuses[0] && (
                   <Button
-                    variant="dark"
-                    onClick={handleEditBasicOpen}
+                    variant="light"
+                    onClick={() => openModal(setIsEditingBasic)}
                   >
                     <i className="fa-solid fa-pen-to-square"></i>
                   </Button>
                 )}
               </h3>
-              {checkDisplayField(
-                formData.descriptionVisibility,
-                formData.description
-              ) && (
+              {checkDisplayField(formData.titleVisibility, formData.title) && (
                 <div className="text-muted mb-2">
-                  {formData.description && `${formData.description || ""}`}
+                  {formData.title && `${formData.title || ""}`}
                 </div>
               )}
               {checkDisplayField(
@@ -380,249 +329,237 @@ function Account() {
           </Card>
 
           {/* Social Links */}
-          {userStatus === userStatuses[0] && (
-            <SocialInfoModal
-              isEditingSocial={isEditingSocial}
-              handleEditSocialClose={handleEditSocialClose}
-              handleEditSocialSave={handleEditSocialSave}
-              renderVisibilityButtons={renderVisibilityButtons}
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
-          )}
-          {checkDisplayField(formData.websiteVisibility, formData.website) &&
-            checkDisplayField(formData.githubVisibility, formData.github) &&
-            checkDisplayField(formData.twitterVisibility, formData.twitter) &&
+          {(checkDisplayField(formData.websiteVisibility, formData.website) ||
+            checkDisplayField(formData.githubVisibility, formData.github) ||
+            checkDisplayField(formData.twitterVisibility, formData.twitter) ||
             checkDisplayField(
               formData.instagramVisibility,
               formData.instagram
-            ) &&
+            ) ||
             checkDisplayField(
               formData.facebookVisibility,
               formData.facebook
-            ) && (
-              <Card>
-                <Card.Header>
-                  <h5>
-                    Social Links{" "}
-                    {userStatus === userStatuses[0] && (
-                      <Button
-                        variant="dark"
-                        onClick={handleEditSocialOpen}
+            )) && (
+            <Card>
+              <Card.Header>
+                <h5 className="card-heading">
+                  Social Links{" "}
+                  {userStatus === userStatuses[0] && (
+                    <Button
+                      variant="light"
+                      onClick={() => openModal(setIsEditingSocial)}
+                    >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                  )}
+                </h5>
+              </Card.Header>
+              <Card.Body>
+                <ListGroup variant="flush">
+                  {checkDisplayField(
+                    formData.websiteVisibility,
+                    formData.website
+                  ) && (
+                    <ListGroup.Item>
+                      <i className="fa-solid fa-arrow-pointer"></i>
+                      {" - "}
+                      <a href={`${formData.website || "#"}`}>
+                        {" "}
+                        {`${formData.website || ""}`}
+                      </a>
+                    </ListGroup.Item>
+                  )}
+                  {checkDisplayField(
+                    formData.githubVisibility,
+                    formData.github
+                  ) && (
+                    <ListGroup.Item>
+                      <i className="fa-brands fa-github"></i>
+                      {" - "}
+                      <a href={`http://github.com/${formData.github || "#"}`}>
+                        {" "}
+                        {`github.com/${formData.github || ""}`}
+                      </a>
+                    </ListGroup.Item>
+                  )}
+                  {checkDisplayField(
+                    formData.twitterVisibility,
+                    formData.twitter
+                  ) && (
+                    <ListGroup.Item>
+                      <i className="fa-brands fa-x-twitter"></i>
+                      {" - "}
+                      <a href={`http://twitter.com/${formData.twitter || "#"}`}>
+                        {" @"}
+                        {`${formData.twitter || ""}`}
+                      </a>
+                    </ListGroup.Item>
+                  )}
+                  {checkDisplayField(
+                    formData.instagramVisibility,
+                    formData.instagram
+                  ) && (
+                    <ListGroup.Item>
+                      <i className="fa-brands fa-instagram"></i>
+                      {" - "}
+                      <a
+                        href={`http://instagram.com/${
+                          formData.instagram || "#"
+                        }`}
                       >
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </Button>
-                    )}
-                  </h5>
-                </Card.Header>
-                <Card.Body>
-                  <ListGroup variant="flush">
-                    {checkDisplayField(
-                      formData.websiteVisibility,
-                      formData.website
-                    ) && (
-                      <ListGroup.Item>
-                        <i className="bi bi-globe me-2"></i>Website:{" "}
-                        <a href={`${formData.website || "#"}`}>
-                          {" "}
-                          {`${formData.website || ""}`}
-                        </a>
-                      </ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.githubVisibility,
-                      formData.github
-                    ) && (
-                      <ListGroup.Item>
-                        <i className="bi bi-github me-2"></i>Github:{" "}
-                        <a href={`http://github.com/${formData.github || "#"}`}>
-                          {" "}
-                          {`github.com/${formData.github || ""}`}
-                        </a>
-                      </ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.twitterVisibility,
-                      formData.twitter
-                    ) && (
-                      <ListGroup.Item>
-                        <i className="bi bi-twitter me-2"></i>Twitter:{" "}
-                        <a
-                          href={`http://twitter.com/${formData.twitter || "#"}`}
-                        >
-                          {" @"}
-                          {`${formData.twitter || ""}`}
-                        </a>
-                      </ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.instagramVisibility,
-                      formData.instagram
-                    ) && (
-                      <ListGroup.Item>
-                        <i className="bi bi-instagram me-2"></i>Instagram:{" "}
-                        <a
-                          href={`http://instagram.com/${
-                            formData.instagram || "#"
-                          }`}
-                        >
-                          {" "}
-                          {`instagram.com/${formData.instagram || ""}`}
-                        </a>
-                      </ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.facebookVisibility,
-                      formData.facebook
-                    ) && (
-                      <ListGroup.Item>
-                        <i className="bi bi-facebook me-2"></i>Facebook:{" "}
-                        <a
-                          href={`http://facebook.com/${
-                            formData.facebook || "#"
-                          }`}
-                        >
-                          {" "}
-                          {`facebook.com/${formData.facebook || ""}`}
-                        </a>
-                      </ListGroup.Item>
-                    )}
-                  </ListGroup>
-                </Card.Body>
-              </Card>
-            )}
+                        {" "}
+                        {`instagram.com/${formData.instagram || ""}`}
+                      </a>
+                    </ListGroup.Item>
+                  )}
+                  {checkDisplayField(
+                    formData.facebookVisibility,
+                    formData.facebook
+                  ) && (
+                    <ListGroup.Item>
+                      <i className="fa-brands fa-facebook"></i>
+                      {" - "}
+                      <a
+                        href={`http://facebook.com/${formData.facebook || "#"}`}
+                      >
+                        {" "}
+                        {`facebook.com/${formData.facebook || ""}`}
+                      </a>
+                    </ListGroup.Item>
+                  )}
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          )}
         </Col>
 
         <Col md={8}>
-          {/* Education Information */}
-          {userStatus === userStatuses[0] && (
-            <EducationInfoModal
-              isEditingEducation={isEditingEducation}
-              handleEditEducationClose={handleEditEducationClose}
-              handleEditEducationSave={handleEditEducationSave}
-              renderVisibilityButtons={renderVisibilityButtons}
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
+          {/* Profile Biography */}
+          {checkDisplayField(
+            formData.biographyVisibility,
+            formData.biography
+          ) && (
+            <Card className="mb-4">
+              <Card.Header>
+                <h5 className="card-heading">
+                  Biography{" "}
+                  {userStatus === userStatuses[0] && (
+                    <Button
+                      variant="light"
+                      onClick={() => openModal(setIsEditingBiography)}
+                    >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                  )}
+                </h5>
+              </Card.Header>
+              <Card.Body className="mb-2">
+                {formData.biography}
+              </Card.Body>
+            </Card>
           )}
-          {checkDisplayField(formData.majorVisibility, formData.major) &&
-            checkDisplayField(formData.minorVisibility, formData.minor) &&
+
+          {/* Education Information */}
+          {(checkDisplayField(formData.majorVisibility, formData.major) ||
+            checkDisplayField(formData.minorVisibility, formData.minor) ||
             checkDisplayField(
               formData.concentrationVisibility,
               formData.concentration
-            ) && (
-              <Card className="mb-4">
-                <Card.Header>
-                  <h5>
-                    Education Information{" "}
-                    {userStatus === userStatuses[0] && (
-                      <Button
-                        variant="dark"
-                        onClick={handleEditEducationOpen}
-                      >
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </Button>
-                    )}
-                  </h5>
-                </Card.Header>
-                <Card.Body>
-                  <ListGroup variant="flush" className="mb-2">
-                    {checkDisplayField(
-                      formData.majorVisibility,
-                      formData.major
-                    ) && (
-                      <ListGroup.Item>Major: {formData.major}</ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.minorVisibility,
-                      formData.minor
-                    ) && (
-                      <ListGroup.Item>Minor: {formData.minor}</ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.concentrationVisibility,
-                      formData.concentration
-                    ) && (
-                      <ListGroup.Item>
-                        Concentration: {formData.concentration}
-                      </ListGroup.Item>
-                    )}
-                  </ListGroup>
-                </Card.Body>
-              </Card>
-            )}
+            )) && (
+            <Card className="mb-4">
+              <Card.Header>
+                <h5 className="card-heading">
+                  Education Information{" "}
+                  {userStatus === userStatuses[0] && (
+                    <Button
+                      variant="light"
+                      onClick={() => openModal(setIsEditingEducation)}
+                    >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                  )}
+                </h5>
+              </Card.Header>
+              <Card.Body>
+                <ListGroup variant="flush" className="mb-2">
+                  {checkDisplayField(
+                    formData.majorVisibility,
+                    formData.major
+                  ) && <ListGroup.Item>Major: {formData.major}</ListGroup.Item>}
+                  {checkDisplayField(
+                    formData.minorVisibility,
+                    formData.minor
+                  ) && <ListGroup.Item>Minor: {formData.minor}</ListGroup.Item>}
+                  {checkDisplayField(
+                    formData.concentrationVisibility,
+                    formData.concentration
+                  ) && (
+                    <ListGroup.Item>
+                      Concentration: {formData.concentration}
+                    </ListGroup.Item>
+                  )}
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          )}
 
           {/* Contact Information */}
-          {userStatus === userStatuses[0] && (
-            <ContactInfoModal
-              isEditingContact={isEditingContact}
-              handleEditContactClick={handleEditContactClose}
-              handleEditContactSave={handleEditContactSave}
-              renderVisibilityButtons={renderVisibilityButtons}
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
-          )}
-          {checkDisplayField(
-            formData.emailVisibility,
-            formData.email
-          ) &&
+          {(checkDisplayField(formData.emailVisibility, formData.email) ||
             checkDisplayField(
               formData.secondaryEmailVisibility,
               formData.secondaryEmail
-            ) &&
-            checkDisplayField(formData.phoneVisibility, formData.phone) &&
-            checkDisplayField(formData.addressVisibility, formData.address) && (
-              <Card className="mb-4">
-                <Card.Header>
-                  <h5>
-                    Contact Information{" "}
-                    {userStatus === userStatuses[0] && (
-                      <Button
-                        variant="dark"
-                        onClick={handleEditContactOpen}
-                      >
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </Button>
-                    )}
-                  </h5>
-                </Card.Header>
-                <Card.Body>
-                  <ListGroup variant="flush" className="mb-2">
-                    {checkDisplayField(
-                      formData.emailVisibility,
-                      formData.email
-                    ) && (
-                      <ListGroup.Item>
-                        UNC Charlotte Email: {formData.email}
-                      </ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.secondaryEmailVisibility,
-                      formData.secondaryEmail
-                    ) && (
-                      <ListGroup.Item>
-                        Secondary Email: {formData.secondaryEmail}
-                      </ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.phoneVisibility,
-                      formData.phone
-                    ) && (
-                      <ListGroup.Item>Phone: {formData.phone}</ListGroup.Item>
-                    )}
-                    {checkDisplayField(
-                      formData.addressVisibility,
-                      formData.address
-                    ) && (
-                      <ListGroup.Item>
-                        Address: {formData.address}
-                      </ListGroup.Item>
-                    )}
-                  </ListGroup>
-                </Card.Body>
-              </Card>
-            )}
+            ) ||
+            checkDisplayField(formData.phoneVisibility, formData.phone) ||
+            checkDisplayField(
+              formData.addressVisibility,
+              formData.address
+            )) && (
+            <Card className="mb-4">
+              <Card.Header>
+                <h5 className="card-heading">
+                  Contact Information{" "}
+                  {userStatus === userStatuses[0] && (
+                    <Button
+                      variant="light"
+                      onClick={() => openModal(setIsEditingContact)}
+                    >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                  )}
+                </h5>
+              </Card.Header>
+              <Card.Body>
+                <ListGroup variant="flush" className="mb-2">
+                  {checkDisplayField(
+                    formData.emailVisibility,
+                    formData.email
+                  ) && (
+                    <ListGroup.Item>
+                      UNC Charlotte Email: {formData.email}
+                    </ListGroup.Item>
+                  )}
+                  {checkDisplayField(
+                    formData.secondaryEmailVisibility,
+                    formData.secondaryEmail
+                  ) && (
+                    <ListGroup.Item>
+                      Secondary Email: {formData.secondaryEmail}
+                    </ListGroup.Item>
+                  )}
+                  {checkDisplayField(
+                    formData.phoneVisibility,
+                    formData.phone
+                  ) && <ListGroup.Item>Phone: {formData.phone}</ListGroup.Item>}
+                  {checkDisplayField(
+                    formData.addressVisibility,
+                    formData.address
+                  ) && (
+                    <ListGroup.Item>Address: {formData.address}</ListGroup.Item>
+                  )}
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          )}
 
           {/* Editable Skills */}
           {/* <div className="card mb-4">
@@ -683,7 +620,7 @@ function Account() {
                 {isEditingProjects && (
                   <button
                     onClick={handleAddSkill}
-                    className="btn btn-success me-2"
+                    className="btn btn-primary me-2"
                   >
                     + Add Skill
                   </button>
@@ -699,6 +636,62 @@ function Account() {
           </div> */}
         </Col>
       </Row>
+      {/* Modals for Editing */}
+      {userStatus === userStatuses[0] && (
+        <>
+          <ProfilePictureModal
+            isEditingPhoto={isEditingPhoto}
+            setIsEditingPhoto={setIsEditingPhoto}
+            closeModal={closeModal}
+            accountUserID={accountUserID}
+          />
+          <BasicInfoModal
+            isEditingBasic={isEditingBasic}
+            setIsEditingBasic={setIsEditingBasic}
+            closeModal={closeModal}
+            saveAndCloseModal={saveAndCloseModal}
+            renderVisibilityButtons={renderVisibilityButtons}
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
+          <BiographyModal
+            isEditingBiography={isEditingBiography}
+            setIsEditingBiography={setIsEditingBiography}
+            closeModal={closeModal}
+            saveAndCloseModal={saveAndCloseModal}
+            renderVisibilityButtons={renderVisibilityButtons}
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
+          <SocialInfoModal
+            isEditingSocial={isEditingSocial}
+            setIsEditingSocial={setIsEditingSocial}
+            closeModal={closeModal}
+            saveAndCloseModal={saveAndCloseModal}
+            renderVisibilityButtons={renderVisibilityButtons}
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
+          <EducationInfoModal
+            isEditingEducation={isEditingEducation}
+            setIsEditingEducation={setIsEditingEducation}
+            closeModal={closeModal}
+            saveAndCloseModal={saveAndCloseModal}
+            renderVisibilityButtons={renderVisibilityButtons}
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
+          <ContactInfoModal
+            isEditingContact={isEditingContact}
+            setIsEditingContact={setIsEditingContact}
+            closeModal={closeModal}
+            saveAndCloseModal={saveAndCloseModal}
+            renderVisibilityButtons={renderVisibilityButtons}
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
+        </>
+      )}
     </Container>
   );
 }

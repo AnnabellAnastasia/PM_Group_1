@@ -5,7 +5,8 @@ import { AlertContext } from "../ContextWrapper";
 
 export default function BasicInfoModal({
   isEditingPhoto,
-  handleEditPhotoClose,
+  setIsEditingPhoto,
+  closeModal,
   accountUserID,
 }: any) {
   const { setPageAlert } = useContext(AlertContext);
@@ -29,11 +30,11 @@ export default function BasicInfoModal({
     const returnValue = await uploadImage(accountUserID, imageData) || "";
     if (returnValue.error) setPageAlert({ error: returnValue.error, success: ""});
     console.log("returnValue", returnValue);
-    handleEditPhotoClose();
+    closeModal(setIsEditingPhoto);
   }
 
   return (
-    <Modal show={isEditingPhoto} onHide={handleEditPhotoClose}>
+    <Modal show={isEditingPhoto} onHide={() => closeModal(setIsEditingPhoto)}>
       <Modal.Header closeButton>
         <Modal.Title>Upload Profile Picture</Modal.Title>
       </Modal.Header>
@@ -50,10 +51,10 @@ export default function BasicInfoModal({
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleEditPhotoClose}>
+        <Button variant="secondary" onClick={() => closeModal(setIsEditingPhoto)}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleUploadImage}>
+        <Button variant="primary" onClick={() => handleUploadImage}>
           Save Changes
         </Button>
       </Modal.Footer>
