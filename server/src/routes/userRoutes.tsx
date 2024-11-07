@@ -1,5 +1,6 @@
 import express from 'express';
 import { userLoggedIn } from '../middleware/auth';
+import { upload } from '../middleware/fileUpload';
 import controller from '../controllers/userController';
 import friendshipRoutes from '../routes/friendshipRoutes';
 
@@ -15,8 +16,14 @@ userRoutes.post('/login', controller.authenticate)
 userRoutes.get('/logout', userLoggedIn, controller.logout)
 // GET /users/profile - Get info from logged in user
 userRoutes.get('/profile', userLoggedIn, controller.profile);
-// GET/ look up a user
-userRoutes.get('/search',userLoggedIn,controller.search)
+// GET /search - look up a user
+userRoutes.get('/search', controller.search)
+// GET /users/:id - Get info from user id
+userRoutes.get('/:id', controller.show);
+// PUT /users/:id - Edit user from user id
+userRoutes.put('/:id/', userLoggedIn ,controller.update);
+// POST /users/:id/image - Upload image from user id
+userRoutes.post('/:id/image', userLoggedIn, upload, controller.image);
 
 // Friendship Routes
 userRoutes.use("/:id/friendships", friendshipRoutes);

@@ -25,11 +25,12 @@ import "./Post.css";
 //     repostsCount: number;
 // }
 
-function Post({ postKey, postObj, getAllPosts }: any) {
+function Post({ postObj, getAllPosts }: any) {
   const { user } = useContext(UserContext);
   const [editMode, setEditMode] = useState(false);
   const [likeID, setLikeID] = useState("");
   const [likeTotal, setLikeTotal] = useState(0);
+  const [recentLiker, setRecentLiker] = useState("");
   const [allComments, setAllComments] = useState([]);
   const [postEditBody, setPostEditBody] = useState("");
   const [commentBody, setCommentBody] = useState("");
@@ -38,10 +39,20 @@ function Post({ postKey, postObj, getAllPosts }: any) {
   async function processLikes() {
     const likes = await getLikes(postObj._id);
     setLikeTotal(likes.length);
+    if (likes[0])
+      setRecentLiker(`${likes[0].liker.firstName} ${likes[0].liker.lastName}`);
+    else setRecentLiker("");
+
+    let flag = true;
     for (const like of likes) {
-      if (like.liker === user.id) setLikeID(like._id);
+      if (like.liker._id === user.id) {
+        setLikeID(like._id);
+        flag = false;
+      }
     }
+    if (flag) setLikeID("");
   }
+
   async function processComments() {
     setAllComments(await getComments(postObj._id));
   }
@@ -74,7 +85,6 @@ function Post({ postKey, postObj, getAllPosts }: any) {
 
   async function handleUnlikePost(postID: string, likeID: string) {
     await unlikePost(postID, likeID);
-    setLikeID("");
     await processLikes();
   }
 
@@ -88,11 +98,18 @@ function Post({ postKey, postObj, getAllPosts }: any) {
     setShowComments(true);
   }
 
+  function renderLikeCount(likeTotal: number, recentLiker: string) {
+    if (likeTotal === 1) return `${recentLiker} likes this`;
+    if (likeTotal === 2) return `${recentLiker} and 1 other`;
+    if (likeTotal > 2) return `${recentLiker} and ${likeTotal - 1} others`;
+    else return "0";
+  }
+
   return (
     <div className="post">
       <div className="post-header">
         <img
-          src={`../images/${
+          src={`http://localhost:8080/images/${
             postObj.creator.image
               ? postObj.creator.image
               : "blank-profile-picture.png"
@@ -101,9 +118,14 @@ function Post({ postKey, postObj, getAllPosts }: any) {
           className="profile-image"
         />
         <div className="post-info">
-          <h3>
-            {postObj.creator.firstName}&nbsp;{postObj.creator.lastName}
-          </h3>
+          <a
+            className="post-creator-name"
+            href={`/account/${postObj.creator._id}`}
+          >
+            <h3>
+              {postObj.creator.firstName}&nbsp;{postObj.creator.lastName}
+            </h3>
+          </a>
           <span>{processDate(postObj.createdAt)}</span>
         </div>
       </div>
@@ -146,7 +168,10 @@ function Post({ postKey, postObj, getAllPosts }: any) {
                 )} */}
       </div>
       <div className="post-reactions">
-        <span>👍 {likeTotal}</span>
+        <span>
+          <i className="fa-regular fa-thumbs-up"></i>{" "}
+          {renderLikeCount(likeTotal, recentLiker)}
+        </span>
         {/* <span>{} reposts</span> */}
       </div>
       <div className="post-actions">

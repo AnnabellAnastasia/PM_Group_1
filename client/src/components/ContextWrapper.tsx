@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { fetchProfile } from "../utils/userAPI";
+import { fetchProfileFromLoggedInUser } from "../utils/userAPI";
 import Navbar from "./Navbar/Navbar";
 import Footer from "./Footer/Footer";
 
@@ -37,7 +37,7 @@ export default function ContextWrapper() {
 	// Keep user in context state as long as user is signed in using UseEffect
   useEffect(() => {
     const getLoggedInUser = async () => {
-      let user = await fetchProfile();
+      let user = await fetchProfileFromLoggedInUser();
       if (!user) {
         user = {
           id: "",
@@ -46,7 +46,6 @@ export default function ContextWrapper() {
           image: "",
         };
       }
-      console.log("fetchProfile ", user);
       setUser(user);
     };
     getLoggedInUser();
