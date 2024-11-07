@@ -119,7 +119,7 @@ function Post({ postObj, getAllPosts }: any) {
         />
         <div className="post-info">
           <a
-            className="post-creator-name"
+            className="creator-name"
             href={`/account/${postObj.creator._id}`}
           >
             <h3>

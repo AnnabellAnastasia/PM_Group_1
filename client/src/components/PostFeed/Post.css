@@ -137,10 +137,10 @@
   background-color: #e7e7e7;
 }
 
-.post-creator-name {
+.creator-name {
   text-decoration: none;
 }
-.post-creator-name:hover {
+.creator-name:hover {
   text-decoration: underline;
 }
 

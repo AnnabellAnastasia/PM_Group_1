@@ -9,21 +9,25 @@ function Comment({ commentObj, processComments }: any) {
   const [editMode, setEditMode] = useState(false);
   const [commentEditBody, setCommentEditBody] = useState(commentObj.body);
 
-	function handleActivateEditMode() {
-		setCommentEditBody(commentObj.body);
-		setEditMode(true);
-	}
+  function handleActivateEditMode() {
+    setCommentEditBody(commentObj.body);
+    setEditMode(true);
+  }
 
-	async function handleSubmitCommentEdits(postID: string, commentID: string, commentBody: string) {
-		await updateComment(postID, commentID, commentBody);
-		setEditMode(false);
-		processComments();
-	}
+  async function handleSubmitCommentEdits(
+    postID: string,
+    commentID: string,
+    commentBody: string
+  ) {
+    await updateComment(postID, commentID, commentBody);
+    setEditMode(false);
+    processComments();
+  }
 
-	async function handleDeleteComment(postID: string, commentID: string) {
-		await deleteComment(postID, commentID);
-		processComments();
-	}
+  async function handleDeleteComment(postID: string, commentID: string) {
+    await deleteComment(postID, commentID);
+    processComments();
+  }
 
   return (
     <div className="comment">
@@ -38,19 +42,31 @@ function Comment({ commentObj, processComments }: any) {
           className="comment-profile-image"
         />
         <div className="comment-info">
-          <h3>
-            {commentObj.commenter.firstName}&nbsp;
-            {commentObj.commenter.lastName}
-          </h3>
+          <a
+            className="creator-name"
+            href={`/account/${commentObj.commenter._id}`}
+          >
+            <h3>
+              {commentObj.commenter.firstName}&nbsp;
+              {commentObj.commenter.lastName}
+            </h3>
+          </a>
           <span>{processDate(commentObj.createdAt)}</span>
         </div>
-				{user.id === commentObj.commenter._id && !editMode ?
-				<div className="comment-actions">
-					<button onClick={() => handleActivateEditMode()}>Edit</button>
-					<button onClick={() => handleDeleteComment(commentObj.post, commentObj._id)}>Delete</button>
-				</div>
-				: <></>
-				}
+        {user.id === commentObj.commenter._id && !editMode ? (
+          <div className="comment-actions">
+            <button onClick={() => handleActivateEditMode()}>Edit</button>
+            <button
+              onClick={() =>
+                handleDeleteComment(commentObj.post, commentObj._id)
+              }
+            >
+              Delete
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       {editMode ? (
         <div className="comment-edit">
@@ -62,16 +78,18 @@ function Comment({ commentObj, processComments }: any) {
             onChange={(event) => setCommentEditBody(event.target.value)}
           />
           <button
-            onClick={() =>
-              setEditMode(false)
-            }
+            onClick={() => setEditMode(false)}
             className="comment-edit-cancel"
           >
             Cancel
           </button>
           <button
             onClick={() =>
-              handleSubmitCommentEdits(commentObj.post, commentObj._id, commentEditBody)
+              handleSubmitCommentEdits(
+                commentObj.post,
+                commentObj._id,
+                commentEditBody
+              )
             }
             className="comment-edit-submit"
           >
