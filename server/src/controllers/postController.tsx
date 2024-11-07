@@ -78,7 +78,7 @@ const controller = {
 
     Promise.all([model.findByIdAndDelete(id, { useFindAndModify: false }), Comment.deleteMany({post : id}), Like.deleteMany({post : id})])
 			.then(() => {
-        res.status(200);
+        res.sendStatus(200);
       })
       .catch((err: any) => {
         res.json({ message: err.message });

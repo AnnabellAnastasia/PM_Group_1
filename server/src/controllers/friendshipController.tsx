@@ -41,7 +41,7 @@ const controller = {
     model
       .findByIdAndDelete(id, { useFindAndModify: false })
       .then(() => {
-        res.status(200);
+        res.sendStatus(200);
       })
       .catch((err: any) => {
         res.json({ message: err.message });

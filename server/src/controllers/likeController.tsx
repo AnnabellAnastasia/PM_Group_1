@@ -5,8 +5,14 @@ const controller = {
   all: async (req: any, res: any, next: any) => {
     let postID = req.params.id;
     model
-      .find({post : postID})
+      .find({ post: postID })
+      .populate("liker", "_id firstName lastName")
       .then((likes) => {
+        // Sort likes by newest
+        likes.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
         res.json(likes);
       })
       .catch((err: any) => {
@@ -33,7 +39,7 @@ const controller = {
     model
       .findByIdAndDelete(id, { useFindAndModify: false })
       .then(() => {
-        res.status(200);
+        res.sendStatus(200);
       })
       .catch((err: any) => {
         res.json({ message: err.message });

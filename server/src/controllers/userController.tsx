@@ -38,8 +38,8 @@ const controller: any = {
           const {
             firstName,
             lastName,
-            description,
-            descriptionVisibility,
+            biography,
+            biographyVisibility,
             major,
             majorVisibility,
             minor,
@@ -71,8 +71,8 @@ const controller: any = {
           res.json({
             firstName,
             lastName,
-            description,
-            descriptionVisibility,
+            biography,
+            biographyVisibility,
             major,
             majorVisibility,
             minor,
