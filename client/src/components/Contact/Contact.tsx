@@ -5,7 +5,7 @@ function Contact() {
   return (
     <div className="contact py-5 bg-light">
       {/* Contact Information Section */}
-      <section className="contact-info container bg-success text-white p-4 rounded mb-5">
+      <section className="contact-info container bg-primary text-white p-4 rounded mb-5">
         <div className="row">
           <div className="contact-item col-md-4 text-center">
             <div className="contact-icon fs-1 mb-2">📍</div>
@@ -47,7 +47,7 @@ function Contact() {
             <textarea id="comments" name="comments" className="form-control" rows={4}></textarea>
 
           </div>
-          <button type="submit" className="btn btn-success">Submit</button>
+          <button type="submit" className="btn btn-primary">Submit</button>
         </form>
       </section>
     </div>
