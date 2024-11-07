@@ -16,11 +16,12 @@ function Login() {
       <div className="login-box bg-white p-4 rounded shadow text-center">
         <h2 className="mb-3">Sign in</h2>
         <p>
-          New to Niner Network? <a href="/signup" className="text-decoration-none">Sign up here!</a>
+          New to Niner Network? <a href="/signup">Sign up here!</a>
         </p>
         <form onSubmit={(event) => handleLogIn(event, email, password, navigate, setUser, setPageAlert)}>
           <div className="form-group mb-3">
             <input 
+              required
               type="text" 
               placeholder="Email" 
               className="form-control"
@@ -29,6 +30,7 @@ function Login() {
           </div>
           <div className="form-group mb-3">
             <input 
+              required
               type="password" 
               placeholder="Password" 
               className="form-control"
@@ -38,7 +40,7 @@ function Login() {
           <div className="forgot-password text-end mb-3">
             <a href="/forgot-password" className="text-decoration-none text-muted">Forgot Password?</a>
           </div>
-          <button type="submit" className="btn btn-success w-100">Login</button>
+          <button type="submit" className="btn btn-primary w-100">Login</button>
         </form>
       </div>
     </div>
