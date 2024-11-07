@@ -1,3 +1,41 @@
+/* COLORS */
+
+a {
+	color: #005236;
+}
+
+.form-control:focus{
+	border-color: hsl(160, 100%, 36%);
+	box-shadow: 0 0 0 .25rem hsla(160, 100%, 16%, 0.25);
+}
+
+.form-check-input:checked {
+	background-color: #005236;
+	border-color: #005236;
+}
+
+.btn-primary {
+	--bs-btn-bg: #005236;
+	--bs-btn-border-color: #005236;
+	--bs-btn-hover-bg: #005236;
+	--bs-btn-hover-border-color: #005236;
+	--bs-btn-active-bg: #005236;
+	--bs-btn-active-border-color: #005236;
+	--bs-btn-disabled-bg: #005236;
+	--bs-btn-disabled-border-color: #005236;
+}
+
+.btn-outline-primary {
+	--bs-btn-color: #005236;
+	--bs-btn-border-color: #005236;
+	--bs-btn-hover-bg: #005236;
+	--bs-btn-hover-border-color: #005236;
+	--bs-btn-active-bg: #005236;
+	--bs-btn-active-border-color: #005236;
+	--bs-btn-disabled-color: #005236;
+	--bs-btn-disabled-border-color: #005236;
+}
+
 .App {
   text-align: center;
 }
