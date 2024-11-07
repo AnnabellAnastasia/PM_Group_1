@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 import {Server} from 'socket.io';
 import messageRoutes from './routes/messageRoutes';
 
@@ -41,7 +42,7 @@ const PORT: string | number = process.env.PORT || 8080;
 
 
 const io = new Server(server, {
-    pingTimeout: 100000,
+    pingTimeout: 10000,
         cors: {
             origin: process.env.FRONTEND_URI,
             credentials: true,

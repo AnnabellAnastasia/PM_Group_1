@@ -13,7 +13,7 @@ interface ChatMessagePreviewProps {
 }
 
 const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [selectedChatId, setSelectedChatId] = useState<any>();
   //for opening chat detail
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
   const openDetail = () => setIsDetailOpen(true);
@@ -23,25 +23,20 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const handleOpenChatDetail = (event: any) => {
     // setSelectedMessage(message);
     let id = event.target.getAttribute("data-key");
-    return (
-      <ChatDetail
-        chatId={id}
-        isOpen={isDetailOpen}
-        onClose={closeDetail}
-        isNew={false}
-      ></ChatDetail>
-    );
+    setSelectedChatId(id);
+    setIsDetailOpen(true);
+  
   };
 
 
   const closeChatDetail = () => {
-    setSelectedMessage(null);
+    setSelectedChatId(null);
   };
 
 
   return (
     <div className="chatMiddle">
-      {messages? messages.map((message: Message) => (
+      {messages && messages.length ? (messages.map((message: Message) => (
         <div
           key={message.chatId}
           className="chatPreviewContainer"
@@ -57,7 +52,14 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
             <img src="forwardArrow.png" alt="Open Chat" />
           </button>
         </div>
-      )) : <h6>No Messages</h6>}
+      ))) : <h6>No Messages</h6>}
+      <ChatDetail
+        chatId={selectedChatId}
+        isOpen={isDetailOpen}
+        onClose={closeDetail}
+        isNew={false}
+      ></ChatDetail>
+    
 
       {/* <ChatDetail messageId={message.id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail> */}
     </div>

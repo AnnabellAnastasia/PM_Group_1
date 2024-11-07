@@ -41,6 +41,7 @@ const controller: any = {
           });
           if (mList && mList[0]) {
             res.json(JSON.stringify(mList));
+            console.log(mList);
           } else {
             res.status(204).json("No messsages found");
           }
@@ -114,40 +115,83 @@ const controller: any = {
   },
 
   new: async (req: any, res: any, next: any) => {
-    const { usr1 } = req.body._id1;
-    const { usr2 } = req.body._id2;
+    const { _id1: usr1, _id2: usr2 } = req.body;
     if (!usr1 || !usr2) {
       console.log("user id not sent with request");
       return res.sendStatus(400);
     }
-    model
-      .find({
-        $and: [
+
+    try {
+      const existingChat = await model.find({
+        $or: [
           { user1: usr1, user2: usr2 },
-          { user2: usr2, user1: usr1 },
+          { user1: usr2, user2: usr1 },
         ],
-      })
-      .then((response) => {
-        if (!response || response == null) {
-          const chatData = {
-            messages: [],
-            user1: usr1,
-            user2: usr2,
-          };
-          model.create(chatData).then((chat) => {
-            res.status(200).json(JSON.stringify(chat._id)); //return chat id
-          });
-        } //setupif there is already messages found
-        // else if (typeof response.messages === [Types.ObjectId], )) {
-        //   //chat found
-        //   let mList: any[] = [];
-        //   response.messages.forEach((msg: Types.ObjectId) => {
-        //     message.findById(msg).then((rMsg: any) => {
-        //       mList.push(rMsg);
-        //     });
-        //   });
-        // }
       });
+      if (existingChat.length) {
+        console.log("Existing chat found:", existingChat[0].messages);
+        // return res.status(200).json(existingChat); // Return found chat(s)
+        if (existingChat[0].messages && existingChat[0].messages.length) {
+          // let mList: any[] = [];
+          // existingChat[0].messages.forEach((msg: Types.ObjectId) => {
+          //   message.findById(msg).then((rMsg: any) => {
+          //     console.log(rMsg);
+          //     mList.push(rMsg);
+          //     console.log(mList);
+          //   });
+          // });
+
+          const mList: any[] = await Promise.all(
+            existingChat[0].messages.map(async (msg: Types.ObjectId) => {
+              return await message.findById(msg);
+            })
+          );
+          if ( mList) {
+            console.log(mList);
+            return res.json(JSON.stringify(mList)); //send entire chat object
+          }
+        } else {
+          return res.status(200).json({ chatId: existingChat[0]._id});
+        }
+      }
+      console.log("No existing chat found, creating a new chat.");
+      const newChat = await model.create({
+        messages: [],
+        user1: usr1,
+        user2: usr2,
+      });
+      return res.status(200).json({ chatId: newChat._id });
+    } catch (err: any) {
+      console.error("error getting new message", err);
+      res.sendStatus(500);
+    }
+
+    // model
+    //   .find({
+    //     $or: [
+    //       { user1: usr1, user2: usr2 },
+    //       { user1: usr2, user2: usr1 },
+    //     ],
+    //   })
+    //   .then((response) => {
+    //     if(response.length) {
+    //       console.log("existing chat found:", response)
+    //       res.status(200).json(response);
+    //       return;
+    //     } else if (!response.length) {
+    //       console.log("from database", response);
+    //       const chatData = {
+    //         messages: [],
+    //         user1: usr1,
+    //         user2: usr2,
+    //       };
+    //       model.create(chatData).then((chat) => {
+    //         res.status(200).json({chatId: chat._id}); //return chat id
+    //         return;
+    //       });
+    //     }
+
+    // })
   },
 
   /*
@@ -204,3 +248,14 @@ export default controller;
 //         res.json({ message: err.message });
 //       });
 //   },
+
+//setupif there is already messages found
+// else if (typeof response.messages === [Types.ObjectId], )) {
+//   //chat found
+//   let mList: any[] = [];
+//   response.messages.forEach((msg: Types.ObjectId) => {
+//     message.findById(msg).then((rMsg: any) => {
+//       mList.push(rMsg);
+//     });
+//   });
+// }

@@ -39,11 +39,25 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
   useEffect(() => {
     const getChats = async () => {
-      setChatList(await fetchAll());
+      fetchAll()
+      .then((response) => {
+        // if(response) {
+        //   if(response.status)
+        //   let jsonArray = JSON.parse();
+        // }
+        if(typeof response === "string") {
+          //do something
+//girl this doesnt do anything fix this NOW !!!!!!!!!!!!!!!!!!!!!!
+        } else {
+          console.log(response);
+          let jsonArray = JSON.parse(response);
+          setChatList(jsonArray);
+        }
+      })
     };
     getChats();
-    if (!chatList) setIsNewOpen(true);
-  }, [chatList]);
+    // if (!chatList) setIsNewOpen(true);
+  }, []);
 
   if (!isOpen) return null;
   else {

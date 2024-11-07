@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 import { closeMessage, fetchMessages, newChat } from "../../utils/messageAPI";
 import MessagesList from "./ChatMessage";
 import { JsxElement } from "typescript";
-const socket = io("http://localhost:8080"); //set socket
+//set socket
 
 interface CommonChatDetailProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ interface CommonChatDetailProps {
   otherUserId?: string;
   isNew: boolean;
 }
-
+const socket = io("http://localhost:8080");
 const ChatDetail: React.FC<CommonChatDetailProps> = ({
   isOpen,
   onClose,
@@ -27,23 +27,11 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   const [chatList, setChatList] = useState<any>([]);
   const [messageReceived, setMessageReceived] = useState("");
   const { user } = useContext(UserContext);
-  const [newChatId, setChatId] = useState("");
+  const [hayMessages, setHayMessages] = useState<boolean>();
+  const [thisChatId, setChatId] = useState("");
   const [newChatList, setNewChatList] = useState<any>([]);
   const [newMessage, setNewmessage] = useState("");
-
-  //   const getAllMessages = async () => {
-  //     fetchMessages(chatId)
-  //       .then((response) => {
-  //         if (Array.isArray(response)) {
-  //           setChatList(response);
-  //           setChatId(response[0]);
-  //         } else if(response.status)
-  //       })
-  //       .catch((error) => {
-  //         console.log("error getting messages");
-  //       });
-  //   };
-
+  const [isConnected, setIsConnected] = useState<boolean>(false);
   //if if is a new chat
   // do not fetch messages.
   //call api for create new chat
@@ -52,49 +40,98 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   //etc
 
   //if is not a new chat fetch all messages
-  if (!isNew && chatId) {
-    useEffect(() => {
+  useEffect(() => {
+    if (!isNew && chatId) {
       const getAllMessages = async () => {
         setChatList(await fetchMessages(chatId));
       };
+      setChatId(chatId);
       getAllMessages();
-    }, []);
-  } else if (isNew && otherUserId) {
-    //if is a new chat call api to start a new conversation and get the chat id.
-    useEffect(() => {
+      setHayMessages(true);
+    } else if (isNew && otherUserId) {
+      //if is a new chat call api to start a new conversation and get the chat id.
       const startNewChat = async () => {
-        setChatList(await newChat(user.id, otherUserId));
+        const parsed = await newChat(user.id, otherUserId);
+        // const rsponse = await JSON.parse(response);
+        if (parsed[0].creator) {
+          console.log("there are messages");
+          console.log(parsed[0].body);
+          setHayMessages(true);
+          setChatId(parsed[0].chatId);
+          setChatList(parsed);
+        } else {
+          console.log("there are no messages");
+          setChatId(parsed);
+        }
       };
       startNewChat();
-    }, []);
-  }
-
-  async function handleMessageSubmit(event: any) {
-    if (chatId && user.id) {
-      const m = [newMessage, user.id, chatId];
-      socket.emit("message", m);
-      setChatList((prevChatList: any) => [...prevChatList, m]);
-      setNewChatList((prevNewChatList: any) => [...prevNewChatList, m]);
     }
-  }
+  }, []);
+  // thisChatId, otherUserId, user.id
+  // useEffect(() => {
+  //   socket.on("receive message", (data) => {
+  //     //show new message
+  //     setMessageReceived(data.message);
+  //   });
+  //   function onDisconnect() {
+  //     setIsConnected(false);
+  //   }
+  //   function onConnect() {
+  //     setIsConnected(true);
+  //   }
+  //   socket.on("connect", onConnect);
+  //   socket.on("disconnect", onDisconnect);
 
-  const joinChat = () => {
-    if (chatId !== "") {
-      socket.emit("join", chatId);
-    }
-  };
-
-  async function handleBack(event: any) {
-    if (newChatList) await closeMessage(event, newChatList); //save messages b4 leaving
-    onClose();
-  }
-
+  //   return () => {
+  //     socket.off("connect", onConnect);
+  //     socket.off("disconnect", onDisconnect);
+  //     socket.off("receive message", setMessageReceived);
+  //   };
+  // }, []);
+  useEffect(() => {
+    const joinChat = () => {
+      if (thisChatId !== "") {
+        socket.emit("join", thisChatId);
+      }
+    };
+    joinChat();
+  }, []);
+  // const joinChat = () => {
+  //   if (thisChatId !== "") {
+  //     socket.emit("join", chatId);
+  //   }
+  // };
   useEffect(() => {
     socket.on("receive message", (data) => {
       //show new message
       setMessageReceived(data.message);
     });
-  }, [socket]);
+  }, []);
+
+
+  async function handleMessageSubmit(event: any) {
+    event.preventDefault();
+    console.log("message sent!", event);
+    console.log(
+      "ids required for actually sending the message",
+      thisChatId,
+      user.id
+    );
+    if (thisChatId && user.id) {
+      const m = [newMessage, user.id, thisChatId];
+      socket.emit("message", m);
+      setChatList((prevChatList: any) => [...prevChatList, m]);
+      setNewChatList((prevNewChatList: any) => [...prevNewChatList, m]);
+      console.log("new chats", newChatList);
+      setHayMessages(true);
+    }
+  }
+
+  async function handleBack(event: any) {
+    if (newChatList && newChatList.length)
+      await closeMessage(event, newChatList); //save messages b4 leaving
+    onClose();
+  }
 
   if (!isOpen) return null;
 
@@ -105,7 +142,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
 
       <div className="messageAndEditTextContainer">
         <div className="chatDetailMessageContainer">
-          {chatList &&
+          {hayMessages &&
             chatList.map(function (message: any) {
               return <MessagesList key={message._id} messageObj={message} />;
             })}

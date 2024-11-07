@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { fetchAllUsersTest } from "../../utils/userAPI";
 import "./NewChat.css";
 import ChatDetail from "./ChatDetail";
+import { setSelectionRange } from "@testing-library/user-event/dist/utils";
+import { UserContext } from "../ContextWrapper";
 
 interface INewChat {
   isOpen: boolean;
@@ -10,17 +12,17 @@ interface INewChat {
 
 const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
   const [friendList, setFriendList] = useState<any>([]);
+  const { user } = useContext(UserContext);
   //for opening new chat detail
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
   const openDetail = () => setIsDetailOpen(true);
   const closeDetail = () => setIsDetailOpen(false);
+  const [selectedUserId, setSelectedUserId] = useState<any>();
 
   useEffect(() => {
     const getFriends = async () => {
       fetchAllUsersTest().then((response) => {
-        console.log(`json returned before parsing ${response}`);
         const jsonArray = JSON.parse(response);
-        console.log(jsonArray);
         setFriendList(jsonArray);
       });
     };
@@ -28,14 +30,60 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
   }, []);
   if (!isOpen) return null;
 
-  const handleClick = (event:any) => {
+  const handleClick = (event: any) => {
     let id = event.target.getAttribute("data-key");
-    return <ChatDetail isNew={true} otherUserId={id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail>
-  }
+    if(id) {
+      console.log(id);
+      console.log(user.id);
+      setSelectedUserId(id);
+      setIsDetailOpen(true);
+    }
+  };
 
   return (
     <div className="newChatContainer">
-      <div className="newTop">
+      {isDetailOpen ? (
+        <ChatDetail
+          isNew={true}
+          otherUserId={selectedUserId}
+          isOpen={isDetailOpen}
+          onClose={closeDetail}
+        />
+      ) : (
+        <>
+          <div className="newTop">
+            <button className="closeNewChat" onClick={onClose}>
+              Back
+            </button>
+          </div>
+          <div className="newMiddle">
+            {friendList.map((user: any) => {
+              return (
+                <div
+                  className="friendContainer"
+                  onClick={handleClick}
+                  data-key={user._id}
+                  key={user.id}
+                >
+                  <p>
+                    {user.firstName} {user.lastName}
+                  </p>
+                </div>
+              );
+            })}
+           
+              <ChatDetail
+                isNew={true}
+                otherUserId={selectedUserId}
+                isOpen={isDetailOpen}
+                onClose={closeDetail}
+              />
+            
+          </div>
+          <div className="newBottom"></div>
+        </>
+      )}
+      {/* <div className="newTop">
         <button className="closeNewChat" onClick={onClose}>
           Back
         </button>
@@ -43,15 +91,27 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
       <div className="newMiddle">
         {friendList.map((user: any) => {
           return (
-            <div className="friendContainer" onClick={handleClick} data-key={user._id}>
+            <div
+              className="friendContainer"
+              onClick={handleClick}
+              data-key={user._id}
+              key={user.id}
+            >
               <p>
                 {user.firstName} {user.lastName}
               </p>
             </div>
           );
         })}
-      </div>
-      <div className="newBottom"></div>
+        {isDetailOpen && (
+          <ChatDetail
+            isNew={true}
+            otherUserId={selectedUserId}
+            isOpen={isDetailOpen}
+            onClose={closeDetail}
+          />
+        )}
+      </div> */}
     </div>
   );
 };

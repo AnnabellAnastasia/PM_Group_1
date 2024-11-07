@@ -65,8 +65,9 @@ export async function fetchAll() {
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      return await response.json();
     }
-    else return response;
   } catch (error) {
     console.error("A problem occurred with your fetch operation: ", error);
   }
@@ -74,9 +75,10 @@ export async function fetchAll() {
 
 export async function newChat(user1: any, user2: any) {
   try {
+    console.log("new chat api called");
     const users = {
-        _id1: user1,
-        _id2: user2
+      _id1: user1,
+      _id2: user2,
     };
     const response = await fetch(`http://localhost:8080/api/messages/new`, {
       method: "POST",
@@ -87,10 +89,22 @@ export async function newChat(user1: any, user2: any) {
       credentials: "include",
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorBody = await response.text();
+      throw new Error(
+        `HTTP error! status: ${response.status}, body: ${errorBody}`
+      );
     }
     //TODO: return chatId
-    else return response;
+    else {
+      const data = await response.json();
+      if(data.length) {
+        console.log("returned messages", data);
+        const parsedData = JSON.parse(data);
+        return parsedData;
+      }
+      console.log("returned just chat id", data);
+      return data.chatId;
+    }
   } catch (error) {
     console.error("A problem occurred with your fetch operation: ", error);
   }
