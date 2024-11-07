@@ -130,6 +130,7 @@ export async function likePost(postID: string, userID: string) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+    return;
   } catch (error) {
     console.error("A problem occurred with your fetch operation: ", error);
   }
@@ -151,6 +152,7 @@ export async function unlikePost(postID: string, likeID: string) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+    return;
   } catch (error) {
     console.error("A problem occurred with your fetch operation: ", error);
   }
