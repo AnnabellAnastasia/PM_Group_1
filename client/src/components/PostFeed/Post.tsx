@@ -11,7 +11,9 @@ import {
 } from "../../utils/postAPI";
 import { processDate } from "../../utils/tools";
 import Comment from "./Comment";
+import { createRepost } from "../../utils/repostAPI";
 import "./Post.css";
+import IsLoggedIn from "../Auth/IsLoggedIn";
 
 // interface PostProps {
 //     profileImage: string;
@@ -239,6 +241,12 @@ function Post({ postObj, getAllPosts }: any) {
           className="post-comment-submit"
         >
           Comment
+        </button>
+        <button
+          onClick={(e)=>createRepost(e,postObj._id,user.id)}
+          type="submit"
+        >
+          repost
         </button>
       </div>
     </div>

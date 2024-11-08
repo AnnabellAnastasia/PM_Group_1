@@ -12,4 +12,4 @@ const repostSchema = new Schema({
 
 repostSchema.index({ reposter: 1, post: 1 }, { unique: true });
 
-export default mongoose.model('Post', repostSchema);
+export default mongoose.model('reposts', repostSchema);

@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
 import cookieParser from 'cookie-parser';
+import repostRoutes from './routes/postRoutes';
 import multer from 'multer';
 
 dotenv.config();
@@ -44,7 +45,7 @@ app.use('/images', express.static('images'))
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/comments',commentRoutes);
-
+app.use('/reposts',repostRoutes);
 // Multer file too large error handling
 app.use((err: any, req: any, res: any, next: any) => {
 	if (err.code === 'LIMIT_FILE_SIZE') {

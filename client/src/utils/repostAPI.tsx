@@ -1,5 +1,5 @@
-export async function fetchReposts(){
-    const response = await fetch(`http://localhost:8080/reposts`,{
+export async function fetchReposts(post:any){
+    const response = await fetch(`http://localhost:8080/posts/${post}/reposts`,{
         method:"GET",
         headers: {
 			"Content-Type": "application/json",
@@ -25,7 +25,7 @@ export async function createRepost(event: any,post:any, loggedInUser: string){
     }
     let response;
     try{
-        response = await fetch(`http://localhost:8080/reposts`,{
+        response = await fetch(`http://localhost:8080/Posts/${post}/reposts`,{
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
