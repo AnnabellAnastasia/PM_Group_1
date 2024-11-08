@@ -13,6 +13,13 @@ function Social() {
     { name: "Friend 8", mutualFriends: "24 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
   ];
 
+  const suggestedConnections = [
+    { name: "Suggested 1", mutualFriends: "10 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
+    { name: "Suggested 2", mutualFriends: "5 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
+    { name: "Suggested 3", mutualFriends: "15 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
+    // Add more as needed
+  ];
+
   return (
     <div className="social container py-4">
       {/* Friend Requests Section */}
@@ -37,6 +44,26 @@ function Social() {
                 </div>
               </div>
               <button className="friend-button btn btn-outline-secondary btn-sm">Friends</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Suggested Connections Section */}
+      <h1 className="display-6 mt-5 mb-4">Suggested Connections</h1>
+
+      <div className="suggested-connections row gy-3">
+        {suggestedConnections.map((suggested, index) => (
+          <div key={index} className="col-md-6">
+            <div className="suggested-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
+              <div className="suggested-info d-flex align-items-center">
+                <img src={suggested.imgSrc} alt={suggested.name} className="friend-avatar rounded-circle me-3" />
+                <div className="friend-details">
+                  <p className="friend-name h5 mb-1">{suggested.name}</p>
+                  <p className="mutual-friends text-muted small">{suggested.mutualFriends}</p>
+                </div>
+              </div>
+              <button className="connect-button btn btn-outline-primary btn-sm">Connect</button>
             </div>
           </div>
         ))}
