@@ -37,7 +37,13 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     console.log(socket);
     if (!isNew && chatId) {
       const getAllMessages = async () => {
-        setChatList(await fetchMessages(chatId));
+        fetchMessages(chatId).then((response: any) => {
+          if (typeof response === "string") {
+            JSON.parse(response).then((arr: any) => setChatList(arr));
+          } else if(response.messages) {
+            setChatList(response.messages);
+          }
+        });
         console.log(chatList);
       };
       setChatId(chatId);
@@ -61,25 +67,24 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       };
       startNewChat();
     }
-    
   }, []);
 
   useEffect(() => {
-    if(thisChatId && socket) {
+    if (thisChatId && socket) {
       socket.emit("join", thisChatId);
     }
-  }, [thisChatId])
+  }, [thisChatId]);
 
   useEffect(() => {
     if (!socket) return;
-  
+
     const handleReceiveMessage = (data: any) => {
       setChatList((list: any) => [...list, data]);
       setNewChatList((list: any) => [...list, data]);
     };
-  
+
     socket.on("receive_message", handleReceiveMessage);
-  
+
     return () => {
       socket.off("receive_message", handleReceiveMessage);
     };
@@ -89,9 +94,9 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     event?.preventDefault();
     if (newMessage !== "") {
       const messageData = {
-        "body": newMessage,
-        "creator": user.id,
-        "chatId": thisChatId
+        body: newMessage,
+        creator: user.id,
+        chatId: thisChatId,
         // time: new Date(Date.now()), //add time to messages
       };
       await socket?.emit("message", messageData);
@@ -101,7 +106,6 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       setHayMessages(true);
     }
   };
-
 
   async function handleBack(event: any) {
     if (newChatList && newChatList.length)
@@ -116,7 +120,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   return (
     <div className="message-detail">
       <button onClick={handleBack}>Back</button>
-      <h6 className="detailSenderName">{chatUser&& chatUser}</h6>
+      <h6 className="detailSenderName">{chatUser && chatUser}</h6>
 
       <div className="messageAndEditTextContainer">
         <div className="chatDetailMessageContainer">

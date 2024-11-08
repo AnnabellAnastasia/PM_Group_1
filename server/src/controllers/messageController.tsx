@@ -110,7 +110,7 @@ const controller: any = {
             });
           });
           if (mList) {
-            res.json(JSON.stringify(mList)); //send entire chat object
+            res.json({messages: mList}); //send entire chat object
           } else {
             res.status(404).json("error fetching conversation");
           }

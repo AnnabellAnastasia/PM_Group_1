@@ -40,15 +40,11 @@ const ChatModal: React.FC<ChatModalProps> = ({
   useEffect(() => {
     const getChats = async () => {
       fetchAll().then((response) => {
-        // if(response) {
-        //   if(response.status)
-        //   let jsonArray = JSON.parse();
-        // }
         if (typeof response === "string") {
           JSON.parse(response).then((arr:any) => {
             setChatList(arr);
           });
-        } else {
+        } else if(response.messages) {
           setChatList(response.messages);
         }
       });

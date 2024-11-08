@@ -15,17 +15,10 @@ export async function fetchMessages(messageId: string) {
       );
       return "-1";
     } else {
-      response.json().then((messages) => {
-        if (!messages) {
-          console.warn("no messages found");
-        } else {
-          console.log("messages", messages);
-          response = JSON.parse(messages); //turn it back into an array
-          return response;
-        }
-      });
+      return response.json();
     }
   });
+
 }
 
 //save new messages to db
@@ -38,7 +31,7 @@ export async function closeMessage(event: any, messagesList: any[]) {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type":  "application/json",
         },
         body: JSON.stringify(messagesList), // Convert the messages list to string
         credentials: "include",
