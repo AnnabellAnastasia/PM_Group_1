@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import ChatDetail from "./ChatDetail";
 import { fetchAll } from "../../utils/messageAPI";
+import { SocketContext } from "../SocketContext";
 
 interface Message {
   body: string;
@@ -19,13 +20,16 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const openDetail = () => setIsDetailOpen(true);
   const closeDetail = () => setIsDetailOpen(false);
   const [otherUserId, setOtherUserId] = useState<any>();
+  const socket = useContext(SocketContext);
 
   const handleOpenChatDetail = (event: any) => {
     // setSelectedMessage(message);
     let id = event.target.getAttribute("data-key");
     setSelectedChatId(id);
     setIsDetailOpen(true);
-  
+    // if(id && socket) {
+    //   socket.emit("join", id);
+    // }
   };
 
 

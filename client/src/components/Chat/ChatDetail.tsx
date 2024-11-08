@@ -6,6 +6,7 @@ import { UserContext } from "../ContextWrapper";
 import { io, Socket } from "socket.io-client";
 import { closeMessage, fetchMessages, newChat } from "../../utils/messageAPI";
 import MessagesList from "./ChatMessage";
+import { SocketContext } from "../SocketContext";
 
 //set socket
 // const socket = io("http://localhost:8080");
@@ -25,7 +26,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   otherUserId,
   isNew,
 }) => {
-  const [socket, setSocket] = useState<Socket|undefined>();
+  // const [socket, setSocket] = useState<Socket|undefined>();
+  const socket = useContext(SocketContext);
   const [chatList, setChatList] = useState<any>([]);
   const [newChatList, setNewChatList] = useState<any>([]);
   const [thisChatId, setChatId] = useState("");
@@ -35,19 +37,20 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   
   // const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  useEffect(() => {
-    if(!socket) {
-      const newSocket = io("http://localhost:8080");
-      setSocket(newSocket);
-      console.log("new socket connected:", newSocket);
-      return () => {
-        newSocket.disconnect();
-      };
-    }
+  // useEffect(() => {
+  //   if(!socket) {
+  //     const newSocket = io("http://localhost:8080");
+  //     setSocket(newSocket);
+  //     console.log("new socket connected:", newSocket);
+  //     return () => {
+  //       newSocket.disconnect();
+  //     };
+  //   }
     
-  }, [user, socket]);
+  // }, [user, socket]);
 
   useEffect(() => {
+    console.log(socket);
     if (!isNew && chatId) {
       const getAllMessages = async () => {
         setChatList(await fetchMessages(chatId));
@@ -80,27 +83,30 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     if(thisChatId && socket) {
       socket.emit("join", thisChatId);
     }
-  }, [socket, thisChatId])
+  }, [thisChatId])
 
   useEffect(() => {
-    if(!socket) return;
-
-    const handleMessageReceive = (data: any) => {
+    if (!socket) return;
+  
+    const handleReceiveMessage = (data: any) => {
       setChatList((list: any) => [...list, data]);
       setNewChatList((list: any) => [...list, data]);
-    }
-
-    socket.on("receive_message", handleMessageReceive);
-    return () => socket.off("receive_message", handleMessageReceive);
+    };
+  
+    socket.on("receive_message", handleReceiveMessage);
+  
+    return () => {
+      socket.off("receive_message", handleReceiveMessage);
+    };
   }, [socket]);
 
   const sendMessage = async (event: any) => {
     event?.preventDefault();
     if (newMessage !== "") {
       const messageData = {
-        body: newMessage,
-        creator: user.id,
-        chatId: thisChatId
+        "body": newMessage,
+        "creator": user.id,
+        "chatId": thisChatId
         // time: new Date(Date.now()), //add time to messages
       };
       await socket?.emit("message", messageData);
@@ -115,6 +121,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   async function handleBack(event: any) {
     if (newChatList && newChatList.length)
       await closeMessage(event, newChatList); //save messages b4 leaving
+    socket.emit("leave", thisChatId);
+    setChatId("");
     onClose();
   }
 

@@ -141,3 +141,13 @@
     transform: scale(1.05);
     transition: transform 0.2s ease;
   }
+/* 
+  "you" : "other" */
+
+  #you {
+    display: flex;
+    justify-content: flex-start;
+    align-self: flex-end;
+    align-items: center;
+    background-color: #0be595;
+  }

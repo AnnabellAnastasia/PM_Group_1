@@ -32,7 +32,7 @@ export async function fetchMessages(messageId: string) {
 //save new messages to db
 export async function closeMessage(event: any, messagesList: any[]) {
   event.preventDefault();
-
+  console.log(messagesList[0]);
   try {
     const response = await fetch(
       `http://localhost:8080/api/messages/closeMessage`,
@@ -41,7 +41,7 @@ export async function closeMessage(event: any, messagesList: any[]) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(messagesList), // Convert the messages list to JSON
+        body: JSON.stringify(messagesList), // Convert the messages list to string
         credentials: "include",
       }
     );

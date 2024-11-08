@@ -7,11 +7,13 @@ import postRoutes from "./routes/postRoutes";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import messageRoutes from "./routes/messageRoutes";
+import http from "http";
 
 dotenv.config();
 
 const app: Express = express();
-var server;
+var server: http.Server = http.createServer(app);
+// const httpServer = http.createServer(app);
 
 app.use(cookieParser());
 app.use(
@@ -32,11 +34,12 @@ const PORT: string | number = process.env.PORT || 8080;
   try {
     await mongoose.connect(uri);
     console.log("Connected to the database");
-    server = app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server is running on PORT: ${PORT}`);
     });
   } catch (error) {
     console.error(error);
+    process.exit(1);
   }
 })();
 
@@ -46,10 +49,10 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
 io.on("connection", (socket) => {
   console.log("user connected ", socket.id);
   socket.on("join", (data) => {
+    console.log(`joined chat ${data}`);
     socket.join(data);
   });
   socket.on("message", (data) => {
@@ -57,6 +60,10 @@ io.on("connection", (socket) => {
     //implement chat id
     socket.to(data.chatId).emit("receive_message", data);
   });
+  socket.on("leave", (data) => {
+    console.log(`left room ${data}`);
+    socket.leave(data);
+  })
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

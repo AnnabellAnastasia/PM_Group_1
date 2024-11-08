@@ -89,26 +89,64 @@ const controller: any = {
   close: async (req: any, res: any, next: any) => {
     try {
       let messagesList: any[];
-      messagesList = JSON.parse(req.body); //turn the json back into an array
-      if (Array.isArray(messagesList)) {
-        let conversation = messagesList[0].parent();
-        if (!conversation) {
-          return res.status(404).json("Conversation not found");
-        }
-        //save each message in the list
-        messagesList.forEach((message) => {
-          // var nm = {
-          //     body = message.content,
-          //     creator = message.u
-          // }
-          let newMessage = new model(message);
-          conversation.messages.push(newMessage);
-        });
-        await conversation.save(); // Save the conversation with the updated messages
-        res.status(200).json({ message: "Messages saved successfully." });
-      } else {
-        res.status(400).json("Invalid messages list");
-      }
+      messagesList =
+        typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+      console.log(messagesList);
+      let conversationId: any = null;
+      let conversation: any;
+      let messageIdList:Types.ObjectId[] = [];
+        messagesList.forEach((m) => {
+          // model.findById(conversationId).then((response) => {
+          //   conversation = response;
+            message
+              .create({
+                body: m.body,
+                creator: m.creator,
+                chatId: m.chatId,
+              })
+              .then((msg) => {
+                if(!conversationId) conversationId = msg.chatId;
+                messageIdList.push(msg._id);
+              })
+              // .then((newMessage: any) => {
+              //   console.log("after create message");
+              //   conversation.messages.push(newMessage._id);
+              // });
+          });
+          model.findById(conversationId).then((convo) => {
+            if(!convo) return res.status(404).json({message: "no conversation found"});
+            messageIdList.forEach((msg) => {
+              convo.messages.push(msg);
+            })
+            convo.save()
+            .then(() => {
+              res.status(200).json({ message: "Messages saved"});
+            })
+          })
+
+          
+
+          // console.log(m);
+          // message
+          //   .create({
+          //     body: m.body,
+          //     creator: m.creator,
+          //     chatId: m.chatId,
+          //   })
+            // .then((newMessage: any) => {
+            //   console.log("after create message");
+            //   conversation.messages.push(newMessage._id);
+            // });
+        // });
+      //   conversation
+      //     .save() // Save the conversation with the updated messages
+      //     .then(() => {
+      //       res.status(200).json({ message: "Messages saved successfully." });
+      //     });
+      // });
+      //  else {
+      //   res.status(400).json("Invalid messages list");
+      // }
     } catch (err: any) {
       console.error("Error saving conversation", err);
     }
