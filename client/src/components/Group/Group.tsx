@@ -8,7 +8,19 @@ const groups = [
     name: 'React Developers',
     description: 'A group for React enthusiasts to share knowledge and resources.',
     membersCount: 1500,
-  },
+    administrator: {
+      id: 'admin123',
+      name: 'John Doe'
+    },
+    members: [
+      { id: 'user1', name: 'Alice Johnson' },
+      { id: 'user2', name: 'Bob Smith' },
+    ],
+    createdAt: '2024-01-01',
+    tags: ['React', 'Web Development'],
+    rules: ['Be respectful to others', 'No spamming']
+  }
+  ,
   {
     id: 2,
     name: 'JavaScript Masters',
@@ -92,6 +104,7 @@ function Group() {
           </Col>
         ))}
       </Row>
+      
     </Container>
   );
 }
