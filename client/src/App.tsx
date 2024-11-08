@@ -16,6 +16,8 @@ import Account from "./components/Account/Account";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from "./components/Footer/Footer";
 import Group from "./components/Group/Group";
+import GroupPage from './components/Group/GroupPage'; 
+
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
@@ -62,6 +64,10 @@ const router = createBrowserRouter([
           {
             path: "group",
             element: <Group />,
+          },
+          {
+            path: "group/:groupId",
+            element: <GroupPage />,
           },
 
         ],
