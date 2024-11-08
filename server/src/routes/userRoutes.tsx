@@ -3,11 +3,24 @@ import { userLoggedIn } from '../middleware/auth';
 import { upload } from '../middleware/fileUpload';
 import controller from '../controllers/userController';
 import friendshipRoutes from '../routes/friendshipRoutes';
+import User from '../models/user';
 
 const userRoutes = express.Router();
 
 // GET /users - Check authentication
 userRoutes.get('/', userLoggedIn, controller.auth);
+
+// GET /users/suggestions - Fetch suggested connections
+userRoutes.get('/all', async (req, res) => {
+    try {
+      const users = await User.find({}, 'firstName lastName image'); // Adjust fields as needed
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching users", error });
+    }
+  });
+
+
 // POST /users - Create new user
 userRoutes.post('/', controller.create);
 // POST /users/login - Authenticate user login
@@ -27,5 +40,6 @@ userRoutes.post('/:id/image', userLoggedIn, upload, controller.image);
 
 // Friendship Routes
 userRoutes.use("/:id/friendships", friendshipRoutes);
+
 
 export default userRoutes;

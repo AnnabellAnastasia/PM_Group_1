@@ -1,5 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './Social.css';
+
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+}
 
 function Social() {
   const friends = [
@@ -13,12 +21,21 @@ function Social() {
     { name: "Friend 8", mutualFriends: "24 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
   ];
 
-  const suggestedConnections = [
-    { name: "Suggested 1", mutualFriends: "10 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Suggested 2", mutualFriends: "5 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Suggested 3", mutualFriends: "15 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    // Add more as needed
-  ];
+  const [suggestedConnections, setSuggestedConnections] = useState<User[]>([]);
+
+  // Fetch suggested connections from the backend
+  useEffect(() => {
+    const fetchSuggestedConnections = async () => {
+      try {
+        const response = await axios.get<User[]>('http://localhost:8080/users/all'); // New endpoint for all users
+        setSuggestedConnections(response.data);
+      } catch (error) {
+        console.error("Error fetching suggested connections:", error);
+      }
+    };
+
+    fetchSuggestedConnections();
+  }, []);
 
   return (
     <div className="social container py-4">
@@ -53,14 +70,14 @@ function Social() {
       <h1 className="display-6 mt-5 mb-4">Suggested Connections</h1>
 
       <div className="suggested-connections row gy-3">
-        {suggestedConnections.map((suggested, index) => (
-          <div key={index} className="col-md-6">
+        {suggestedConnections.map((suggested) => (
+          <div key={suggested._id} className="col-md-6">
             <div className="suggested-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
               <div className="suggested-info d-flex align-items-center">
-                <img src={suggested.imgSrc} alt={suggested.name} className="friend-avatar rounded-circle me-3" />
+                <img src={suggested.image || "https://static.thenounproject.com/png/65090-200.png"} alt={suggested.firstName} className="friend-avatar rounded-circle me-3" />
                 <div className="friend-details">
-                  <p className="friend-name h5 mb-1">{suggested.name}</p>
-                  <p className="mutual-friends text-muted small">{suggested.mutualFriends}</p>
+                  <p className="friend-name h5 mb-1">{suggested.firstName} {suggested.lastName}</p>
+                  <p className="mutual-friends text-muted small">{"0 mutual friends"}</p>
                 </div>
               </div>
               <button className="connect-button btn btn-outline-primary btn-sm">Connect</button>

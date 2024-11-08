@@ -70,4 +70,11 @@ userSchema.methods.comparePassword = function(login: any) {
 
 userSchema.index({ firstName: 'text', lastName: 'text' });
 
+export interface IUser extends Document {
+	firstName: string;
+	lastName: string;
+	image: string;
+	mutualFriends: string;
+  }
+
 export default mongoose.model('User', userSchema);
