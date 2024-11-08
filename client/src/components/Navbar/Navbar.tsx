@@ -103,6 +103,7 @@ const PageNavbar: React.FC = () => {
             <Nav.Link className="mt-2" href="/services">Services</Nav.Link>
             <Nav.Link className="mt-2" href="/social">Social</Nav.Link>
             <Nav.Link className="mt-2" href="/contact">Contact</Nav.Link>
+            <Nav.Link className="mt-2" href="/group">Group</Nav.Link>
             <Nav.Link className="openChatButton" ref={ref} onClick={toggleChat}>
               <Image
                 className="message"

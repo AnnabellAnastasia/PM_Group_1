@@ -15,6 +15,7 @@ import Contact from "./components/Contact/Contact";
 import Account from "./components/Account/Account";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from "./components/Footer/Footer";
+import Group from "./components/Group/Group";
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
@@ -58,6 +59,11 @@ const router = createBrowserRouter([
             path: "account/:userID",
             element: <Account />,
           },
+          {
+            path: "group",
+            element: <Group />,
+          },
+
         ],
       },
       {
