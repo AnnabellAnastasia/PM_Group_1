@@ -87,69 +87,44 @@ const controller: any = {
    *   Save all new messages to mongodb
    */
   close: async (req: any, res: any, next: any) => {
-    try {
-      let messagesList: any[];
-      messagesList =
-        typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-      console.log(messagesList);
-      let conversationId: any = null;
-      let conversation: any;
-      let messageIdList:Types.ObjectId[] = [];
-        messagesList.forEach((m) => {
-          // model.findById(conversationId).then((response) => {
-          //   conversation = response;
-            message
-              .create({
-                body: m.body,
-                creator: m.creator,
-                chatId: m.chatId,
-              })
-              .then((msg) => {
-                if(!conversationId) conversationId = msg.chatId;
-                messageIdList.push(msg._id);
-              })
-              // .then((newMessage: any) => {
-              //   console.log("after create message");
-              //   conversation.messages.push(newMessage._id);
-              // });
-          });
-          model.findById(conversationId).then((convo) => {
-            if(!convo) return res.status(404).json({message: "no conversation found"});
-            messageIdList.forEach((msg) => {
-              convo.messages.push(msg);
-            })
-            convo.save()
-            .then(() => {
-              res.status(200).json({ message: "Messages saved"});
-            })
+    let messagesList: any[];
+    messagesList =
+      typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    console.log(messagesList);
+    let conversationId: any = null;
+    let messageIdList: Types.ObjectId[] = [];
+    Promise.all(
+      messagesList.map((m) =>
+        message
+          .create({
+            body: m.body,
+            creator: m.creator,
+            chatId: m.chatId,
           })
-
-          
-
-          // console.log(m);
-          // message
-          //   .create({
-          //     body: m.body,
-          //     creator: m.creator,
-          //     chatId: m.chatId,
-          //   })
-            // .then((newMessage: any) => {
-            //   console.log("after create message");
-            //   conversation.messages.push(newMessage._id);
-            // });
-        // });
-      //   conversation
-      //     .save() // Save the conversation with the updated messages
-      //     .then(() => {
-      //       res.status(200).json({ message: "Messages saved successfully." });
-      //     });
-      // });
-      //  else {
-      //   res.status(400).json("Invalid messages list");
-      // }
-    } catch (err: any) {
-      console.error("Error saving conversation", err);
-    }
+          .then((msg) => {
+            if (!conversationId) conversationId = msg.chatId;
+            messageIdList.push(msg._id);
+            return msg;
+          })
+      )
+    )
+      .then(() => {
+        // Find the conversation after all messages are created
+        return model.findById(conversationId);
+      })
+      .then((convo) => {
+        if (!convo) {
+          return res.status(404).json({ message: "No conversation found" });
+        }
+        convo.messages.push(...messageIdList);
+        return convo.save();
+      })
+      .then(() => {
+        res.status(200).json({ message: "Messages saved" });
+      })
+      .catch((err: any) => {
+        console.error("Error saving conversation", err);
+      });
   },
 
   new: async (req: any, res: any, next: any) => {
@@ -190,97 +165,7 @@ const controller: any = {
       console.error("error getting new message", err);
       res.sendStatus(500);
     }
-
-    // model
-    //   .find({
-    //     $or: [
-    //       { user1: usr1, user2: usr2 },
-    //       { user1: usr2, user2: usr1 },
-    //     ],
-    //   })
-    //   .then((response) => {
-    //     if(response.length) {
-    //       console.log("existing chat found:", response)
-    //       res.status(200).json(response);
-    //       return;
-    //     } else if (!response.length) {
-    //       console.log("from database", response);
-    //       const chatData = {
-    //         messages: [],
-    //         user1: usr1,
-    //         user2: usr2,
-    //       };
-    //       model.create(chatData).then((chat) => {
-    //         res.status(200).json({chatId: chat._id}); //return chat id
-    //         return;
-    //       });
-    //     }
-
-    // })
   },
-
-  /*
-   *    Make a new chat with a new user
-   */
-  // new: async (req: any, res: any, next: any) => {
-  //   const { userId } = req.body;
-  //   if (!userId) {
-  //     console.log("user id not sent with request");
-  //     return res.sendStatus(400);
-  //   }
-  //   model
-  //     .find({
-  //       $and: [
-  //         { user1: req.id, user2: userId },
-  //         { user2: userId, user1: req.id },
-  //       ],
-  //     })
-  //     .populate("messages", "user1", "user2")
-  //     .then((response) => {
-  //       if (!response || response == null) {
-  //         var chatData = {
-  //           messages: [],
-  //           user1: req.id,
-  //           user2: userId,
-  //         };
-  //         model.create(chatData).then((chat) => {
-  //           res.status(200).json(chat);
-  //         });
-  //       } else {
-  //         res.status(404).json("There was an issue loading chat");
-  //       }
-  //       // else if (response.messages && response.messages.length) {
-  //       //   res.json(response.messages);
-  //       // }
-  //     })
-  //     .catch((err: any) => {
-  //       console.error("Error showing conversation", err);
-  //     });
-  // },
 };
 
 export default controller;
-
-//send message (not required with socket.io) - will probably remove
-// create: async (req: any, res: any, next: any) => {
-//     let newMessage = new model(req.body);
-//     newMessage
-//       .save()
-//       .then((newMessage) => {
-//         res.json(newMessage);
-//       })
-//       .catch((err: any) => {
-//         res.json({ message: err.message });
-//       });
-//   },
-
-//setupif there is already messages found
-// else if (typeof response.messages === [Types.ObjectId], )) {
-//   //chat found
-//   let mList: any[] = [];
-//   response.messages.forEach((msg: Types.ObjectId) => {
-//     message.findById(msg).then((rMsg: any) => {
-//       mList.push(rMsg);
-//     });
-//   });
-// }
