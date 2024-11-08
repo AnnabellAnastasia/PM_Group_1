@@ -21,6 +21,7 @@
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.2",
+    "multer": "^1.4.5-lts.1",
     "tsx": "^4.19.1"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "@types/express": "^4.17.21",
     "@types/express-session": "^1.18.0",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.5.5",
     "typescript": "^5.6.2"
   }

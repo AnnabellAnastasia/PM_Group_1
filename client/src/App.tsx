@@ -51,12 +51,12 @@ const router = createBrowserRouter([
             element: <Services />,
           },
           {
-            path: "social",
-            element: <Social />,
-          },
-          {
             path: "contact",
             element: <Contact />,
+          },
+          {
+            path: "account/:userID",
+            element: <Account />,
           },
         ],
       },
@@ -68,8 +68,8 @@ const router = createBrowserRouter([
             element: <PostFeed />,
           },
           {
-            path: "account",
-            element: <Account />,
+            path: "social",
+            element: <Social />,
           },
         ],
       },

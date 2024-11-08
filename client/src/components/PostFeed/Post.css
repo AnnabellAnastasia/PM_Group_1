@@ -136,3 +136,14 @@
   border: none;
   background-color: #e7e7e7;
 }
+
+.creator-name {
+  text-decoration: none;
+}
+.creator-name:hover {
+  text-decoration: underline;
+}
+
+.card-heading {
+  margin: 0;
+}

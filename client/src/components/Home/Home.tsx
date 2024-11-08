@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../ContextWrapper";
 import './Home.css';
+import SignUp from '../SignUp/SignUp';
 
 function Home() {  
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   return (
     <div className="container">
@@ -24,7 +27,7 @@ function Home() {
           </div>
         </div>
         <div className="col-md-4 mb-4">
-          <div className="box p-3 bg-light text-center h-100">
+          <div className="box p-3 bg-light text-center h-100" onClick={() => navigate(`${user.id ? `/account/${user.id}` : 'login'}`)}>
             <p>Customize your Profile!</p>
           </div>
         </div>

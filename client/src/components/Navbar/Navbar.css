@@ -1,8 +1,8 @@
 /* Logo */
-.logo {
+/* .logo {
   height: 40px;
   margin-right: 10px;
-}
+} */
 
 /* Profile icon */
 .profile-icon {
@@ -31,4 +31,8 @@
   text-align: center;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+nav {
+  z-index: 3;
 }

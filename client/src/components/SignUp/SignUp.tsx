@@ -34,21 +34,25 @@ const SignUp = () => {
           }
         >
           <input
+            required
             type="text"
             placeholder="First Name"
             onChange={(event) => setFirstName(event.target.value)}
           />
           <input
+            required
             type="text"
             placeholder="Last Name"
             onChange={(event) => setLastName(event.target.value)}
           />
           <input
+            required
             type="email"
             placeholder="UNCC Email"
             onChange={(event) => setEmail(event.target.value)}
           />
           <input
+            required
             type="password"
             placeholder="Password"
             onChange={(event) => setPassword(event.target.value)}
