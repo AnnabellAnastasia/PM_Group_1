@@ -18,7 +18,6 @@ import Account from "./components/Account/Account";
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
 import "./App.css";
-import ChatModal from "./components/Chat/ChatRoom";
 
 const router = createBrowserRouter([
   {

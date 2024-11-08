@@ -94,15 +94,12 @@ export async function newChat(user1: any, user2: any) {
         `HTTP error! status: ${response.status}, body: ${errorBody}`
       );
     }
-    //TODO: return chatId
     else {
       const data = await response.json();
       if(data.length) {
-        console.log("returned messages", data);
         const parsedData = JSON.parse(data);
         return parsedData;
       }
-      console.log("returned just chat id", data);
       return data.chatId;
     }
   } catch (error) {

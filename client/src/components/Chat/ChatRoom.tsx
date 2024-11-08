@@ -4,7 +4,7 @@ import React, {
   useLayoutEffect,
   MutableRefObject,
 } from "react";
-
+import { SocketContext, socket } from "../SocketContext";
 import "./ChatRoom.css";
 import ChatPreview from "./ChatPreview";
 import Message from "./ChatPreview";
@@ -39,21 +39,21 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
   useEffect(() => {
     const getChats = async () => {
-      fetchAll()
-      .then((response) => {
+      fetchAll().then((response) => {
         // if(response) {
         //   if(response.status)
         //   let jsonArray = JSON.parse();
         // }
-        if(typeof response === "string") {
+        if (typeof response === "string") {
           //do something
-//girl this doesnt do anything fix this NOW !!!!!!!!!!!!!!!!!!!!!!
+          //girl this doesnt do anything fix this NOW !!!!!!!!!!!!!!!!!!!!!!
         } else {
           console.log(response);
-          let jsonArray = JSON.parse(response);
-          setChatList(jsonArray);
+          JSON.parse(response).then((arr: any) => {
+            setChatList(arr);
+          });
         }
-      })
+      });
     };
     getChats();
     // if (!chatList) setIsNewOpen(true);
@@ -63,37 +63,39 @@ const ChatModal: React.FC<ChatModalProps> = ({
   else {
     console.log("chat opened");
     return (
-      <div
-        className="chatContainer"
-        style={{ top: state.top, left: state.left }}
-      >
-        {!isNewOpen ? (
-          <>
-            <div className="chatHeader">
-              <h4 className="chatTitle">Messages</h4>
-              <button className="closeChat" onClick={onClose}>
-                <img src="close.png"></img>
-              </button>
-            </div>
-            <ChatPreview messages={chatList} />
-            <div className="chatFooter">
-              <button className="newChat" onClick={openNew}>
-                New Chat
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="chatHeader">
-              <h4 className="chatTitle">New Message</h4>
-              <button className="closeChat" onClick={onClose}>
-                <img src="close.png"></img>
-              </button>
-            </div>
-            <NewChat isOpen={isNewOpen} onClose={closeNew} />
-          </>
-        )}
-      </div>
+      <SocketContext.Provider value={socket}>
+        <div
+          className="chatContainer"
+          style={{ top: state.top, left: state.left }}
+        >
+          {!isNewOpen ? (
+            <>
+              <div className="chatHeader">
+                <h4 className="chatTitle">Messages</h4>
+                <button className="closeChat" onClick={onClose}>
+                  <img src="close.png"></img>
+                </button>
+              </div>
+              <ChatPreview messages={chatList} />
+              <div className="chatFooter">
+                <button className="newChat" onClick={openNew}>
+                  New Chat
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="chatHeader">
+                <h4 className="chatTitle">New Message</h4>
+                <button className="closeChat" onClick={onClose}>
+                  <img src="close.png"></img>
+                </button>
+              </div>
+              <NewChat isOpen={isNewOpen} onClose={closeNew} />
+            </>
+          )}
+        </div>
+      </SocketContext.Provider>
     );
   }
 };

@@ -120,7 +120,6 @@ const controller: any = {
       console.log("user id not sent with request");
       return res.sendStatus(400);
     }
-
     try {
       const existingChat = await model.find({
         $or: [
@@ -129,29 +128,17 @@ const controller: any = {
         ],
       });
       if (existingChat.length) {
-        console.log("Existing chat found:", existingChat[0].messages);
-        // return res.status(200).json(existingChat); // Return found chat(s)
         if (existingChat[0].messages && existingChat[0].messages.length) {
-          // let mList: any[] = [];
-          // existingChat[0].messages.forEach((msg: Types.ObjectId) => {
-          //   message.findById(msg).then((rMsg: any) => {
-          //     console.log(rMsg);
-          //     mList.push(rMsg);
-          //     console.log(mList);
-          //   });
-          // });
-
           const mList: any[] = await Promise.all(
             existingChat[0].messages.map(async (msg: Types.ObjectId) => {
               return await message.findById(msg);
             })
           );
-          if ( mList) {
-            console.log(mList);
+          if (mList) {
             return res.json(JSON.stringify(mList)); //send entire chat object
           }
         } else {
-          return res.status(200).json({ chatId: existingChat[0]._id});
+          return res.status(200).json({ chatId: existingChat[0]._id });
         }
       }
       console.log("No existing chat found, creating a new chat.");
