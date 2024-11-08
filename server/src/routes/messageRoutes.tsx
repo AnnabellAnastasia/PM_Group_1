@@ -13,6 +13,4 @@ messageRoutes.get("/", userLoggedIn, controller.all);
 
 messageRoutes.post("/new", userLoggedIn, controller.new);//new chat 
 
-//POST /messages - create new message
-// messageRoutes.post('/', userLoggedIn, controller.create);
 export default messageRoutes;

@@ -45,13 +45,11 @@ const ChatModal: React.FC<ChatModalProps> = ({
         //   let jsonArray = JSON.parse();
         // }
         if (typeof response === "string") {
-          //do something
-          //girl this doesnt do anything fix this NOW !!!!!!!!!!!!!!!!!!!!!!
-        } else {
-          console.log(response);
-          JSON.parse(response).then((arr: any) => {
+          JSON.parse(response).then((arr:any) => {
             setChatList(arr);
           });
+        } else {
+          setChatList(response.messages);
         }
       });
     };

@@ -8,15 +8,13 @@ import { closeMessage, fetchMessages, newChat } from "../../utils/messageAPI";
 import MessagesList from "./ChatMessage";
 import { SocketContext } from "../SocketContext";
 
-//set socket
-// const socket = io("http://localhost:8080");
-
 interface CommonChatDetailProps {
   isOpen: boolean;
   onClose: () => void;
   chatId?: string;
   otherUserId?: string;
   isNew: boolean;
+  chatUser?: any;
 }
 
 const ChatDetail: React.FC<CommonChatDetailProps> = ({
@@ -25,8 +23,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   chatId,
   otherUserId,
   isNew,
+  chatUser,
 }) => {
-  // const [socket, setSocket] = useState<Socket|undefined>();
   const socket = useContext(SocketContext);
   const [chatList, setChatList] = useState<any>([]);
   const [newChatList, setNewChatList] = useState<any>([]);
@@ -34,26 +32,13 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   const [newMessage, setNewMessage] = useState("");
   const { user } = useContext(UserContext);
   const [hayMessages, setHayMessages] = useState<boolean>();
-  
-  // const [isConnected, setIsConnected] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   if(!socket) {
-  //     const newSocket = io("http://localhost:8080");
-  //     setSocket(newSocket);
-  //     console.log("new socket connected:", newSocket);
-  //     return () => {
-  //       newSocket.disconnect();
-  //     };
-  //   }
-    
-  // }, [user, socket]);
 
   useEffect(() => {
     console.log(socket);
     if (!isNew && chatId) {
       const getAllMessages = async () => {
         setChatList(await fetchMessages(chatId));
+        console.log(chatList);
       };
       setChatId(chatId);
       getAllMessages();
@@ -131,7 +116,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   return (
     <div className="message-detail">
       <button onClick={handleBack}>Back</button>
-      <h6 className="detailSenderName">Sender Name</h6>
+      <h6 className="detailSenderName">{chatUser&& chatUser}</h6>
 
       <div className="messageAndEditTextContainer">
         <div className="chatDetailMessageContainer">
@@ -163,21 +148,3 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
 };
 
 export default ChatDetail;
-
-// const handleMessageSubmit = (event:any) => {
-//   event.preventDefault();
-//   console.log("message sent!", event);
-//     console.log(
-//       "ids required for actually sending the message",
-//       thisChatId,
-//       user.id
-//     );
-//     if (thisChatId && user.id) {
-//       const m = [newMessage, user.id, thisChatId];
-//       socket.emit("message", m);
-//       setChatList((prevChatList: any) => [...prevChatList, m]);
-//       setNewChatList((prevNewChatList: any) => [...prevNewChatList, m]);
-//       console.log("new chats", newChatList);
-//       setHayMessages(true);
-//     }
-// }

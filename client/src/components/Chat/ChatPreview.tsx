@@ -21,6 +21,7 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const closeDetail = () => setIsDetailOpen(false);
   const [otherUserId, setOtherUserId] = useState<any>();
   const socket = useContext(SocketContext);
+  const [friendName, setFriendName] = useState<string>("");
 
   const handleOpenChatDetail = (event: any) => {
     // setSelectedMessage(message);
@@ -32,42 +33,70 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
     // }
   };
 
-
   const closeChatDetail = () => {
     setSelectedChatId(null);
   };
 
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
 
   return (
     <div className="chatMiddle">
-      {messages && messages.length ? (messages.map((message: Message) => (
-        <div
-          key={message.chatId}
-          className="chatPreviewContainer"
-          data-key={message.chatId}
-          onClick={handleOpenChatDetail}
-        >
-          <div className="senderIcon">{/* Placeholder for Profile Icon */}</div>
-          <div className="chatPreview">
-            <h6 className="chatSender">{message.creator}</h6>
-            <p className="chatContent">{message.body}</p>
-          </div>
-          <button className="openChatButton">
-            <img src="forwardArrow.png" alt="Open Chat" />
-          </button>
-        </div>
-      ))) : <h6>No Messages</h6>}
-      <ChatDetail
+      {isDetailOpen? (
+        <ChatDetail
         chatId={selectedChatId}
         isOpen={isDetailOpen}
         onClose={closeDetail}
         isNew={false}
       ></ChatDetail>
-    
-
-      {/* <ChatDetail messageId={message.id} isOpen={isDetailOpen} onClose={closeDetail}></ChatDetail> */}
+      ) : (
+        messages.map((message: Message) => (
+          <div
+            key={message.chatId}
+            className="chatPreviewContainer"
+            data-key={message.chatId}
+            onClick={handleOpenChatDetail}
+          >
+            <div className="senderIcon">{/* Placeholder for Profile Icon */}</div>
+            <div className="chatPreview">
+              <h6 className="chatSender">{message.creator}</h6>
+              <p className="chatContent">{message.body}</p>
+            </div>
+            <button className="openChatButton">
+              <img src="forwardArrow.png" alt="Open Chat" />
+            </button>
+          </div>
+        ))
+      )}
+      
+      
     </div>
   );
 };
 
 export default ChatPreview;
+
+// {messages && messages.length ? (
+// messages.map((message: Message) => (
+//   <div
+//     key={message.chatId}
+//     className="chatPreviewContainer"
+//     data-key={message.chatId}
+//     onClick={handleOpenChatDetail}
+//   >
+//     <div className="senderIcon">
+//       {/* Placeholder for Profile Icon */}
+//     </div>
+//     <div className="chatPreview">
+//       <h6 className="chatSender">{message.creator}</h6>
+//       <p className="chatContent">{message.body}</p>
+//     </div>
+//     <button className="openChatButton">
+//       <img src="forwardArrow.png" alt="Open Chat" />
+//     </button>
+//   </div>
+// ))
+// ) : (
+//   <h6>No Messages</h6>
+// )}

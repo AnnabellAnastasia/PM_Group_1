@@ -25,7 +25,8 @@
     background-color: white;
     border-bottom: 2px solid #05a56a;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
+    justify-content: end;
     gap: 0.2rem;
     overflow-y: auto;
     overflow-x: hidden;
@@ -108,6 +109,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    width: fit-content;
     max-width: 60%;
     background-color: #e7e7e7;
     color: #333333;
@@ -118,7 +120,7 @@
     flex-shrink: 0;
   }
   
-  .messageBoxClient {
+  /* .messageBoxClient {
     display: flex;
     justify-content: flex-start;
     align-self: flex-end;
@@ -132,7 +134,7 @@
     flex-direction: row;
     flex-shrink: 0;
   }
-  
+   */
   .content {
     margin: 0.5rem;
   }

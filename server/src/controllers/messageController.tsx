@@ -13,45 +13,83 @@ const controller: any = {
   all: async (req: any, res: any, next: any) => {
     let cList: any[]; //conversations
     let mList: any[] = []; //messages (last messages preferrably)
-    model
-      .aggregate([
-        {
-          $match: {
-            $or: [
-              { user1: new mongoose.Types.ObjectId(req.id) },
-              { user2: new mongoose.Types.ObjectId(req.id) },
-            ],
-          },
-        },
-        {
-          $sort: { timeStamp: -1 },
-        },
-      ])
-      .then((result) => {
-        if (result) {
-          cList = result;
-          cList.forEach((element) => {
-            // let convo = new model(element);
-            //get length of messages array
-            let len = element.messages.length;
-            //get the message with the id at the end of the array and push it into the return list
-            message.findById(element.messages[len - 1]).then((msg) => {
-              mList.push(msg);
-            });
-          });
-          if (mList && mList[0]) {
-            res.json(JSON.stringify(mList));
-            console.log(mList);
-          } else {
-            res.status(204).json("No messsages found");
-          }
-        } else {
-          res.status(204).json("no conversations");
+    console.log("fetch all messages db op called");
+
+    try {
+      const result = await model.find({
+        $or: [{user1: req.id}, {user2: req.id}],
+      }).sort({timestamp: -1}); 
+
+      if(!result || result.length === 0) {
+        return res.status(204).json("No conversations");
+      }
+
+      console.log("result of db op", result);
+
+      cList = result;
+
+      const messagePromises = cList.map((element) => {
+        const len = element.messages.length;
+        if(len > 0) {
+          return message.findById(element.messages[len -1]);
         }
-      })
-      .catch((err: any) => {
-        res.json({ message: err.message });
+        return null;
       });
+
+      mList = await Promise.all(messagePromises);
+
+      mList = mList.filter((msg) => msg !== null);
+
+      if(mList.length > 0) {
+        res.json({messages: mList});
+        console.log(mList);
+      } else {
+        res.status(204).json("no messages found");
+      }
+    } catch (err:any) {
+      console.error("Error fetching messages", err);
+      res.status(500).json({message:err.message});
+    }
+
+
+
+    // model
+    //   .find([
+    //     {
+    //       $or: [{ user1: req.id }, { user2: req.id }],
+    //     },
+    //     {
+    //       $sort: { timeStamp: -1 },
+    //     },
+    //   ])
+    //   .then((result) => {
+    //     console.log(result);
+    //     if (result) {
+    //       console.log("result of db op", result);
+    //       cList = result;
+    //       cList.forEach((element) => {
+    //         // let convo = new model(element);
+    //         //get length of messages array
+    //         let len = element.messages.length;
+    //         //get the message with the id at the end of the array and push it into the return list
+    //         message.findById(element.messages[len - 1]).then((msg) => {
+    //           mList.push(msg);
+    //         });
+    //       });
+    //       if (mList && mList[0]) {
+    //         let list = JSON.stringify(mList);
+    //         res.json({ messages: list });
+    //         console.log(mList);
+    //       } else {
+    //         res.status(204).json("No messsages found");
+    //       }
+    //     } else {
+    //       res.status(204).json("no conversations");
+    //     }
+    //   })
+    //   .catch((err: any) => {
+    //     res.json({ message: err.message });
+    //   });
   },
 
   /*

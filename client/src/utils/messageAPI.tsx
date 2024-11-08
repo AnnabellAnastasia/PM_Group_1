@@ -1,7 +1,6 @@
 import { error } from "console";
 import mongoose from "mongoose";
 
-//get messages between two users - must be fixed.
 export async function fetchMessages(messageId: string) {
   const response = fetch(`http://localhost:8080/api/messages/${messageId}`, {
     method: "GET",
@@ -45,7 +44,6 @@ export async function closeMessage(event: any, messagesList: any[]) {
         credentials: "include",
       }
     );
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -56,6 +54,7 @@ export async function closeMessage(event: any, messagesList: any[]) {
 
 export async function fetchAll() {
   try {
+    console.log('fetch all called');
     const response = await fetch(`http://localhost:8080/api/messages/`, {
       method: "GET",
       headers: {
@@ -63,6 +62,17 @@ export async function fetchAll() {
       },
       credentials: "include",
     });
+
+    fetch(`http://localhost:8080/api/messages/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then((res) => {
+      console.log(res);
+    })
+    console.log(response);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     } else {
@@ -75,7 +85,6 @@ export async function fetchAll() {
 
 export async function newChat(user1: any, user2: any) {
   try {
-    console.log("new chat api called");
     const users = {
       _id1: user1,
       _id2: user2,

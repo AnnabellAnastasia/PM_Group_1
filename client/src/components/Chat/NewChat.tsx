@@ -18,6 +18,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
   const openDetail = () => setIsDetailOpen(true);
   const closeDetail = () => setIsDetailOpen(false);
   const [selectedUserId, setSelectedUserId] = useState<any>();
+  const [friendName, setFriendName] = useState<string>("");
 
   useEffect(() => {
     const getFriends = async () => {
@@ -32,11 +33,13 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
 
   const handleClick = (event: any) => {
     let id = event.target.getAttribute("data-key");
+    let friend = event.target.getAttribute("friend-name");
     if(id) {
       console.log(id);
       console.log(user.id);
       setSelectedUserId(id);
       setIsDetailOpen(true);
+      setFriendName(friend);
     }
   };
 
@@ -48,6 +51,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
           otherUserId={selectedUserId}
           isOpen={isDetailOpen}
           onClose={closeDetail}
+          chatUser={friendName}
         />
       ) : (
         <>
@@ -63,6 +67,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
                   className="friendContainer"
                   onClick={handleClick}
                   data-key={user._id}
+                  friend-name={user.firstName + " " + user.lastName}
                   key={user.id}
                 >
                   <p>
