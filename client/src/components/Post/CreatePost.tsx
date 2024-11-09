@@ -25,37 +25,47 @@ const CreatePost: React.FC<PostProps> = ({
     repostsCount
 }) => {
     return (
-        <div className="post">
-            <div className="post-header">
-                <img src={profileImage} alt={`${name}'s profile`} className="profile-image" />
-                <div className="post-info">
-                    <h3>{name}</h3>
-                    <p>{jobTitle}</p>
-                    <span>{timePosted}</span>
+        <div className="post card mb-4 shadow-sm">
+            <div className="card-body">
+                {/* Post Header */}
+                <div className="post-header d-flex align-items-center mb-3">
+                    <img src={profileImage} alt={`${name}'s profile`} className="profile-image rounded-circle me-3" />
+                    <div className="post-info">
+                        <h5 className="mb-0">{name}</h5>
+                        <small className="text-muted">{jobTitle}</small>
+                        <br />
+                        <small className="text-muted">{timePosted}</small>
+                    </div>
                 </div>
-            </div>
-            <div className="post-content">
-                <p>{content}</p>
-                <div className="job-card">
-                    <a href={jobLink} target="_blank" rel="noopener noreferrer">
-                        <div className="job-card-content">
-                            <h4>View Job</h4>
-                            <p>Open Rank-Associate Professor or Full Professor</p>
-                            <p>Georgia Institute of Technology</p>
-                        </div>
-                    </a>
+
+                {/* Post Content */}
+                <div className="post-content mb-3">
+                    <p>{content}</p>
+                    <div className="job-card card bg-light p-3">
+                        <a href={jobLink} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                            <div className="job-card-content">
+                                <h6 className="mb-1">View Job</h6>
+                                <p className="mb-0 text-muted">Open Rank-Associate Professor or Full Professor</p>
+                                <p className="mb-0 text-muted">Georgia Institute of Technology</p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div className="post-reactions">
-                <span>👍 {reactionsCount}</span>
-                <span>{commentsCount} comments</span>
-                <span>{repostsCount} reposts</span>
-            </div>
-            <div className="post-actions">
-                <button>Like</button>
-                <button>Comment</button>
-                <button>Repost</button>
-                <button>Send</button>
+
+                {/* Reactions */}
+                <div className="post-reactions d-flex justify-content-between text-muted mb-3">
+                    <span>👍 {reactionsCount}</span>
+                    <span>{commentsCount} comments</span>
+                    <span>{repostsCount} reposts</span>
+                </div>
+
+                {/* Post Actions */}
+                <div className="post-actions d-flex justify-content-around">
+                    <button className="btn btn-light btn-sm">Like</button>
+                    <button className="btn btn-light btn-sm">Comment</button>
+                    <button className="btn btn-light btn-sm">Repost</button>
+                    <button className="btn btn-light btn-sm">Send</button>
+                </div>
             </div>
         </div>
     );

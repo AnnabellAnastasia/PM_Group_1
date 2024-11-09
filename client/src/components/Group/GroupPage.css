@@ -1,0 +1,51 @@
+.group-page-container {
+    margin-top: 20px;
+  }
+  
+  .group-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .group-card-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .group-card-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-bottom: 20px;
+  }
+  
+  .group-card-content {
+    padding: 15px 20px;
+  }
+  
+  .group-card-separator {
+    border-top: 1px solid #e0e0e0;
+    margin: 15px 0;
+  }
+  
+  .group-admin {
+    font-weight: bold;
+    margin-top: 15px;
+  }
+  
+  .group-members-count {
+    margin-bottom: 15px;
+  }
+  
+  .group-members-list {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .group-members-list li {
+    margin-bottom: 5px;
+  }
+  
+  

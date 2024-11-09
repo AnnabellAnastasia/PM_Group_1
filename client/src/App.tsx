@@ -13,6 +13,10 @@ import Services from "./components/Services/Services";
 import Social from "./components/Social/Social";
 import Contact from "./components/Contact/Contact";
 import Account from "./components/Account/Account";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Footer from "./components/Footer/Footer";
+import Group from "./components/Group/Group";
+import GroupPage from './components/Group/GroupPage'; 
 
 // Authentication Wrapper
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
@@ -49,17 +53,22 @@ const router = createBrowserRouter([
             element: <Services />,
           },
           {
-            path: "social",
-            element: <Social />,
-          },
-          {
             path: "contact",
             element: <Contact />,
           },
           {
-            path: "account",
+            path: "account/:userID",
             element: <Account />,
           },
+          {
+            path: "group",
+            element: <Group />,
+          },
+          {
+            path: "group/:groupId",
+            element: <GroupPage />,
+          },
+
         ],
       },
       {
@@ -69,6 +78,10 @@ const router = createBrowserRouter([
             path: "posts",
             element: <PostFeed />,
           },
+          {
+            path: "social",
+            element: <Social />,
+          },
         ],
       },
     ],
@@ -77,9 +90,10 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <RouterProvider router={router} />
-    </>
+      <Footer />
+    </div>
   );
 }
 

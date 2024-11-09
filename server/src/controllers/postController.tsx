@@ -1,12 +1,17 @@
 import model from "../models/post";
+import Comment from "../models/comment"
+import Like from "../models/like"
 
 const controller = {
   // GET /posts - Get all posts
   all: async (req: any, res: any, next: any) => {
     model
-      .find().populate('creator', 'firstName lastName image')
+      .find()
+      .populate('creator', 'firstName lastName image')
       .then((posts) => {
         if (posts && posts[0]) {
+          // Sort posts by newest
+          posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
           res.json(posts);
         } else {
           res.status(404).json("No Posts Found");
@@ -71,14 +76,9 @@ const controller = {
   delete: async (req: any, res: any, next: any) => {
     let id = req.params.id;
 
-    model
-      .findByIdAndDelete(id, { useFindAndModify: false })
-			.then((post) => {
-        if (post) {
-          res.json(post);
-        } else {
-          res.status(404).json(`No Posts Found with ID ${req.params.id}`);
-        }
+    Promise.all([model.findByIdAndDelete(id, { useFindAndModify: false }), Comment.deleteMany({post : id}), Like.deleteMany({post : id})])
+			.then(() => {
+        res.sendStatus(200);
       })
       .catch((err: any) => {
         res.json({ message: err.message });
