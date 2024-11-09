@@ -2,22 +2,49 @@ import { error } from "console";
 import mongoose from "mongoose";
 
 export async function fetchMessages(messageId: string) {
-  const response = fetch(`http://localhost:8080/api/messages/${messageId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  }).then((response) => {
+  console.log("fetching messages");
+  try{
+    const response = await fetch(`http://localhost:8080/api/messages/${messageId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
     if (!response.ok) {
-      console.error(
-        `An error has occurred fetching messages: ${response.statusText}`
-      );
+      console.error(`An error has occurred fetching messages: ${response.statusText}`);
       return "-1";
-    } else {
-      return response.json();
     }
-  });
+    
+    const data = await response.json();
+    console.log('response', data.mList);
+    return data.mList;
+  }catch (error) {
+    console.error(`Fetch error: ${error}`);
+    return "-1";
+  }
+
+  // const response = fetch(`http://localhost:8080/api/messages/${messageId}`, {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   credentials: "include",
+  // }).then((response) => {
+  //   if (!response.ok) {
+  //     console.error(
+  //       `An error has occurred fetching messages: ${response.statusText}`
+  //     );
+  //     return "-1";
+  //   } else {
+  //     response.json()
+  //     .then((res) => {
+  //       console.log('response', res.mList);
+        
+  //       return res.mList;
+  //     })
+  //   }
+  // });
 
 }
 
@@ -62,10 +89,7 @@ export async function fetchAll() {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }).then((res) => {
-      console.log(res);
     })
-    console.log(response);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     } else {

@@ -25,7 +25,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
   const [chatList, setChatList] = useState<any>([]);
-  //for opening new chat
+  // for opening new chat
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
   const openNew = () => setIsNewOpen(true);
   const closeNew = () => setIsNewOpen(false);
@@ -71,11 +71,11 @@ const ChatModal: React.FC<ChatModalProps> = ({
                 </button>
               </div>
               <ChatPreview messages={chatList} />
-              <div className="chatFooter">
+              {/* <div className="chatFooter">
                 <button className="newChat" onClick={openNew}>
                   New Chat
                 </button>
-              </div>
+              </div> */}
             </>
           ) : (
             <>

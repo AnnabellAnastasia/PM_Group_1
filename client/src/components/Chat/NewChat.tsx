@@ -34,7 +34,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
   const handleClick = (event: any) => {
     let id = event.target.getAttribute("data-key");
     let friend = event.target.getAttribute("friend-name");
-    if(id) {
+    if (id) {
       console.log(id);
       console.log(user.id);
       setSelectedUserId(id);
@@ -44,7 +44,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="newChatContainer">
+    <>
       {isDetailOpen ? (
         <ChatDetail
           isNew={true}
@@ -54,7 +54,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
           chatUser={friendName}
         />
       ) : (
-        <>
+        <div className="newChatContainer">
           <div className="newTop">
             <button className="closeNewChat" onClick={onClose}>
               Back
@@ -76,17 +76,9 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
                 </div>
               );
             })}
-           
-              <ChatDetail
-                isNew={true}
-                otherUserId={selectedUserId}
-                isOpen={isDetailOpen}
-                onClose={closeDetail}
-              />
-            
           </div>
           <div className="newBottom"></div>
-        </>
+        </div>
       )}
       {/* <div className="newTop">
         <button className="closeNewChat" onClick={onClose}>
@@ -117,7 +109,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
           />
         )}
       </div> */}
-    </div>
+    </>
   );
 };
 export default NewChat;

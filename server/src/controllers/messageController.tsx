@@ -24,7 +24,6 @@ const controller: any = {
         return res.status(204).json("No conversations");
       }
 
-      console.log("result of db op", result);
 
       cList = result;
 
@@ -42,7 +41,6 @@ const controller: any = {
 
       if(mList.length > 0) {
         res.json({messages: mList});
-        console.log(mList);
       } else {
         res.status(204).json("no messages found");
       }
@@ -50,46 +48,6 @@ const controller: any = {
       console.error("Error fetching messages", err);
       res.status(500).json({message:err.message});
     }
-
-
-
-    // model
-    //   .find([
-    //     {
-    //       $or: [{ user1: req.id }, { user2: req.id }],
-    //     },
-    //     {
-    //       $sort: { timeStamp: -1 },
-    //     },
-    //   ])
-    //   .then((result) => {
-    //     console.log(result);
-    //     if (result) {
-    //       console.log("result of db op", result);
-    //       cList = result;
-    //       cList.forEach((element) => {
-    //         // let convo = new model(element);
-    //         //get length of messages array
-    //         let len = element.messages.length;
-    //         //get the message with the id at the end of the array and push it into the return list
-    //         message.findById(element.messages[len - 1]).then((msg) => {
-    //           mList.push(msg);
-    //         });
-    //       });
-    //       if (mList && mList[0]) {
-    //         let list = JSON.stringify(mList);
-    //         res.json({ messages: list });
-    //         console.log(mList);
-    //       } else {
-    //         res.status(204).json("No messsages found");
-    //       }
-    //     } else {
-    //       res.status(204).json("no conversations");
-    //     }
-    //   })
-    //   .catch((err: any) => {
-    //     res.json({ message: err.message });
-    //   });
   },
 
   /*
@@ -104,16 +62,33 @@ const controller: any = {
           res.status(204).json("No messages found");
         else if (response.messages && response.messages.length) {
           let mList: any[] = [];
-          response.messages.forEach((msg: Types.ObjectId) => {
-            message.findById(msg).then((rMsg: any) => {
-              mList.push(rMsg);
-            });
-          });
-          if (mList) {
-            res.json({messages: mList}); //send entire chat object
-          } else {
-            res.status(404).json("error fetching conversation");
-          }
+          Promise.all(
+            response.messages.map((msg: Types.ObjectId) => {
+              return message.findById(msg).then((rMsg: any) => rMsg);
+            })
+          )
+          .then((messages) => {
+            mList.push(...messages);
+            
+            console.log(mList);
+            return res.json({mList});
+          })
+
+          // Promise.all(
+          //   response.messages.forEach((msg: Types.ObjectId) => {
+          //     message.findById(msg).then((rMsg: any) => {
+          //       mList.push(rMsg);
+          //     })
+          //   })
+          // )
+          
+          // if (mList) {
+          //   console.log(mList);
+          //   return res.json({messages: mList}); //send entire chat object
+          // } else {
+          //   console.log("did not find mlist");
+          //   res.status(404).json("error fetching conversation");
+          // }
         }
       })
       .catch((err: any) => {
@@ -128,7 +103,6 @@ const controller: any = {
     let messagesList: any[];
     messagesList =
       typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    console.log(messagesList);
     let conversationId: any = null;
     let messageIdList: Types.ObjectId[] = [];
     Promise.all(

@@ -34,21 +34,42 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   const [hayMessages, setHayMessages] = useState<boolean>();
 
   useEffect(() => {
-    console.log(socket);
+    // console.log(socket);
     if (!isNew && chatId) {
       const getAllMessages = async () => {
-        fetchMessages(chatId).then((response: any) => {
-          if (typeof response === "string") {
-            JSON.parse(response).then((arr: any) => setChatList(arr));
-          } else if(response.messages) {
-            setChatList(response.messages);
-          }
-        });
-        console.log(chatList);
+        try {
+          const response = await fetchMessages(chatId);
+          if(typeof response === "string") {
+            console.log("response was a string, parsing as json");
+            const parsedResponse = JSON.parse(response);
+            if(Array.isArray(parsedResponse)) {
+              console.log("is array");
+              setChatList(parsedResponse);
+            } else {
+              console.warn("Parsed response is not array");
+            }
+          } else if(Array.isArray(response)) {
+            console.log("Setting chat response directly from response");
+            setChatList(response);
+          } 
+          
+        } catch (error:any) {
+          console.error("error fetching messages:", error);
+        }
+        // fetchMessages(chatId).then((response: any) => {
+        //   console.log("before idk");
+        //   if (typeof response === "string") {
+        //     console.log("it was a string");
+        //     JSON.parse(response).then((arr: any) => setChatList(arr));
+        //   } else if(response[0]) {
+        //     setChatList(response);
+        //     console.log("set messages", chatList);
+        //   }
+        // });
       };
       setChatId(chatId);
-      getAllMessages();
       setHayMessages(true);
+      getAllMessages();
     } else if (isNew && otherUserId) {
       //if is a new chat call api to start a new conversation and get the chat id.
       const startNewChat = async () => {
@@ -56,7 +77,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
         // const rsponse = await JSON.parse(response);
         if (parsed[0].creator) {
           console.log("there are messages");
-          console.log(parsed[0].body);
+          console.log(parsed);
           setHayMessages(true);
           setChatId(parsed[0].chatId);
           setChatList(parsed);

@@ -13,7 +13,6 @@ dotenv.config();
 
 const app: Express = express();
 var server: http.Server = http.createServer(app);
-// const httpServer = http.createServer(app);
 
 app.use(cookieParser());
 app.use(
@@ -42,32 +41,34 @@ const PORT: string | number = process.env.PORT || 8080;
     process.exit(1);
   }
 })();
-
-const io = new Server(server, {
-  cors: {
-    origin: process.env.FRONTEND_URI,
-    credentials: true,
-  },
-});
-io.on("connection", (socket) => {
-  console.log("user connected ", socket.id);
-  socket.on("join", (data) => {
-    console.log(`joined chat ${data}`);
-    socket.join(data);
+if(server) {
+  const io = new Server(server, {
+    cors: {
+      origin: process.env.FRONTEND_URI,
+      credentials: true,
+    },
   });
-  socket.on("message", (data) => {
-    console.log(data);
-    //implement chat id
-    socket.to(data.chatId).emit("receive_message", data);
+  io.on("connection", (socket) => {
+    console.log("user connected ", socket.id);
+    socket.on("join", (data) => {
+      console.log(`joined chat ${data}`);
+      socket.join(data);
+    });
+    socket.on("message", (data) => {
+      console.log("message sent", data);
+      //implement chat id
+      socket.to(data.chatId).emit("receive_message", data);
+    });
+    socket.on("leave", (data) => {
+      console.log(`left room ${data}`);
+      socket.leave(data);
+    })
+    socket.on("disconnect", () => {
+      console.log("user disconnected");
+    });
   });
-  socket.on("leave", (data) => {
-    console.log(`left room ${data}`);
-    socket.leave(data);
-  })
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
-});
+  
+}
 
 // App routes
 app.use("/users", userRoutes);
