@@ -182,6 +182,8 @@ export async function fetchAllUsersTest() {
 		console.error(err);
 		alert("Error please try again");
 	}
+
+}
 export async function handleLogOut(
   event: any,
   navigate: Function,

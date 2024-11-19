@@ -245,7 +245,7 @@ const controller: any = {
           const { _id: id, firstName, lastName, image } = user;
           users.push({ _id: id, firstName, lastName, image });
         });
-        res.json(JSON.stringify(users));
+        res.json(users);
       })
       .catch((err) => next(err));
   },

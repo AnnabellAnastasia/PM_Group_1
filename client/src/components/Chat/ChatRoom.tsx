@@ -9,7 +9,7 @@ import "./ChatRoom.css";
 import ChatPreview from "./ChatPreview";
 import Message from "./ChatPreview";
 import ChatDetail from "./ChatDetail";
-import { fetchAll } from "../../utils/messageAPI";
+import { fetchAll, fetchMessages } from "../../utils/messageAPI";
 import NewChat from "./NewChat";
 
 interface ChatModalProps {
@@ -25,6 +25,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
   const [chatList, setChatList] = useState<any>([]);
+  const [chatDetailList, setChatDetailList] = useState<any[]>([]);//2d array? 
   // for opening new chat
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
   const openNew = () => setIsNewOpen(true);
@@ -49,8 +50,28 @@ const ChatModal: React.FC<ChatModalProps> = ({
         }
       });
     };
+
     getChats();
     // if (!chatList) setIsNewOpen(true);
+    
+  }, []);
+
+  useEffect(() => {
+    const getAllChatDetails = async() => {
+      if(!chatList) return;
+      const messagePromises = chatList.map((element:any) => {
+        if(element.chatId) {
+          const id:any = element.chatId;
+          return fetchMessages(id);
+        }
+        return null;
+      })
+      let chatDetailListPreliminary = await Promise.all(messagePromises);
+      chatDetailListPreliminary = chatDetailListPreliminary.filter((elem) => elem !== null);
+      setChatDetailList(chatDetailListPreliminary);
+    }
+
+    getAllChatDetails();
   }, []);
 
   if (!isOpen) return null;
