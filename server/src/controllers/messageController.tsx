@@ -11,41 +11,46 @@ const controller: any = {
    *    Get all messages between user and anyone else
    */
   all: async (req: any, res: any, next: any) => {
-    let cList: any[]; //conversations
-    let mList: any[] = []; //messages (last messages preferrably)
-    console.log("fetch all messages db op called");
-
+    
+    let conversationList:any[];
     try {
-      const result = await model.find({
-        $or: [{user1: req.id}, {user2: req.id}],
-      }).sort({timestamp: -1}); 
+      const result = await model
+        .find({
+          $or: [{ user1: req.id }, { user2: req.id }],
+        })
+        .sort({ timestamp: -1 });
 
-      if(!result || result.length === 0) {
+      conversationList = await Promise.all(result);
+      console.log("result from dbOp: ", conversationList);
+
+      if (!conversationList || conversationList.length === 0) {
+        console.log("returned 204");
         return res.status(204).json("No conversations");
-      }
-
-
-      cList = result;
-
-      const messagePromises = cList.map((element) => {
-        const len = element.messages.length;
-        if(len > 0) {
-          return message.findById(element.messages[len -1]);
-        }
-        return null;
-      });
-
-      mList = await Promise.all(messagePromises);
-
-      mList = mList.filter((msg) => msg !== null);
-
-      if(mList.length > 0) {
-        res.json({messages: mList});
       } else {
-        res.status(204).json("no messages found");
+        let messagesList: any[][] = Array.from({length: conversationList.length}, () => []);
+        if(conversationList[0].messages && conversationList[0].messages.length){
+       
+          Promise.all(
+            conversationList.map((conversation:any, i:number) => {
+              //create promise for each list of messages
+              return Promise.all(
+                conversation.messages.map((msgId:any) => {
+                  return message.findById(msgId)
+                  .populate('creator', 'firstName lastName image').then((rmsg) => {
+                    messagesList[i].push(rmsg);
+                  });
+                })
+              );
+            })
+          ).then(() => {
+            messagesList = messagesList.filter((msg) => msg[0] !== null);
+            console.log("messages have been retrieved");
+            console.log("retrieved messages ", messagesList);
+            return res.json(messagesList);
+          })
+        }
       }
-    } catch (err:any) {
-      console.error("Error fetching messages", err);
+    } catch (err: any) {
       res.status(500).json({message:err.message});
     }
   },
@@ -66,29 +71,11 @@ const controller: any = {
             response.messages.map((msg: Types.ObjectId) => {
               return message.findById(msg).then((rMsg: any) => rMsg);
             })
-          )
-          .then((messages) => {
+          ).then((messages) => {
             mList.push(...messages);
-            
             console.log(mList);
-            return res.json({mList});
-          })
-
-          // Promise.all(
-          //   response.messages.forEach((msg: Types.ObjectId) => {
-          //     message.findById(msg).then((rMsg: any) => {
-          //       mList.push(rMsg);
-          //     })
-          //   })
-          // )
-          
-          // if (mList) {
-          //   console.log(mList);
-          //   return res.json({messages: mList}); //send entire chat object
-          // } else {
-          //   console.log("did not find mlist");
-          //   res.status(404).json("error fetching conversation");
-          // }
+            return res.json({ mList });
+          });
         }
       })
       .catch((err: any) => {
@@ -181,3 +168,42 @@ const controller: any = {
 };
 
 export default controller;
+
+// let cList: any[]; //conversations
+// let mList: any[] = []; //messages (last messages preferrably)
+// console.log("fetch all messages db op called");
+
+// try {
+//   const result = await model.find({
+//     $or: [{user1: req.id}, {user2: req.id}],
+//   }).sort({timestamp: -1});
+
+//   if(!result || result.length === 0) {
+//     console.log("returned 204");
+//     return res.status(204).json("No conversations");
+//   }
+
+//   cList = result;
+//   console.log("results from fetchall", result);
+
+//   const messagePromises = cList.map((element) => {
+//     const len = element.messages.length;
+//     if(len > 0) {
+//       return message.findById(element.messages[len -1]);
+//     }
+//     return null;
+//   });
+
+//   mList = await Promise.all(messagePromises);
+
+//   mList = mList.filter((msg) => msg !== null);
+
+//   if(mList.length > 0) {
+//     res.json({messages: mList});
+//   } else {
+//     res.status(204).json("no messages found");
+//   }
+// } catch (err:any) {
+//   console.error("Error fetching messages", err);
+//   res.status(500).json({message:err.message});
+// }

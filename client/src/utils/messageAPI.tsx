@@ -23,29 +23,6 @@ export async function fetchMessages(messageId: string) {
     console.error(`Fetch error: ${error}`);
     return "-1";
   }
-
-  // const response = fetch(`http://localhost:8080/api/messages/${messageId}`, {
-  //   method: "GET",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   credentials: "include",
-  // }).then((response) => {
-  //   if (!response.ok) {
-  //     console.error(
-  //       `An error has occurred fetching messages: ${response.statusText}`
-  //     );
-  //     return "-1";
-  //   } else {
-  //     response.json()
-  //     .then((res) => {
-  //       console.log('response', res.mList);
-        
-  //       return res.mList;
-  //     })
-  //   }
-  // });
-
 }
 
 //save new messages to db

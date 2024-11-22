@@ -104,13 +104,16 @@ const PageNavbar: React.FC = () => {
             <Nav.Link className="mt-2" href="/social">Social</Nav.Link>
             <Nav.Link className="mt-2" href="/contact">Contact</Nav.Link>
             <Nav.Link className="mt-2" href="/group">Group</Nav.Link>
+            {user.id && 
             <Nav.Link className="openChatButton" ref={ref} onClick={toggleChat}>
-              <Image
-                className="message"
-                src="/messageIcon.png"
-                alt="message icon"
-              />
-            </Nav.Link>
+            <Image
+              className="message"
+              src="/messageIcon.png"
+              alt="message icon"
+            />
+          </Nav.Link>
+            }
+            
             <NavDropdown
               className="px-2"
               align={{ xs: "start" }}
@@ -152,11 +155,12 @@ const PageNavbar: React.FC = () => {
           </Nav>
         </Navbar.Collapse>
         {/* ----- CHAT MODAL ----- */}
+        {user.id && 
         <ChatModal
           isOpen={isChatOpen}
           onClose={toggleChat}
           triggerRef={ref}
-        ></ChatModal>
+        ></ChatModal> }
       </Navbar>
       {pageAlert.error ? (
         <Alert className="errorAlert" variant="danger">

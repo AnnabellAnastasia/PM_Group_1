@@ -23,8 +23,15 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
   useEffect(() => {
     const getFriends = async () => {
       fetchAllUsersTest().then((response) => {
-        const jsonArray = JSON.parse(response);
-        setFriendList(jsonArray);
+        if(response) {
+          let jsonArray:any;
+          JSON.parse(response)
+          .then((res:any) => {
+            jsonArray = res;
+          })
+          setFriendList(jsonArray);
+        }
+        
       });
     };
     getFriends();
@@ -61,7 +68,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
             </button>
           </div>
           <div className="newMiddle">
-            {friendList.map((user: any) => {
+            {friendList && friendList.map((user: any) => {
               return (
                 <div
                   className="friendContainer"

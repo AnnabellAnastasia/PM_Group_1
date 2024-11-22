@@ -1,11 +1,10 @@
 import React from "react";
-import Message from "./ChatPreview";
+import Message from "./ChatRoom";
 import "./ChatDetail.css";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../ContextWrapper";
 import { io, Socket } from "socket.io-client";
 import { closeMessage, fetchMessages, newChat } from "../../utils/messageAPI";
-import MessagesList from "./ChatMessage";
 import { SocketContext } from "../SocketContext";
 
 interface CommonChatDetailProps {
@@ -15,6 +14,7 @@ interface CommonChatDetailProps {
   otherUserId?: string;
   isNew: boolean;
   chatUser?: any;
+  passChatList?: any[];
 }
 
 const ChatDetail: React.FC<CommonChatDetailProps> = ({
@@ -24,6 +24,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   otherUserId,
   isNew,
   chatUser,
+  passChatList,
 }) => {
   const socket = useContext(SocketContext);
   const [chatList, setChatList] = useState<any>([]);
@@ -32,44 +33,25 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   const [newMessage, setNewMessage] = useState("");
   const { user } = useContext(UserContext);
   const [hayMessages, setHayMessages] = useState<boolean>();
+  const [isErr, setErr] = useState<boolean>();
 
   useEffect(() => {
     // console.log(socket);
-    if (!isNew && chatId) {
+    if (!isNew && chatId && passChatList) {
       const getAllMessages = async () => {
-        try {
-          const response = await fetchMessages(chatId);
-          if(typeof response === "string") {
-            console.log("response was a string, parsing as json");
-            const parsedResponse = JSON.parse(response);
-            if(Array.isArray(parsedResponse)) {
-              console.log("is array");
-              setChatList(parsedResponse);
-            } else {
-              console.warn("Parsed response is not array");
-            }
-          } else if(Array.isArray(response)) {
-            console.log("Setting chat response directly from response");
-            setChatList(response);
-          } 
-          
-        } catch (error:any) {
-          console.error("error fetching messages:", error);
-        }
-        // fetchMessages(chatId).then((response: any) => {
-        //   console.log("before idk");
-        //   if (typeof response === "string") {
-        //     console.log("it was a string");
-        //     JSON.parse(response).then((arr: any) => setChatList(arr));
-        //   } else if(response[0]) {
-        //     setChatList(response);
-        //     console.log("set messages", chatList);
-        //   }
-        // });
+        // let temp:any = JSON.parse(passChatList);
+        setChatList(passChatList || []);
       };
       setChatId(chatId);
       setHayMessages(true);
       getAllMessages();
+      socket.emit("join", chatId, (response: any) => {
+        console.log(response.status);
+        if(response.status == "400") {
+          setErr(true);
+          console.log("Unable to join room");
+        }
+      });
     } else if (isNew && otherUserId) {
       //if is a new chat call api to start a new conversation and get the chat id.
       const startNewChat = async () => {
@@ -80,21 +62,36 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
           console.log(parsed);
           setHayMessages(true);
           setChatId(parsed[0].chatId);
-          setChatList(parsed);
+          setChatList(parsed || []);
         } else {
           console.log("there are no messages");
           setChatId(parsed);
         }
+        if(thisChatId) {
+          socket.emit("join", thisChatId, (response: any) => {
+            console.log(response.status);
+            if(response.status == "400") {
+              setErr(true);
+              console.log("Unable to join room");
+            }
+          });
+        }
       };
       startNewChat();
     }
-  }, []);
+    
+    
 
-  useEffect(() => {
-    if (thisChatId && socket) {
-      socket.emit("join", thisChatId);
-    }
-  }, [thisChatId]);
+    return () => {
+      socket.emit("leave", thisChatId);
+    };
+  }, [chatId, isOpen, socket]);
+
+  // useEffect(() => {
+  //   if (thisChatId && socket) {
+  //     socket.emit("join", thisChatId);
+  //   }
+  // }, [thisChatId]);
 
   useEffect(() => {
     if (!socket) return;
@@ -104,7 +101,13 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       setNewChatList((list: any) => [...list, data]);
     };
 
+    const handleError = (data: any) => {
+      console.error("connection error ", data);
+    }
+
     socket.on("receive_message", handleReceiveMessage);
+
+    socket.on("connect_error", handleError);
 
     return () => {
       socket.off("receive_message", handleReceiveMessage);
@@ -120,7 +123,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
         chatId: thisChatId,
         // time: new Date(Date.now()), //add time to messages
       };
-      await socket?.emit("message", messageData);
+      socket.emit("message", messageData);
+      //socket?.emit
       setNewChatList((list: any) => [...list, messageData]);
       setChatList((list: any) => [...list, messageData]);
       setNewMessage("");
@@ -131,7 +135,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   async function handleBack(event: any) {
     if (newChatList && newChatList.length)
       await closeMessage(event, newChatList); //save messages b4 leaving
-    socket.emit("leave", thisChatId);
+    // socket.emit("leave", thisChatId);
+    // console.log("chat leave emitted");
     setChatId("");
     onClose();
   }
@@ -145,7 +150,10 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
 
       <div className="messageAndEditTextContainer">
         <div className="chatDetailMessageContainer">
+          {isErr && <h6>There was an error connecting to the chat !</h6>}
           {hayMessages &&
+            Array.isArray(chatList) &&
+            chatList &&
             chatList.map(function (message: any) {
               return <MessagesList key={message._id} messageObj={message} />;
             })}
@@ -171,5 +179,19 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     </div>
   );
 };
+
+function MessagesList({ messageObj }: any) {
+  const { user } = useContext(UserContext);
+  console.log("rendering messages");
+  return (
+    <div
+      className="messageBoxSender"
+      key={messageObj._id}
+      id={messageObj.creator == user.id ? "you" : "other"}
+    >
+      <p className="content">{messageObj.body}</p>
+    </div>
+  );
+}
 
 export default ChatDetail;

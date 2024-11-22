@@ -10,6 +10,7 @@ import http from "http";
 import commentRoutes from './routes/commentRoutes';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
+import { error } from 'console';
 
 dotenv.config();
 
@@ -52,9 +53,15 @@ if(server) {
   });
   io.on("connection", (socket) => {
     console.log("user connected ", socket.id);
-    socket.on("join", (data) => {
+    socket.on("join", (data, callback) => {
       console.log(`joined chat ${data}`);
-      socket.join(data);
+      if(data) {
+        socket.join(data);
+        callback({status:"ok"});
+      } else {
+        callback({status:"400"})
+        console.error("chat id not sent with request");
+      }
     });
     socket.on("message", (data) => {
       console.log("message sent", data);
@@ -63,7 +70,12 @@ if(server) {
     });
     socket.on("leave", (data) => {
       console.log(`left room ${data}`);
-      socket.leave(data);
+      if(data) {
+        socket.leave(data);
+      } else {
+        console.error("chat id not sent with request");
+      }
+      
     })
     socket.on("disconnect", () => {
       console.log("user disconnected");
