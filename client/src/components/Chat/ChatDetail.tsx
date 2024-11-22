@@ -14,7 +14,7 @@ interface CommonChatDetailProps {
   otherUserId?: string;
   isNew: boolean;
   chatUser?: any;
-  passChatList?: any[];
+  passChatList?: any;
 }
 
 const ChatDetail: React.FC<CommonChatDetailProps> = ({
@@ -37,15 +37,16 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
 
   useEffect(() => {
     // console.log(socket);
-    if (!isNew && chatId && passChatList) {
+    if (!isNew && passChatList) {
       const getAllMessages = async () => {
         // let temp:any = JSON.parse(passChatList);
-        setChatList(passChatList || []);
+        console.log("passChatList", passChatList);
+        setChatList(passChatList.messages || []);
       };
-      setChatId(chatId);
+      setChatId(passChatList.messages[0].chatId);
       setHayMessages(true);
       getAllMessages();
-      socket.emit("join", chatId, (response: any) => {
+      socket.emit("join", passChatList.messages[0].chatId, (response: any) => {
         console.log(response.status);
         if(response.status == "400") {
           setErr(true);

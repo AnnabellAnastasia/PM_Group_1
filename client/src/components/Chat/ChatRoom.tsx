@@ -10,6 +10,7 @@ import "./ChatRoom.css";
 import ChatDetail from "./ChatDetail";
 import { fetchAll, fetchMessages } from "../../utils/messageAPI";
 import NewChat from "./NewChat";
+import { UserContext } from "../ContextWrapper";
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -23,8 +24,8 @@ const ChatModal: React.FC<ChatModalProps> = ({
   triggerRef,
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
-  const [chatList, setChatList] = useState<any>([]);
-  const [chatDetailList, setChatDetailList] = useState<any[]>([]);//2d array? 
+  const [mList, setMList] = useState<any>([]);
+  const [chatList, setChatList] = useState<any[]>([]); //2d array
   // for opening new chat
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
   const openNew = () => setIsNewOpen(true);
@@ -37,90 +38,29 @@ const ChatModal: React.FC<ChatModalProps> = ({
     });
   }, [triggerRef]);
 
-  // useEffect(() => {
-    
-  //   const getChats = async () => {
-  //     fetchAll().then((response) => {
-  //       if (typeof response === "string") {
-  //         JSON.parse(response).then((arr:any) => {
-  //           setChatList(arr);
-  //         });
-  //       } else if(response.messages) {
-  //         setChatList(response.messages);
-  //       }
-  //     });
-  //   };
-
-  //   getChats();
-  //   // if (!chatList) setIsNewOpen(true);
-    
-  // }, []);
-
   useEffect(() => {
-    const getAllChats = async() => {
+    const getAllChats = async () => {
       console.log("get all chats called");
       fetchAll().then((response) => {
-        if(typeof response === "string") {
-          console.log("parsing response string");
-          JSON.parse(response).then((arr:any)=> {
-            setChatDetailList(arr);
-          })
-        } else if (response[0].messages) {
-          console.log("directly setting chat detail list");
-          setChatDetailList(response);
-        } else {
-          setChatDetailList(response);
-        }
-        console.log("api response", response);
-      })
-    }
+        // if (typeof response === "string") {
+        //   console.log("parsing response string");
+        //   JSON.parse(response).then((arr: any) => {
+        //     setChatDetailList(arr);
+        //   });
+        // } else if (response[0].messages) {
+        //   console.log("directly setting chat detail list");
+        //   setChatDetailList(response);
+        // } else {
+        //   setChatDetailList(response);
+        // }
+        setChatList(response);
+        // response.map((obj:any) => {
+        //   setMList((list:any) => [...list, obj])
+        // });
+      });
+    };
 
     getAllChats();
-
-    // const getAllChatDetails = async() => {
-    //   console.log("get all chat details called");
-    //   fetchAll().then((response) => {
-    //     if (typeof response === "string") {
-    //       JSON.parse(response).then((arr:any) => {
-    //         setChatList(arr);
-    //       });
-    //     } else if(response.messages) {
-    //       setChatList(response.messages);
-    //       console.log("chatlist set");
-    //     }
-    //     getChatDetailList();
-        
-    //     })
-       
-    //   }
-    //   const getChatDetailList = async() => {
-    //     console.log("set chat detail list called");
-    //     const messagePromises = chatList.map((element:any) => {
-    //       if(element.chatId) {
-    //         console.log("fetching chat");
-    //         const id:any = element.chatId;
-    //         return fetchMessages(id);
-    //       }
-    //       return null;
-    //     });
-    //     let chatDetailListPreliminary = await Promise.all(messagePromises);
-    //     chatDetailListPreliminary = chatDetailListPreliminary.filter((elem) => elem !== null);
-    //     setChatDetailList(chatDetailListPreliminary);
-    //     console.log("getting chat details");
-    //     console.log("chatdetaillist", chatDetailListPreliminary);
-      // }
-      // getAllChatDetails();
-      // const messagePromises = chatList.map((element:any) => {
-      //   if(element.chatId) {
-      //     const id:any = element.chatId;
-      //     return fetchMessages(id);
-      //   }
-      //   return null;
-      // })
-      // let chatDetailListPreliminary = await Promise.all(messagePromises);
-      // chatDetailListPreliminary = chatDetailListPreliminary.filter((elem) => elem !== null);
-      // setChatDetailList(chatDetailListPreliminary);
-    
   }, []);
 
   if (!isOpen) return null;
@@ -140,7 +80,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   <img src="close.png"></img>
                 </button>
               </div>
-              <ChatPreview messages={chatDetailList} />
+              <ChatPreview messages={chatList} />
               {/* <div className="chatFooter">
                 <button className="newChat" onClick={openNew}>
                   New Chat
@@ -164,13 +104,19 @@ const ChatModal: React.FC<ChatModalProps> = ({
   }
 };
 
-interface Message {
+interface Messages {
   body: string;
-  creator: {firstName:string, lastName:string, image:any}
-  chatId: string; //should be chat id
+  creator: any;
+  chatId: any;
+}
+
+interface Message {
+  messages: Messages[];
+  user1: { firstName: string; lastName: string; image: any };
+  user2: { firstName: string; lastName: string; image: any };
 }
 interface ChatMessagePreviewProps {
-  messages: Message[][];
+  messages: Message[];
 }
 
 const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
@@ -184,26 +130,27 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const openNew = () => setIsNewOpen(true);
   const closeNew = () => setIsNewOpen(false);
   const socket = useContext(SocketContext);
-  const [selectedChatList, setSelectedChatList] = useState<any>([]);
+  const [selectedConvo, setSelectedConvo] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>();
+  const { user } = useContext(UserContext);
 
-  const handleOpenChatDetail = async(event: any) => {
+  const handleOpenChatDetail = async (event: any) => {
+    const rawConvo = event.target.getAttribute("message-list-key");
+    const convo = JSON.parse(rawConvo);
+    setSelectedConvo(convo);
+    setIsDetailOpen(true);
     // setSelectedMessage(message);
-    setLoading(true);
-    const id = event.target.getAttribute("data-key");
-    const givenList = event.target.getAttribute("message-list-key");
-    console.log(messages);
-    const list = JSON.parse(givenList)
-    setSelectedChatList(list);
-    console.log("selected chat list ", selectedChatList);
-    setSelectedChatId(id);
-    setLoading(false);
-    if(!loading) {
-      setIsDetailOpen(true);
-    }
-    
-    // if(id && socket) {
-    //   socket.emit("join", id);
+    // setLoading(true);
+    // const id = event.target.getAttribute("data-key");
+    // const givenList = event.target.getAttribute("message-list-key");
+    // console.log(messages);
+    // const list = JSON.parse(givenList);
+    // setSelectedChatList(list);
+    // console.log("selected chat list ", selectedChatList);
+    // setSelectedChatId(id);
+    // setLoading(false);
+    // if (!loading) {
+    //   setIsDetailOpen(true);
     // }
   };
 
@@ -227,36 +174,50 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
               chatId={selectedChatId}
               isOpen={isDetailOpen}
               onClose={closeDetail}
-              passChatList={selectedChatList}
+              passChatList={selectedConvo}
               isNew={false}
             ></ChatDetail>
           ) : (
             <>
               <div className="chatMiddle">
-                {messages && messages.map((messageList: Message[]) => 
-                messageList?.length > 0 && (
-                  
-                    <div
-                    key={messageList[0].chatId}
-                    className="chatPreviewContainer"
-                    message-list-key={JSON.stringify(messageList)}
-                    data-key={messageList[0].chatId}
-                    onClick={handleOpenChatDetail}
-                    >
-                    <div className="senderIcon">
-                      {/* Placeholder for Profile Icon */}
-                    </div>
-                    <div className="chatPreview">
-                      <h6 className="chatSender">{messageList[0].creator.firstName} {messageList[0].creator.lastName}</h6>
-                      <p className="chatContent">{messageList[0].body}</p>                      
-                    </div>
-                    <button className="openChatButton">
-                      <img src="forwardArrow.png" alt="Open Chat" />
-                    </button>
-                  </div>
-                
-                  
-                ))}
+                {messages &&
+                  messages.map(
+                    (messageList: Message) =>
+                      messageList.messages.length > 0 && (
+                        <div
+                          key={messageList.messages[0].chatId}
+                          className="chatPreviewContainer"
+                          message-list-key={JSON.stringify(messageList)}
+                          data-key={messageList.messages[0].chatId}
+                          onClick={handleOpenChatDetail}
+                        >
+                          <div className="senderIcon">
+                            {/* Placeholder for Profile Icon */}
+                          </div>
+                          <div className="chatPreview">
+                            <h6 className="chatSender">
+                              {user.firstName == messageList.user1.firstName ? (
+                                <h6 className="chatSender">
+                                  {messageList.user2.firstName}{" "}
+                                  {messageList.user2.lastName}
+                                </h6>
+                              ) : (
+                                <h6 className="chatSender">
+                                  {messageList.user1.firstName}{" "}
+                                  {messageList.user1.lastName}
+                                </h6>
+                              )}
+                            </h6>
+                            <p className="chatContent">
+                              {messageList.messages[0].body}
+                            </p>
+                          </div>
+                          <button className="openChatButton">
+                            <img src="forwardArrow.png" alt="Open Chat" />
+                          </button>
+                        </div>
+                      )
+                  )}
               </div>
               <div className="chatFooter">
                 <button className="newChat" onClick={openNew}>

@@ -15,7 +15,6 @@ export async function fetchMessages(messageId: string) {
       console.error(`An error has occurred fetching messages: ${response.statusText}`);
       return "-1";
     }
-    
     const data = await response.json();
     console.log('response', data.mList);
     return data.mList;
