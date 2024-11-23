@@ -83,6 +83,7 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
                 </div>
               );
             })}
+            {!(friendList.length > 0) && <h6>there was an error fetching all users! Implement friends list here</h6>}
           </div>
           <div className="newBottom"></div>
         </div>

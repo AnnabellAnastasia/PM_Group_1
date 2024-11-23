@@ -22,46 +22,8 @@ const controller: any = {
         .populate('user2', 'firstName lastName image')
         .sort({ timestamp: -1 })
         .then((result)=> {
-          console.log("result from db operation", result);
-          console.log("first conversation result", result[0]);
-          console.log("first conversation messages", result[0].messages);
           return res.json(result);
-        })
-
-      //   console.log('after db op', result[0], result[0].messages);
-      // conversationList = await Promise.all(result);
-      // if (!conversationList || conversationList.length === 0) {
-      //   console.log("returned 204");
-      //   return res.status(204).json("No conversations");
-      // } else {
-      //   let messagesList: any[][] = Array.from(
-      //     { length: conversationList.length },
-      //     () => []
-      //   );
-      //   if (
-      //     conversationList[0].messages &&
-      //     conversationList[0].messages.length
-      //   ) {
-      //     Promise.all(
-      //       conversationList.map((conversation: any, i: number) => {
-      //         //create promise for each list of messages
-      //         return Promise.all(
-      //           conversation.messages.map((msgId: any) => {
-      //             return message
-      //               .findById(msgId)
-      //               .populate("creator", "firstName lastName image")
-      //               .then((rmsg) => {
-      //                 messagesList[i].push(rmsg);
-      //               });
-      //           })
-      //         );
-      //       })
-      //     ).then(() => {
-      //       messagesList = messagesList.filter((msg) => msg[0] !== null);
-      //       return res.json(messagesList);
-      //     });
-        // }
-      
+        })      
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }

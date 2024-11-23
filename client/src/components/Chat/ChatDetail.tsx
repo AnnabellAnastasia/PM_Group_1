@@ -34,12 +34,11 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   const { user } = useContext(UserContext);
   const [hayMessages, setHayMessages] = useState<boolean>();
   const [isErr, setErr] = useState<boolean>();
+  const [saved, setSaved] = useState<boolean>();
 
   useEffect(() => {
-    // console.log(socket);
     if (!isNew && passChatList) {
       const getAllMessages = async () => {
-        // let temp:any = JSON.parse(passChatList);
         console.log("passChatList", passChatList);
         setChatList(passChatList.messages || []);
       };
@@ -80,8 +79,6 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       };
       startNewChat();
     }
-    
-    
 
     return () => {
       socket.emit("leave", thisChatId);
@@ -97,6 +94,11 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   useEffect(() => {
     if (!socket) return;
 
+    const handleUsrExited = () => {
+      setSaved(true);
+      setNewChatList(null);
+    }
+
     const handleReceiveMessage = (data: any) => {
       setChatList((list: any) => [...list, data]);
       setNewChatList((list: any) => [...list, data]);
@@ -105,6 +107,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     const handleError = (data: any) => {
       console.error("connection error ", data);
     }
+
+    socket.on("usrExited", handleUsrExited);
 
     socket.on("receive_message", handleReceiveMessage);
 
@@ -130,14 +134,13 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       setChatList((list: any) => [...list, messageData]);
       setNewMessage("");
       setHayMessages(true);
+      setSaved(false);
     }
   };
 
   async function handleBack(event: any) {
-    if (newChatList && newChatList.length)
+    if (newChatList && newChatList.length && !saved)
       await closeMessage(event, newChatList); //save messages b4 leaving
-    // socket.emit("leave", thisChatId);
-    // console.log("chat leave emitted");
     setChatId("");
     onClose();
   }

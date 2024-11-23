@@ -23,8 +23,8 @@ const ChatModal: React.FC<ChatModalProps> = ({
   onClose,
   triggerRef,
 }) => {
+  const socket = useContext(SocketContext);
   const [state, setState] = useState({ top: 0, left: 0 });
-  const [mList, setMList] = useState<any>([]);
   const [chatList, setChatList] = useState<any[]>([]); //2d array
   // for opening new chat
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
@@ -42,21 +42,12 @@ const ChatModal: React.FC<ChatModalProps> = ({
     const getAllChats = async () => {
       console.log("get all chats called");
       fetchAll().then((response) => {
-        // if (typeof response === "string") {
-        //   console.log("parsing response string");
-        //   JSON.parse(response).then((arr: any) => {
-        //     setChatDetailList(arr);
-        //   });
-        // } else if (response[0].messages) {
-        //   console.log("directly setting chat detail list");
-        //   setChatDetailList(response);
-        // } else {
-        //   setChatDetailList(response);
-        // }
         setChatList(response);
-        // response.map((obj:any) => {
-        //   setMList((list:any) => [...list, obj])
-        // });
+        response.map((res: any) => {
+          socket.emit("join", res._id, (callback: any) => {
+            console.log(callback.status);
+          });
+        });
       });
     };
 
@@ -121,17 +112,14 @@ interface ChatMessagePreviewProps {
 
 const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const [selectedChatId, setSelectedChatId] = useState<any>();
-  //for opening chat detail
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
   const openDetail = () => setIsDetailOpen(true);
   const closeDetail = () => setIsDetailOpen(false);
-  //for opening new chat
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
   const openNew = () => setIsNewOpen(true);
   const closeNew = () => setIsNewOpen(false);
   const socket = useContext(SocketContext);
   const [selectedConvo, setSelectedConvo] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>();
   const { user } = useContext(UserContext);
 
   const handleOpenChatDetail = async (event: any) => {
@@ -139,29 +127,13 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
     const convo = JSON.parse(rawConvo);
     setSelectedConvo(convo);
     setIsDetailOpen(true);
-    // setSelectedMessage(message);
-    // setLoading(true);
-    // const id = event.target.getAttribute("data-key");
-    // const givenList = event.target.getAttribute("message-list-key");
-    // console.log(messages);
-    // const list = JSON.parse(givenList);
-    // setSelectedChatList(list);
-    // console.log("selected chat list ", selectedChatList);
-    // setSelectedChatId(id);
-    // setLoading(false);
-    // if (!loading) {
-    //   setIsDetailOpen(true);
-    // }
   };
 
   const closeChatDetail = () => {
     setSelectedChatId(null);
   };
 
-  useEffect(() => {
-    console.log("messages passed to chat preview", messages);
-    console.log("messages from first convo: ", messages[0]);
-  }, [messages]);
+  useEffect(() => {}, [messages]);
 
   return (
     <>
@@ -195,21 +167,19 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
                             {/* Placeholder for Profile Icon */}
                           </div>
                           <div className="chatPreview">
-                            <h6 className="chatSender">
-                              {user.firstName == messageList.user1.firstName ? (
-                                <h6 className="chatSender">
-                                  {messageList.user2.firstName}{" "}
-                                  {messageList.user2.lastName}
-                                </h6>
-                              ) : (
-                                <h6 className="chatSender">
-                                  {messageList.user1.firstName}{" "}
-                                  {messageList.user1.lastName}
-                                </h6>
-                              )}
-                            </h6>
+                            {user.firstName == messageList.user1.firstName ? (
+                              <h6 className="chatSender">
+                                {messageList.user2.firstName}{" "}
+                                {messageList.user2.lastName}
+                              </h6>
+                            ) : (
+                              <h6 className="chatSender">
+                                {messageList.user1.firstName}{" "}
+                                {messageList.user1.lastName}
+                              </h6>
+                            )}
                             <p className="chatContent">
-                              {messageList.messages[0].body}
+                              {messageList.messages[messageList.messages.length -1].body}
                             </p>
                           </div>
                           <button className="openChatButton">

@@ -54,9 +54,9 @@ if(server) {
   io.on("connection", (socket) => {
     console.log("user connected ", socket.id);
     socket.on("join", (data, callback) => {
-      console.log(`joined chat ${data}`);
       if(data) {
         socket.join(data);
+        console.log(`${data} online`);
         callback({status:"ok"});
       } else {
         callback({status:"400"})
@@ -65,17 +65,16 @@ if(server) {
     });
     socket.on("message", (data) => {
       console.log("message sent", data);
-      //implement chat id
       socket.to(data.chatId).emit("receive_message", data);
     });
     socket.on("leave", (data) => {
       console.log(`left room ${data}`);
       if(data) {
+        socket.to(data.chatId).emit("usrExited");
         socket.leave(data);
       } else {
         console.error("chat id not sent with request");
       }
-      
     })
     socket.on("disconnect", () => {
       console.log("user disconnected");
