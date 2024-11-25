@@ -1,122 +1,24 @@
 .social {
-  padding: 20px;
   background-color: #f5f6f7;
-}
-
-.social h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-/* Friend Requests Section */
-.friend-requests {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.friend-requests-btn {
-  background-color: #e4e6eb;
-  border: none;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border-radius: 4px;
-  position: relative;
-  cursor: pointer;
-}
-
-.request-badge {
-  background-color: red;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 50%;
-  font-size: 0.8rem;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-}
-
-.find-friends-btn {
-  background-color: #5cc6c6;
-  border: none;
-  padding: 10px 20px;
-  font-size: 1rem;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* Friend List Section */
-.friend-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two columns layout */
-  gap: 20px; /* Space between items */
-}
-
-.friend-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.friend-info {
-  display: flex;
-  align-items: center;
 }
 
 .friend-avatar {
   width: 60px;
   height: 60px;
-  border-radius: 50%;
   object-fit: cover;
-  margin-right: 15px;
 }
 
-.friend-details {
-  display: flex;
-  flex-direction: column;
+.request-badge {
+  padding: 4px 8px;
+  border-radius: 50%;
+  font-size: 0.8rem;
 }
 
 .friend-name {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 5px;
 }
 
 .mutual-friends {
   font-size: 0.9rem;
-  color: #666;
-}
-
-.friend-button {
-  background-color: #e4e6eb;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.friend-button:hover {
-  background-color: #d8dadf;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .friend-list {
-    grid-template-columns: 1fr; /* Single column layout on smaller screens */
-  }
-  
-  .friend-requests {
-    flex-direction: column;
-  }
-  
-  .find-friends-btn {
-    margin-top: 10px;
-  }
 }

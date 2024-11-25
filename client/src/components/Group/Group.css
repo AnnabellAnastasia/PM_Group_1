@@ -1,0 +1,14 @@
+/* Group.css */
+
+.group-page {
+    border-radius: 8px;
+  }
+  
+  .group-page h1 {
+    text-align: center;
+  }
+  
+  .list-group-item {
+    margin-bottom: 10px;
+  }
+  

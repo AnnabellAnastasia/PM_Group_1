@@ -1,10 +1,13 @@
+
 import express, { Express } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
+import commentRoutes from './routes/commentRoutes';
 import cookieParser from "cookie-parser";
+import multer from 'multer';
 import { Server } from "socket.io";
 import messageRoutes from "./routes/messageRoutes";
 import http from "http";
@@ -70,19 +73,32 @@ if(server) {
   
 }
 
-// App routes
-app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
+// Serve images
+app.use('/images', express.static('images'))
 
+// App routes
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
+app.use('/comments',commentRoutes);
+    
 // API routes
 app.use("/api/messages", messageRoutes);
 
+// Multer file too large error handling
+app.use((err: any, req: any, res: any, next: any) => {
+	if (err.code === 'LIMIT_FILE_SIZE') {
+		err.status = 400;
+		res.status(err.status).send({error: 'File Too Large'});
+	}
+	else next(err);
+});
+
 // Default Error Handling
 app.use((err: any, req: any, res: any, next: any) => {
-  console.log(err.stack);
-  if (!err.status) {
-    err.status = 500;
-    err.message = "Internal Server Error";
-  }
-  res.send(err).status(err.status);
-});
+	console.error(err.stack);
+	if (!err.status) {
+		err.status = 500;
+		err.message = ("Internal Server Error");
+	}
+	res.status(err.status).send(err);
+})

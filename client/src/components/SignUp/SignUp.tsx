@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleSignUp } from "../../utils/userAPI";
+import { AlertContext } from '../ContextWrapper';
+
 import "./SignUp.css"; // Import SignUp-specific styles
 
 const SignUp = () => {
@@ -9,6 +11,7 @@ const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setPageAlert } = useContext(AlertContext);
 
   return (
     <div className="sign-up-page">
@@ -25,26 +28,31 @@ const SignUp = () => {
               firstName,
               lastName,
               email,
-              password
+              password,
+              setPageAlert
             )
           }
         >
           <input
+            required
             type="text"
             placeholder="First Name"
             onChange={(event) => setFirstName(event.target.value)}
           />
           <input
+            required
             type="text"
             placeholder="Last Name"
             onChange={(event) => setLastName(event.target.value)}
           />
           <input
+            required
             type="email"
             placeholder="UNCC Email"
             onChange={(event) => setEmail(event.target.value)}
           />
           <input
+            required
             type="password"
             placeholder="Password"
             onChange={(event) => setPassword(event.target.value)}

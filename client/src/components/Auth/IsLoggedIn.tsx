@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 function IsLoggedIn() {
   const [loading, setLoading] = useState(true);
-  const [redirecting, setRedirecting] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
@@ -19,28 +19,35 @@ function IsLoggedIn() {
           }
         );
         if (response.status === 200) {
-          setLoading(false);
+          setIsAuthenticated(true);
         } else {
-          setLoading(false);
-					setRedirecting(true);
+          setIsAuthenticated(false);
         }
       } catch (err) {
         console.error(`Error Verifying Authentication - ${err}`);
-				setLoading(false);
-				setRedirecting(true);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
       }
     }
     checkAuth();
   }, []);
 
-	if (loading) {
-		return <></>;
-	} 
-	if (redirecting) {
-		return <Navigate to="/login" replace />;
-	}
-	return <Outlet />;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 }
 
 export default IsLoggedIn;
