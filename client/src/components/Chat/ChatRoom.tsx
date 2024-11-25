@@ -4,10 +4,13 @@ import React, {
   useLayoutEffect,
   MutableRefObject,
 } from "react";
+import { SocketContext, socket } from "../SocketContext";
 import "./ChatRoom.css";
 import ChatPreview from "./ChatPreview";
-import Message from "./ChatPreview"
-
+import Message from "./ChatPreview";
+import ChatDetail from "./ChatDetail";
+import { fetchAll } from "../../utils/messageAPI";
+import NewChat from "./NewChat";
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -21,7 +24,12 @@ const ChatModal: React.FC<ChatModalProps> = ({
   triggerRef,
 }) => {
   const [state, setState] = useState({ top: 0, left: 0 });
-  
+  const [chatList, setChatList] = useState<any>([]);
+  // for opening new chat
+  const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
+  const openNew = () => setIsNewOpen(true);
+  const closeNew = () => setIsNewOpen(false);
+
   useLayoutEffect(() => {
     setState({
       left: (triggerRef?.current?.getBoundingClientRect().left || 0) - 436,
@@ -29,73 +37,59 @@ const ChatModal: React.FC<ChatModalProps> = ({
     });
   }, [triggerRef]);
 
-  const messages = [
-    { id: 1, sender: "Name 1", content: "This is the content of Message 1" },
-    { id: 2, sender: "Name 2", content: "This is the content of Message 2" },
-  ];
-
-  //   const [messages, setMessages] = useState(
-  //     JSON.parse(localStorage.getItem("messages")) || []
-  //   ); //declare setMessages with use state that takes an array
-  //   const [messageText, setMessageText] = useState(""); //declare setMessageText with usestate that takes a string
-  //   const [userEvent, setUser] = useState(null);
-
-  //   useEffect(() => {
-  //     localStorage.setItem("messages", JSON.stringify(messages));
-  //   }, [messages]);
-
-  //   const joinChat = (userDetails) => {
-  //     setUser(userDetails);
-  //     socket.emit("join", userDetails);
-  //   };
-
-  //   const leaveChat = () => {
-  //     socket.emit("leave", user);
-  //     setUser(null);
-  //   };
-
-  //   //send message
-  //   const sendMessage = () => {
-  //     socket.emit("message", messageText);
-  //     setMessageText("");
-  //   };
-
-  //  // receive message
-  //  useEffect(() => {
-  //     const handleMessage = (message) => {
-  //       setMessages((messages) => [... messages, message]);
-  //     };
-
-  //     socket.on("message", handleMessage);
-
-  //     // Cleanup function to avoid memory leaks
-  //     return () => {
-  //       socket.off("message", handleMessage);
-  //     };
-  //   }, []);
+  useEffect(() => {
+    const getChats = async () => {
+      fetchAll().then((response) => {
+        if (typeof response === "string") {
+          JSON.parse(response).then((arr:any) => {
+            setChatList(arr);
+          });
+        } else if(response.messages) {
+          setChatList(response.messages);
+        }
+      });
+    };
+    getChats();
+    // if (!chatList) setIsNewOpen(true);
+  }, []);
 
   if (!isOpen) return null;
   else {
     console.log("chat opened");
     return (
-      <div
-        className="chatContainer"
-        style={{ top: state.top, left: state.left }}
-      >
-        <div className="chatHeader">
-          <h4 className="chatTitle">Chat</h4>
-          <button className="closeChat" onClick={onClose}>
-            <img src="close.png"></img>
-          </button>
-        </div>       
-
-        <ChatPreview messages={messages} />
-
-        <div className="chatFooter" >
-        <button className="newChat">New Chat</button>
+      <SocketContext.Provider value={socket}>
+        <div
+          className="chatContainer"
+          style={{ top: state.top, left: state.left }}
+        >
+          {!isNewOpen ? (
+            <>
+              <div className="chatHeader">
+                <h4 className="chatTitle">Messages</h4>
+                <button className="closeChat" onClick={onClose}>
+                  <img src="close.png"></img>
+                </button>
+              </div>
+              <ChatPreview messages={chatList} />
+              {/* <div className="chatFooter">
+                <button className="newChat" onClick={openNew}>
+                  New Chat
+                </button>
+              </div> */}
+            </>
+          ) : (
+            <>
+              <div className="chatHeader">
+                <h4 className="chatTitle">New Message</h4>
+                <button className="closeChat" onClick={onClose}>
+                  <img src="close.png"></img>
+                </button>
+              </div>
+              <NewChat isOpen={isNewOpen} onClose={closeNew} />
+            </>
+          )}
         </div>
-        
-      </div>
+      </SocketContext.Provider>
     );
   }
 };

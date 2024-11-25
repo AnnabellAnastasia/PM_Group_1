@@ -217,6 +217,33 @@ export async function searchUser(
     }
 }
 
+//TODO: get rid of this when we implement friends
+export async function fetchAllUsersTest() {
+	try {
+		const response = await fetch(
+			process.env.REACT_APP_SERVER_URI + "/users/everyUserTest", 
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: 'include'
+			}
+		);
+		if (!response.ok) {
+			console.error(`An error has occurred: ${response.statusText}`);
+			return;
+		}
+		const users = await response.json();
+		if (!users) {
+			console.warn(`No users found`);
+		}
+		return users; 
+	} catch (err) {
+		console.error(err);
+		alert("Error please try again");
+	}
+    
 export async function updateUser(
   userID: string,
   userBody: Object

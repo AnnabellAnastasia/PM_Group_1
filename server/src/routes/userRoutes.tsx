@@ -41,5 +41,7 @@ userRoutes.post('/:id/image', userLoggedIn, upload, controller.image);
 // Friendship Routes
 userRoutes.use("/:id/friendships", friendshipRoutes);
 
+//TEST - get all users in db
+userRoutes.get('/everyUserTest', controller.everyUserTest);
 
 export default userRoutes;
