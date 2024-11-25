@@ -191,64 +191,59 @@ export async function handleLogOut(
   }
 }
 
-export async function searchUser(
-  event: any,
-  input: String
-  ){
-    event.preventDefault();
-    const term = input;
-    try{
-      const response = await fetch(process.env.REACT_APP_SERVER_URI + `/users/search?searchterm=${term}`,
-        {
-          method : "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      )
-      const user = await response.json();
-      if (!user) {
-        console.warn(`No user found`);
+export async function searchUser(event: any, input: String) {
+  event.preventDefault();
+  const term = input;
+  try {
+    const response = await fetch(
+      process.env.REACT_APP_SERVER_URI + `/users/search?searchterm=${term}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       }
-      return user;
-    }catch (err) {
-      console.error(err);
+    );
+    const user = await response.json();
+    if (!user) {
+      console.warn(`No user found`);
     }
+    return user;
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 //TODO: get rid of this when we implement friends
 export async function fetchAllUsersTest() {
-	try {
-		const response = await fetch(
-			process.env.REACT_APP_SERVER_URI + "/users/everyUserTest", 
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: 'include'
-			}
-		);
-		if (!response.ok) {
-			console.error(`An error has occurred: ${response.statusText}`);
-			return;
-		}
-		const users = await response.json();
-		if (!users) {
-			console.warn(`No users found`);
-		}
-		return users; 
-	} catch (err) {
-		console.error(err);
-		alert("Error please try again");
-	}
-    
-export async function updateUser(
-  userID: string,
-  userBody: Object
-) {
+  try {
+    const response = await fetch(
+      process.env.REACT_APP_SERVER_URI + "/users/everyUserTest",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (!response.ok) {
+      console.error(`An error has occurred: ${response.statusText}`);
+      return;
+    }
+    const users = await response.json();
+    if (!users) {
+      console.warn(`No users found`);
+    }
+    return users;
+  } catch (err) {
+    console.error(err);
+    alert("Error please try again");
+  }
+}
 
+export async function updateUser(userID: string, userBody: Object) {
   let response;
   try {
     response = await fetch(`http://localhost:8080/users/${userID}`, {
@@ -267,10 +262,7 @@ export async function updateUser(
   }
 }
 
-export async function uploadImage(
-  userID: string,
-  imageData: FormData
-) {
+export async function uploadImage(userID: string, imageData: FormData) {
   console.log("userBody", imageData);
   let response;
   try {
