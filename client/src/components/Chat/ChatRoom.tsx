@@ -44,7 +44,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
           JSON.parse(response).then((arr:any) => {
             setChatList(arr);
           });
-        } else if(response.messages) {
+        } else if(response && response.messages) {
           setChatList(response.messages);
         }
       });
