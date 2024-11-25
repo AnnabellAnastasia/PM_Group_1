@@ -33,7 +33,7 @@ function Comment({ commentObj, processComments }: any) {
     <div className="comment">
       <div className="comment-header">
         <img
-          src={`../images/${
+          src={`http://localhost:8080/images/${
             commentObj.commenter.image
               ? commentObj.commenter.image
               : "blank-profile-picture.png"
