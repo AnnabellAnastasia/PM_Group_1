@@ -22,7 +22,6 @@ import GroupPage from './components/Group/GroupPage';
 import IsLoggedIn from "./components/Auth/IsLoggedIn";
 // CSS
 import "./App.css";
-import ChatModal from "./components/Chat/ChatRoom";
 
 const router = createBrowserRouter([
   {
