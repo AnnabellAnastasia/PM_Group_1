@@ -459,6 +459,34 @@ function Account() {
             </Card>
           )}
 
+
+<Card className="mb-4">
+<Card.Header>
+                <h5 className="card-heading">
+                  Friends{" "}
+                  {userStatus === userStatuses[0] && (
+                    <Button
+                      variant="light"
+                      onClick={() => openModal(setIsEditingEducation)}
+                    >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                  )}
+                </h5>
+              </Card.Header>
+  <Card.Body>
+  <p>42 connections</p> 
+  <ListGroup variant="flush">
+    <ListGroup.Item>Alice Johnson</ListGroup.Item>
+    <ListGroup.Item>Bob Smith</ListGroup.Item>
+    <ListGroup.Item>Charlie Brown</ListGroup.Item>
+    <ListGroup.Item>+ 38 more</ListGroup.Item>
+  </ListGroup>
+</Card.Body>
+</Card>
+
+
+
           {/* Education Information */}
           {(checkDisplayField(formData.majorVisibility, formData.major) ||
             checkDisplayField(formData.minorVisibility, formData.minor) ||
@@ -561,7 +589,7 @@ function Account() {
             </Card>
           )}
 
-          {/* Editable Skills */}
+          {/* Friends */}
           {/* <div className="card mb-4">
             <div className="card-header">
               <h5>Skills</h5>
