@@ -26,7 +26,6 @@ export default function BasicInfoModal({
     const imageData = new FormData()
     imageData.append("image", file);
 
-
     const returnValue = await uploadImage(accountUserID, imageData) || "";
     if (returnValue.error) setPageAlert({ error: returnValue.error, success: ""});
     console.log("returnValue", returnValue);
@@ -54,7 +53,7 @@ export default function BasicInfoModal({
         <Button variant="secondary" onClick={() => closeModal(setIsEditingPhoto)}>
           Close
         </Button>
-        <Button variant="primary" onClick={() => handleUploadImage}>
+        <Button variant="primary" onClick={handleUploadImage}>
           Save Changes
         </Button>
       </Modal.Footer>

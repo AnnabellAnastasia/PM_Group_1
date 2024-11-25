@@ -215,7 +215,7 @@ const controller: any = {
         res.json({ message: err.message });
       });
   },
-  // POST /users/:id - Upload image existing post
+  // POST /users/:id - Upload image to existing user
   image: async (req: any, res: any, next: any) => {
     let id = req.params.id;
     if (!req.file) return res.json({ message: "no file found" });
