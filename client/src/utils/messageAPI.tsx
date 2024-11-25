@@ -1,5 +1,5 @@
 import { error } from "console";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
 export async function fetchMessages(messageId: string) {
   console.log("fetching messages");
