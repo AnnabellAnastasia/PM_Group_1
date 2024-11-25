@@ -15,6 +15,7 @@ interface CommonChatDetailProps {
   isNew: boolean;
   chatUser?: any;
   passChatList?: any;
+  onChange?: any; //recent change 
 }
 
 const ChatDetail: React.FC<CommonChatDetailProps> = ({
@@ -25,6 +26,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   isNew,
   chatUser,
   passChatList,
+  onChange //recent change
 }) => {
   const socket = useContext(SocketContext);
   const [chatList, setChatList] = useState<any>([]);
@@ -34,7 +36,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   const { user } = useContext(UserContext);
   const [hayMessages, setHayMessages] = useState<boolean>();
   const [isErr, setErr] = useState<boolean>();
-  const [saved, setSaved] = useState<boolean>();
+  const [saved, setSaved] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isNew && passChatList) {
@@ -80,9 +82,9 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       startNewChat();
     }
 
-    return () => {
-      socket.emit("leave", thisChatId);
-    };
+    // return () => {
+    //   socket.emit("leave", thisChatId);
+    // };
   }, [chatId, isOpen, socket]);
 
   // useEffect(() => {
@@ -126,10 +128,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
         body: newMessage,
         creator: user.id,
         chatId: thisChatId,
-        // time: new Date(Date.now()), //add time to messages
       };
       socket.emit("message", messageData);
-      //socket?.emit
       setNewChatList((list: any) => [...list, messageData]);
       setChatList((list: any) => [...list, messageData]);
       setNewMessage("");
@@ -139,9 +139,16 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   };
 
   async function handleBack(event: any) {
-    if (newChatList && newChatList.length && !saved)
+    if (newChatList && newChatList.length && !saved) {
       await closeMessage(event, newChatList); //save messages b4 leaving
+      setSaved(true);
+    }
+      console.log("on change sent back");
+      const msg = chatList;
+      onChange(msg);
+      //end of changes
     setChatId("");
+    socket.emit("leave", thisChatId);
     onClose();
   }
 

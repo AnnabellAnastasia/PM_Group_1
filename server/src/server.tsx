@@ -71,7 +71,7 @@ if(server) {
       console.log(`left room ${data}`);
       if(data) {
         socket.to(data.chatId).emit("usrExited");
-        socket.leave(data);
+        // socket.leave(data);
       } else {
         console.error("chat id not sent with request");
       }

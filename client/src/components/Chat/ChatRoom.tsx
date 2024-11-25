@@ -31,6 +31,14 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const openNew = () => setIsNewOpen(true);
   const closeNew = () => setIsNewOpen(false);
 
+  //for child component 
+  const [change, setChange] = useState<boolean>();
+
+   const updateChange = (callback:any) => {
+    setChange(callback);
+   }
+   //end of this block of changes
+
   useLayoutEffect(() => {
     setState({
       left: (triggerRef?.current?.getBoundingClientRect().left || 0) - 436,
@@ -43,16 +51,15 @@ const ChatModal: React.FC<ChatModalProps> = ({
       console.log("get all chats called");
       fetchAll().then((response) => {
         setChatList(response);
-        response.map((res: any) => {
-          socket.emit("join", res._id, (callback: any) => {
-            console.log(callback.status);
-          });
-        });
+        // response.map((res: any) => {
+        //   socket.emit("join", res._id, (callback: any) => {
+        //     console.log(callback.status);
+        //   });
+        // });
       });
     };
-
     getAllChats();
-  }, []);
+  }, [change]);//recent change (was [])
 
   if (!isOpen) return null;
   else {
@@ -71,7 +78,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   <img src="close.png"></img>
                 </button>
               </div>
-              <ChatPreview messages={chatList} />
+              <ChatPreview messages={chatList} onChange={updateChange} />
               {/* <div className="chatFooter">
                 <button className="newChat" onClick={openNew}>
                   New Chat
@@ -102,15 +109,17 @@ interface Messages {
 }
 
 interface Message {
+  _id: any;
   messages: Messages[];
   user1: { firstName: string; lastName: string; image: any };
   user2: { firstName: string; lastName: string; image: any };
 }
 interface ChatMessagePreviewProps {
   messages: Message[];
+  onChange: any;
 }
 
-const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
+const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages, onChange }) => {
   const [selectedChatId, setSelectedChatId] = useState<any>();
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
   const openDetail = () => setIsDetailOpen(true);
@@ -121,12 +130,54 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
   const socket = useContext(SocketContext);
   const [selectedConvo, setSelectedConvo] = useState<any>([]);
   const { user } = useContext(UserContext);
+  const [list, setList] = useState<any[]>([]);
+  // const [socketOn, setSocketOn] = useState<boolean>(true);
+
+  // useEffect(() => {
+  //   if(!socket) return;
+  //   if(!socketOn) return;
+
+  //   const handleReceiveMessage = (data: any) => {
+  //     console.log("handle recieve messages on");
+  //     const msg = messages.find((msg) => msg._id == data.chatId);
+  //     if(msg) {
+  //       const newMsg = msg.messages
+  //       newMsg.push(data);
+  //       msg.messages = newMsg;
+  //     }
+  //   };
+
+  //   socket.on("receive_message", handleReceiveMessage);
+  // }, [socket]);
+
+  useEffect(() => {
+    setList(messages);
+  }, [messages])
+
+  //tell parent component to make another api call
+  const [change, setChange] = useState({newMessages: []});
+  const changeFromChild = (callback:any) => {
+    // setChange(callback);
+    if(callback.length > 0) {
+      const msg = messages.find((msg) => msg._id == callback[0].chatId);
+      if(msg) {
+        msg.messages = callback;
+        console.log("messages after push" , msg.messages);
+      }
+    }
+    // changeToParent();
+   }
 
   const handleOpenChatDetail = async (event: any) => {
-    const rawConvo = event.target.getAttribute("message-list-key");
-    const convo = JSON.parse(rawConvo);
-    setSelectedConvo(convo);
-    setIsDetailOpen(true);
+    // let rawConvo = event.target.getAttribute("message-list-key");
+    // if(!rawConvo) {
+    const rawConvo = (event.target as HTMLElement).closest(".chatPreviewContainer")?.getAttribute("message-list-key");
+    if(rawConvo) {
+      const convo = JSON.parse(rawConvo);
+      setSelectedConvo(convo);
+      setIsDetailOpen(true);
+      // setSocketOn(false);
+    }
   };
 
   const closeChatDetail = () => {
@@ -148,12 +199,13 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
               onClose={closeDetail}
               passChatList={selectedConvo}
               isNew={false}
+              onChange={changeFromChild}
             ></ChatDetail>
           ) : (
             <>
               <div className="chatMiddle">
-                {messages &&
-                  messages.map(
+                {list &&
+                  list.map(
                     (messageList: Message) =>
                       messageList.messages.length > 0 && (
                         <div
@@ -163,12 +215,12 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
                           data-key={messageList.messages[0].chatId}
                           onClick={handleOpenChatDetail}
                         >
-                          <div className="senderIcon">
+                          <div className="senderIcon" >
                             {/* Placeholder for Profile Icon */}
                           </div>
-                          <div className="chatPreview">
+                          <div className="chatPreview" >
                             {user.firstName == messageList.user1.firstName ? (
-                              <h6 className="chatSender">
+                              <h6 className="chatSender" >
                                 {messageList.user2.firstName}{" "}
                                 {messageList.user2.lastName}
                               </h6>
@@ -178,11 +230,11 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
                                 {messageList.user1.lastName}
                               </h6>
                             )}
-                            <p className="chatContent">
+                            <p className="chatContent" >
                               {messageList.messages[messageList.messages.length -1].body}
                             </p>
                           </div>
-                          <button className="openChatButton">
+                          <button className="openChatButton" >
                             <img src="forwardArrow.png" alt="Open Chat" />
                           </button>
                         </div>
