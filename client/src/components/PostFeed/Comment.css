@@ -1,5 +1,6 @@
 .comment {
   margin: 5px;
+  border-top: 1px solid #e3e3e3;
 }
 
 .comment-header {

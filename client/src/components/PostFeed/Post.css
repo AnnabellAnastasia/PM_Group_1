@@ -6,11 +6,17 @@
 
 .post-header {
   justify-content: space-between;
+  background: #ffffff !important;
   padding: 15px;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
   border: 0 !important;
+}
+
+.post-header button {
+  background-color: #ffffff !important;
+  border-color: #ffffff;
 }
 
 .repost-header {
@@ -30,12 +36,13 @@
 /* .post-content {
   padding: 15px; 
 } */
-
 .post-comment {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 0px;
-  padding-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.post-comment-form {
+  background-color: #ffffff !important;
 }
 
 .creator-profile-image {

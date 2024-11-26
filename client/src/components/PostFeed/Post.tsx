@@ -30,7 +30,7 @@ import IsLoggedIn from "../Auth/IsLoggedIn";
 //     repostsCount: number;
 // }
 
-function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
+function Post({ postObj, repostObj, getAllPosts, postIndex }: any) {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const { setPageAlert } = useContext(AlertContext);
@@ -110,8 +110,14 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
     await processLikes();
   }
 
-  async function handleCreateRepost(e: any, postID: string, userID: string, setPageAlert: Function, navigate: Function) {
-    await createRepost(e, postID, userID, setPageAlert, navigate)
+  async function handleCreateRepost(
+    e: any,
+    postID: string,
+    userID: string,
+    setPageAlert: Function,
+    navigate: Function
+  ) {
+    await createRepost(e, postID, userID, setPageAlert, navigate);
     await getAllPosts();
   }
 
@@ -142,7 +148,9 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
             <h4>
               <img
                 src={`http://localhost:8080/images/${
-                  repostObj.reposter.image ? repostObj.reposter.image : "blank-profile-picture.png"
+                  repostObj.reposter.image
+                    ? repostObj.reposter.image
+                    : "blank-profile-picture.png"
                 }`}
                 alt={`${repostObj.reposter.firstName} ${repostObj.reposter.lastName}'s profile`}
                 className="reposter-profile-image"
@@ -151,7 +159,8 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
                 className="reposter-name"
                 href={`/account/${repostObj.reposter._id}`}
               >
-                {repostObj.reposter.firstName}&nbsp;{repostObj.reposter.lastName}
+                {repostObj.reposter.firstName}&nbsp;
+                {repostObj.reposter.lastName}
               </a>
               <span> reposted this {processDate(repostObj.createdAt)}</span>
             </h4>
@@ -235,7 +244,7 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
             </Button>
           </InputGroup>
         ) : (
-          <p>{postObj.body}</p>
+          <div>{postObj.body}</div>
         )}
         {/* {jobLink && (
                     <div className="job-card">
@@ -249,43 +258,54 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
                     </div>
                 )} */}
       </Card.Body>
-      <Card.Text className="post-reactions my-0">
-        <span>
-          <i className="fa-regular fa-thumbs-up"></i>{" "}
-          {renderLikeCount(likeTotal, recentLiker)}
-        </span>
-        <span>
-          {allComments && allComments.length ? allComments.length : 0} comment
-          {allComments && allComments.length === 1 ? "" : "s"}
-        </span>
-      </Card.Text>
+      <Card.Body className="post-bottom">
+        <Card.Text className="post-reactions my-0">
+          <span>
+            <i className="fa-regular fa-thumbs-up"></i>{" "}
+            {renderLikeCount(likeTotal, recentLiker)}
+          </span>
+          <span>
+            {allComments && allComments.length ? allComments.length : 0} comment
+            {allComments && allComments.length === 1 ? "" : "s"}
+          </span>
+        </Card.Text>
 
-      <Card.Text className="post-actions my-0">
-        {likeID ? (
-          <button onClick={() => handleUnlikePost(postObj._id, likeID)}>
-            <i className="fa-regular fa-thumbs-down"></i> Unlike
+        <Card.Text className="post-actions my-0">
+          {likeID ? (
+            <button onClick={() => handleUnlikePost(postObj._id, likeID)}>
+              <i className="fa-regular fa-thumbs-down"></i> Unlike
+            </button>
+          ) : (
+            <button onClick={() => handleLikePost(postObj._id, user.id)}>
+              <i className="fa-regular fa-thumbs-up"></i> Like
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setShowComments(!showComments);
+              document
+                .getElementById(`post-comment-entry-${postIndex}`)
+                ?.focus();
+            }}
+          >
+            <i className="fa-regular fa-comment-dots"></i> Comment
           </button>
-        ) : (
-          <button onClick={() => handleLikePost(postObj._id, user.id)}>
-            <i className="fa-regular fa-thumbs-up"></i> Like
+          <button
+            onClick={(e) =>
+              handleCreateRepost(
+                e,
+                postObj._id,
+                user.id,
+                setPageAlert,
+                navigate
+              )
+            }
+            type="submit"
+          >
+            <i className="fa-solid fa-repeat"></i> Repost
           </button>
-        )}
-        <button
-          onClick={() => {
-            setShowComments(!showComments);
-            document.getElementById(`post-comment-entry-${postIndex}`)?.focus();
-          }}
-        >
-          <i className="fa-regular fa-comment-dots"></i> Comment
-        </button>
-        <button
-          onClick={(e) => handleCreateRepost(e, postObj._id, user.id, setPageAlert, navigate)}
-          type="submit"
-        >
-          <i className="fa-solid fa-repeat"></i> Repost
-        </button>
-      </Card.Text>
-      <Card.Body className="post-comment">
+        </Card.Text>
+
         {showComments
           ? allComments &&
             allComments.map(function (comment: any) {
@@ -304,10 +324,12 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
                 processComments={processComments}
               />
             )}
+      </Card.Body>
+      <Card.Footer className="post-comment-form">
         <InputGroup>
           <Form.Control
             id={`post-comment-entry-${postIndex}`}
-            size="sm" 
+            size="sm"
             value={commentBody}
             type="text"
             placeholder="Leave a comment..."
@@ -322,7 +344,7 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
             <i className="fa-solid fa-share-from-square"></i>
           </Button>
         </InputGroup>
-      </Card.Body>
+      </Card.Footer>
     </Card>
   );
 }
