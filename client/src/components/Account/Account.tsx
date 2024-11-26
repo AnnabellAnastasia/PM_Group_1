@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProfileFromID } from "../../utils/userAPI";
 import { capitalize } from "../../utils/tools";
+import { fetchPosts } from "../../utils/postAPI";
+
 // Edit Modals
 import BasicInfoModal from "./BasicInfoModal";
 import BiographyModal from "./BiographyModal";
@@ -24,6 +26,7 @@ import {
 } from "react-bootstrap";
 
 import { updateUser, fetchAuth } from "../../utils/userAPI";
+import PostFeed from "../PostFeed/PostFeed";
 
 type ProfileField =
   | "firstName"
@@ -117,6 +120,17 @@ function Account() {
   const [isEditingSocial, setIsEditingSocial] = useState(false);
   const [isEditingPhoto, setIsEditingPhoto] = useState(false);
   const [isEditingProjects, setIsEditingProjects] = useState(false);
+
+  // User post data
+  const [postFeed, setPostFeed] = useState<any>([]);
+
+  async function getAllPosts() {
+    setPostFeed(await fetchPosts());
+  }
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   // const [projects, setProjects] = useState<Project[]>([
   //   { name: "Web Design", progress: 80 },
@@ -263,7 +277,7 @@ function Account() {
   return (
     <Container className="py-5">
       <Row>
-        <Col md={4}>
+        <Col md={3}>
           {/* Basic Info Sidebar */}
           <Card className="text-center mb-4">
             <Card.Body>
@@ -433,7 +447,18 @@ function Account() {
           )}
         </Col>
 
-        <Col md={8}>
+        <Col md={6}>
+          <Card>
+            <Card.Header>
+              <h4>{`${formData.firstName}'s Posts`}</h4>
+            </Card.Header>
+            <Card.Body>
+              <PostFeed postFeed={postFeed} getAllPosts={getAllPosts} />
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col md={3}>
           {/* Profile Biography */}
           {checkDisplayField(
             formData.biographyVisibility,
@@ -453,9 +478,7 @@ function Account() {
                   )}
                 </h5>
               </Card.Header>
-              <Card.Body className="mb-2">
-                {formData.biography}
-              </Card.Body>
+              <Card.Body className="mb-2">{formData.biography}</Card.Body>
             </Card>
           )}
 
@@ -636,6 +659,7 @@ function Account() {
           </div> */}
         </Col>
       </Row>
+
       {/* Modals for Editing */}
       {userStatus === userStatuses[0] && (
         <>

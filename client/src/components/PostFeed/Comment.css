@@ -36,47 +36,22 @@
   margin: 10px 0;
 }
 
-.comment-edit-entry {
-  width: calc(100% - 140px);
-  max-width: 500px; /* Adjust this to your desired maximum width */
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 10px;
-  border: none;
-  border-radius: 0.4rem 0 0 0.4rem;
-  background-color: #e7e7e7;
-}
-
-.comment-edit-submit {
-  width: 60px;
-  border-radius: 0 0.4rem 0.4rem 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border: none;
-  background-color: #e7e7e7;
-}
-
-.comment-edit-cancel {
-  width: 60px;
-  border-radius: 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border: none;
-  background-color: #e7e7e7;
-}
-
 .comment-actions {
-  margin-top: -28px;
+  /* margin-top: -28px; */
   margin-left: 5px;
+  margin-right: 10px;
 }
 
 .comment-actions button {
   background: none;
   border: none;
   color: #0073b1;
+  cursor: pointer;
+}
+
+.comment-actions button:hover {
+  background: none;
+  border: none;
+  color: #2a9bd8;
   cursor: pointer;
 }

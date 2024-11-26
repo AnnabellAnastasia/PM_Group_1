@@ -11,6 +11,8 @@ import {
 } from "../../utils/postAPI";
 import { processDate } from "../../utils/tools";
 import Comment from "./Comment";
+import { Form, Button, InputGroup } from "react-bootstrap";
+
 import "./Post.css";
 
 // interface PostProps {
@@ -118,10 +120,7 @@ function Post({ postObj, getAllPosts }: any) {
           className="profile-image"
         />
         <div className="post-info">
-          <a
-            className="creator-name"
-            href={`/account/${postObj.creator._id}`}
-          >
+          <a className="creator-name" href={`/account/${postObj.creator._id}`}>
             <h3>
               {postObj.creator.firstName}&nbsp;{postObj.creator.lastName}
             </h3>
@@ -131,28 +130,29 @@ function Post({ postObj, getAllPosts }: any) {
       </div>
       <div className="post-content">
         {editMode ? (
-          <div className="post-edit">
-            <input
-              className="post-edit-entry"
+          // <div className="post-edit">
+          <InputGroup className="post-edit">
+            <Form.Control
               value={postEditBody}
               type="text"
               placeholder="Edit post..."
               onChange={(event) => setPostEditBody(event.target.value)}
             />
-            <button
+            <Button
+              variant="outline-primary"
               onClick={() => setEditMode(false)}
-              className="post-edit-cancel"
             >
-              Cancel
-            </button>
-            <button
+              <i className="fa-solid fa-xmark"></i>
+            </Button>
+            <Button
+              variant="outline-primary"
               onClick={() => handleSubmitPostEdits(postObj._id, postEditBody)}
-              className="post-edit-submit"
             >
-              Submit
-            </button>
-          </div>
+              <i className="fa-solid fa-check"></i>
+            </Button>
+          </InputGroup>
         ) : (
+          // </div>
           <p>{postObj.body}</p>
         )}
         {/* {jobLink && (
@@ -172,38 +172,38 @@ function Post({ postObj, getAllPosts }: any) {
           <i className="fa-regular fa-thumbs-up"></i>{" "}
           {renderLikeCount(likeTotal, recentLiker)}
         </span>
-        {/* <span>{} reposts</span> */}
+        <span>
+          {allComments.length} comment{allComments.length === 1 ? "" : "s"}
+        </span>
       </div>
+
       <div className="post-actions">
         {likeID ? (
           <button onClick={() => handleUnlikePost(postObj._id, likeID)}>
-            Unlike
+            <i className="fa-regular fa-thumbs-down"></i> Unlike
           </button>
         ) : (
           <button onClick={() => handleLikePost(postObj._id, user.id)}>
-            Like
+            <i className="fa-regular fa-thumbs-up"></i> Like
           </button>
         )}
-        {allComments.length ? (
-          <button onClick={() => setShowComments(!showComments)}>
-            Comments ({allComments.length})
-          </button>
-        ) : (
-          <button
-            onClick={() =>
-              document
-                .getElementById(`post-comment-entry-${postObj._id}`)
-                ?.focus()
-            }
-          >
-            Comment
-          </button>
-        )}
+        <button
+          onClick={() => {
+            setShowComments(!showComments);
+            document
+              .getElementById(`post-comment-entry-${postObj._id}`)
+              ?.focus();
+          }}
+        >
+          <i className="fa-regular fa-share-from-square"></i> Comment
+        </button>
         {user.id === postObj.creator._id && !editMode ? (
           <>
-            <button onClick={() => handleActivateEditMode()}>Edit</button>
+            <button onClick={() => handleActivateEditMode()}>
+              <i className="fa-regular fa-pen-to-square"></i>{' '}Edit
+            </button>
             <button onClick={() => handleDeletePost(postObj._id)}>
-              Delete
+              <i className="fa-regular fa-trash-can"></i>{' '}Delete
             </button>
           </>
         ) : (
@@ -211,35 +211,41 @@ function Post({ postObj, getAllPosts }: any) {
         )}
       </div>
       <div className="post-comment">
-        {showComments ? (
-          allComments &&
-          allComments.map(function (comment: any) {
-            return (
+        {showComments
+          ? allComments &&
+            allComments.map(function (comment: any) {
+              return (
+                <Comment
+                  key={comment._id}
+                  commentObj={comment}
+                  processComments={processComments}
+                />
+              );
+            })
+          : allComments &&
+            allComments[0] && (
               <Comment
-                key={comment._id}
-                commentObj={comment}
+                commentObj={allComments[allComments.length - 1]}
                 processComments={processComments}
               />
-            );
-          })
-        ) : (
-          <></>
-        )}
-        <input
-          id={`post-comment-entry-${postObj._id}`}
-          className="post-comment-entry"
-          value={commentBody}
-          type="text"
-          placeholder="Add a comment..."
-          onChange={(event) => setCommentBody(event.target.value)}
-        />
-        <button
-          onClick={() => handleLeaveComment(postObj._id, user.id, commentBody)}
-          type="submit"
-          className="post-comment-submit"
-        >
-          Comment
-        </button>
+            )}
+        <InputGroup>
+          <Form.Control
+            id={`post-comment-entry-${postObj._id}`}
+            value={commentBody}
+            type="text"
+            placeholder="Leave a comment..."
+            onChange={(event) => setCommentBody(event.target.value)}
+          />
+          <Button
+            onClick={() =>
+              handleLeaveComment(postObj._id, user.id, commentBody)
+            }
+            type="submit"
+          >
+            <i className="fa-solid fa-share-from-square"></i>
+          </Button>
+        </InputGroup>
       </div>
     </div>
   );

@@ -2,8 +2,10 @@
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 15px;
+  margin-top: 20px;
   margin-bottom: 20px;
   background: #fff;
+	box-shadow: 2px 2px 2px 0 gray;
 }
 
 .post-header {
@@ -71,79 +73,51 @@
   background: none;
   border: none;
   color: #0073b1;
+}
+
+.post-actions button:hover {
+  background: none;
+  border: none;
+  color: #2a9bd8;
   cursor: pointer;
 }
 
-.post-comment-entry {
-  width: calc(100% - 125px);
-  max-width: 500px; /* Adjust this to your desired maximum width */
-  padding: 10px;
-  border: none;
-  border-radius: 0.4rem 0 0 0.4rem;
-  background-color: #e7e7e7;
-}
-
-.post-comment-submit {
-  width: 100px;
-  border-radius: 0 0.4rem 0.4rem 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border: none;
-  background-color: #e7e7e7;
-}
-
-.post-comment button:hover {
-  background-color: #9c9c9c;
-}
-
-.post-form {
-  margin-left: 30%;
-  margin-right: 30%;
-  width: 40%;
-}
-
-.post-edit-entry {
-  width: calc(100% - 140px);
-  max-width: 500px; /* Adjust this to your desired maximum width */
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 10px;
-  border: none;
-  border-radius: 0.4rem 0 0 0.4rem;
-  background-color: #e7e7e7;
-}
-
-.post-edit-submit {
-  width: 60px;
-  border-radius: 0 0.4rem 0.4rem 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border: none;
-  background-color: #e7e7e7;
-}
-
-.post-edit-cancel {
-  width: 60px;
-  border-radius: 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border: none;
-  background-color: #e7e7e7;
+.post button {
+  padding-top: 3px;
+  padding-bottom: 0px;
 }
 
 .creator-name {
   text-decoration: none;
 }
-.creator-name:hover {
-  text-decoration: underline;
-}
 
 .card-heading {
   margin: 0;
+}
+
+.post-options {
+	display: inline-block;
+}
+
+.post-user {
+	display: inline-block;
+}
+
+.pic-container {
+	display: inline-block;
+	vertical-align:top
+}
+
+.profile-pic {
+	height: 50px;
+	border-radius: 50%;
+}
+
+.user-display-name {
+	display: inline-block;
+	margin-top: 20px;
+}
+
+.post-options {
+	margin-bottom: 5px;
 }

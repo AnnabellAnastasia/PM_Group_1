@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { UserContext } from "../ContextWrapper";
 import { updateComment, deleteComment } from "../../utils/postAPI";
 import { processDate } from "../../utils/tools";
+import { Form, Button, InputGroup } from "react-bootstrap";
 import "./Comment.css";
 
 function Comment({ commentObj, processComments }: any) {
@@ -55,13 +56,15 @@ function Comment({ commentObj, processComments }: any) {
         </div>
         {user.id === commentObj.commenter._id && !editMode ? (
           <div className="comment-actions">
-            <button onClick={() => handleActivateEditMode()}>Edit</button>
+            <button onClick={() => handleActivateEditMode()}>
+              <i className="fa-regular fa-pen-to-square"></i> Edit
+            </button>
             <button
               onClick={() =>
                 handleDeleteComment(commentObj.post, commentObj._id)
               }
             >
-              Delete
+              <i className="fa-regular fa-trash-can"></i> Delete
             </button>
           </div>
         ) : (
@@ -69,33 +72,32 @@ function Comment({ commentObj, processComments }: any) {
         )}
       </div>
       {editMode ? (
-        <div className="comment-edit">
-          <input
-            className="comment-edit-entry"
-            value={commentEditBody}
-            type="text"
-            placeholder="Edit comment..."
-            onChange={(event) => setCommentEditBody(event.target.value)}
-          />
-          <button
-            onClick={() => setEditMode(false)}
-            className="comment-edit-cancel"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() =>
-              handleSubmitCommentEdits(
-                commentObj.post,
-                commentObj._id,
-                commentEditBody
-              )
-            }
-            className="comment-edit-submit"
-          >
-            Submit
-          </button>
-        </div>
+          <InputGroup className="comment-edit">
+            <Form.Control
+              value={commentEditBody}
+              type="text"
+              placeholder="Edit comment..."
+              onChange={(event) => setCommentEditBody(event.target.value)}
+            />
+            <Button
+              variant="outline-primary"
+              onClick={() => setEditMode(false)}
+            >
+              <i className="fa-solid fa-xmark"></i>
+            </Button>
+            <Button
+              variant="outline-primary"
+              onClick={() =>
+                handleSubmitCommentEdits(
+                  commentObj.post,
+                  commentObj._id,
+                  commentEditBody
+                )
+              }
+            >
+              <i className="fa-solid fa-check"></i>
+            </Button>
+          </InputGroup>
       ) : (
         <div className="comment-content">{commentObj.body}</div>
       )}
