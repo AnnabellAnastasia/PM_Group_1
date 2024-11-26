@@ -1,3 +1,7 @@
+:root {
+	--niner-green: #005236;
+}
+
 /* Logo */
 /* .logo {
   height: 40px;
@@ -67,3 +71,13 @@ nav {
 .chat-link i {
   font-size: 1.8rem;
 }
+
+.dropdown-menu .nav-link {
+  color: #212529 !important;
+}
+
+.dropdown-menu .disabled {
+  color: var(--niner-green) !important;
+  font-style: italic;
+}
+

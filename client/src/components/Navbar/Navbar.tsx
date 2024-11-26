@@ -40,8 +40,8 @@ const PageNavbar: React.FC = () => {
         collapseOnSelect
         expand="lg"
         bg="primary"
-        data-bs-theme="light"
-        className="bg-gradient"
+        data-bs-theme="dark"
+        className="bg-gradient p-2"
       >
         {/* Left Section (Logo + Name) */}
         <Navbar.Brand href="/posts">
@@ -60,6 +60,8 @@ const PageNavbar: React.FC = () => {
           {/* Center Section (Search Section) */}
           <Container fluid className="position-relative">
             <Form.Control
+              data-bs-theme="light"
+              className="my-2"
               style={{ width: "100%" }}
               id="search"
               type="text"
@@ -73,7 +75,7 @@ const PageNavbar: React.FC = () => {
                 className="position-absolute top-100 start-0 translate-left px-3"
                 style={{ width: "100%" }}
               >
-                <ListGroup.Item disabled style={{ width: "100%", margin: 0}}>
+                <ListGroup.Item disabled style={{ width: "100%", margin: 0 }}>
                   Users
                 </ListGroup.Item>
                 {searchResults.map((result: any) => (
@@ -127,6 +129,7 @@ const PageNavbar: React.FC = () => {
               )}
             </Nav.Link>
             <NavDropdown
+              data-bs-theme="light"
               className="px-2"
               align={{ xs: "start" }}
               title={
