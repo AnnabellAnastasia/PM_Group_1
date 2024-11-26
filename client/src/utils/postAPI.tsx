@@ -22,6 +22,32 @@ export async function fetchPosts() {
   }
 }
 
+export async function fetchUserPostsAndReposts(userID: string) {
+  if (!userID) return;
+
+  try {
+    const response = await fetch(`http://localhost:8080/users/${userID}/posts`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      console.error(`An error has occurred: ${response.statusText}`);
+      return;
+    }
+    const posts = await response.json();
+    if (!posts) {
+      console.warn(`No users found`);
+    }
+    console.log("posts ", posts);
+    return posts;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export async function submitPost(
   event: any,
   newPost: string,

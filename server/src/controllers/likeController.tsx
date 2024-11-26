@@ -6,7 +6,7 @@ const controller = {
     let postID = req.params.id;
     model
       .find({ post: postID })
-      .populate("liker", "_id firstName lastName")
+      .populate("liker", "firstName lastName")
       .then((likes) => {
         // Sort likes by newest
         likes.sort(

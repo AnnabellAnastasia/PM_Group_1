@@ -37,6 +37,8 @@ userRoutes.get('/:id', controller.show);
 userRoutes.put('/:id/', userLoggedIn ,controller.update);
 // POST /users/:id/image - Upload image from user id
 userRoutes.post('/:id/image', userLoggedIn, upload, controller.image);
+// GET /users/:id/posts - Get all posts and reposts from user ID param
+userRoutes.get('/:id/posts', controller.posts);
 
 // Friendship Routes
 userRoutes.use("/:id/friendships", friendshipRoutes);
