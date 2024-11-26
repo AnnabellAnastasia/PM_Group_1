@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProfileFromID } from "../../utils/userAPI";
 import { capitalize } from "../../utils/tools";
-import { fetchPosts } from "../../utils/postAPI";
+import { fetchUserPostsAndReposts } from "../../utils/postAPI";
 
 // Edit Modals
 import BasicInfoModal from "./BasicInfoModal";
@@ -125,7 +125,7 @@ function Account() {
   const [postFeed, setPostFeed] = useState<any>([]);
 
   async function getAllPosts() {
-    setPostFeed(await fetchPosts());
+    setPostFeed(await fetchUserPostsAndReposts(userID || ""));
   }
 
   useEffect(() => {
@@ -275,7 +275,7 @@ function Account() {
   // };
 
   return (
-    <Container className="py-5">
+    <Container className="py-3">
       <Row>
         <Col md={3}>
           {/* Basic Info Sidebar */}
@@ -354,7 +354,7 @@ function Account() {
               formData.facebookVisibility,
               formData.facebook
             )) && (
-            <Card>
+            <Card className="mb-4">
               <Card.Header>
                 <h5 className="card-heading">
                   Social Links{" "}
@@ -448,12 +448,16 @@ function Account() {
         </Col>
 
         <Col md={6}>
-          <Card>
+          <Card className="mb-4">
             <Card.Header>
               <h4>{`${formData.firstName}'s Posts`}</h4>
             </Card.Header>
             <Card.Body>
-              <PostFeed postFeed={postFeed} getAllPosts={getAllPosts} />
+              {postFeed && postFeed.length > 0 ? (
+                <PostFeed postFeed={postFeed} getAllPosts={getAllPosts} />
+              ) : (
+                <h3>This user has not made any posts yet.</h3>
+              )}
             </Card.Body>
           </Card>
         </Col>

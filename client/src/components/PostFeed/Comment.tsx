@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { UserContext } from "../ContextWrapper";
 import { updateComment, deleteComment } from "../../utils/postAPI";
 import { processDate } from "../../utils/tools";
-import { Form, Button, InputGroup } from "react-bootstrap";
+import { Form, Button, ButtonGroup, InputGroup } from "react-bootstrap";
 import "./Comment.css";
 
 function Comment({ commentObj, processComments }: any) {
@@ -33,71 +33,72 @@ function Comment({ commentObj, processComments }: any) {
   return (
     <div className="comment">
       <div className="comment-header">
-        <img
-          src={`http://localhost:8080/images/${
-            commentObj.commenter.image
-              ? commentObj.commenter.image
-              : "blank-profile-picture.png"
-          }`}
-          alt={`${commentObj.commenter.firstName} ${commentObj.commenter.lastName}'s profile`}
-          className="comment-profile-image"
-        />
         <div className="comment-info">
-          <a
-            className="creator-name"
-            href={`/account/${commentObj.commenter._id}`}
-          >
-            <h3>
-              {commentObj.commenter.firstName}&nbsp;
-              {commentObj.commenter.lastName}
-            </h3>
-          </a>
-          <span>{processDate(commentObj.createdAt)}</span>
+          <img
+            src={`http://localhost:8080/images/${
+              commentObj.commenter.image
+                ? commentObj.commenter.image
+                : "blank-profile-picture.png"
+            }`}
+            alt={`${commentObj.commenter.firstName} ${commentObj.commenter.lastName}'s profile`}
+            className="commenter-profile-image"
+          />
+          <div className="commenter-info">
+            <a
+              className="commenter-name"
+              href={`/account/${commentObj.commenter._id}`}
+            >
+              <h3>
+                {commentObj.commenter.firstName}&nbsp;
+                {commentObj.commenter.lastName}
+              </h3>
+            </a>
+            <span>{processDate(commentObj.createdAt)}</span>
+          </div>
         </div>
         {user.id === commentObj.commenter._id && !editMode ? (
-          <div className="comment-actions">
-            <button onClick={() => handleActivateEditMode()}>
-              <i className="fa-regular fa-pen-to-square"></i> Edit
-            </button>
-            <button
+          <ButtonGroup className="comment-controls">
+            <Button variant="light" onClick={() => handleActivateEditMode()}>
+              <i className="fa-solid fa-pen-to-square"></i>
+            </Button>
+            <Button
+              variant="light"
               onClick={() =>
                 handleDeleteComment(commentObj.post, commentObj._id)
               }
             >
-              <i className="fa-regular fa-trash-can"></i> Delete
-            </button>
-          </div>
+              <i className="fa-solid fa-trash-can"></i>
+            </Button>
+          </ButtonGroup>
         ) : (
           <></>
         )}
       </div>
       {editMode ? (
-          <InputGroup className="comment-edit">
-            <Form.Control
-              value={commentEditBody}
-              type="text"
-              placeholder="Edit comment..."
-              onChange={(event) => setCommentEditBody(event.target.value)}
-            />
-            <Button
-              variant="outline-primary"
-              onClick={() => setEditMode(false)}
-            >
-              <i className="fa-solid fa-xmark"></i>
-            </Button>
-            <Button
-              variant="outline-primary"
-              onClick={() =>
-                handleSubmitCommentEdits(
-                  commentObj.post,
-                  commentObj._id,
-                  commentEditBody
-                )
-              }
-            >
-              <i className="fa-solid fa-check"></i>
-            </Button>
-          </InputGroup>
+        <InputGroup className="comment-edit">
+          <Form.Control
+            size="sm"
+            value={commentEditBody}
+            type="text"
+            placeholder="Edit comment..."
+            onChange={(event) => setCommentEditBody(event.target.value)}
+          />
+          <Button variant="outline-primary" onClick={() => setEditMode(false)}>
+            <i className="fa-solid fa-xmark"></i>
+          </Button>
+          <Button
+            variant="outline-primary"
+            onClick={() =>
+              handleSubmitCommentEdits(
+                commentObj.post,
+                commentObj._id,
+                commentEditBody
+              )
+            }
+          >
+            <i className="fa-solid fa-check"></i>
+          </Button>
+        </InputGroup>
       ) : (
         <div className="comment-content">{commentObj.body}</div>
       )}

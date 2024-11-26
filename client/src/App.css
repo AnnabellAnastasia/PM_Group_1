@@ -1,13 +1,12 @@
 /* COLORS */
 :root {
 	--niner-green: #005236;
-	--niner-green-emphasis: #337763;
+	--niner-green-emphasis: #388770;
 }
 
 a {
 	color: var(--niner-green);
 	text-decoration: none;
-
 }
 
 a:hover {
@@ -54,6 +53,14 @@ a:hover {
 
 .dropdown-menu {
 	--bs-dropdown-link-active-bg: var(--niner-green);
+}
+
+.dropdown-item:hover {
+  color: var(--niner-green-emphasis);
+}
+
+.dropdown-item:active {
+  color: white;
 }
 
 .App {

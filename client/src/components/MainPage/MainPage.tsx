@@ -34,7 +34,7 @@ function MainPage() {
       <Row className="justify-content-md-center">
         <Col md={6}>
           <Form
-            className="post-form"
+            className="post-form mt-3"
             onSubmit={(event) => handlePostSubmit(event)}
           >
             <Form.Label className="hidden" htmlFor="postEntry">
@@ -49,7 +49,7 @@ function MainPage() {
                 onChange={(event) => setNewPost(event.target.value)}
               />
               <Button type="submit">
-							<i className="fa-solid fa-share-from-square"></i>
+                <i className="fa-solid fa-share-from-square"></i>
               </Button>
             </InputGroup>
           </Form>

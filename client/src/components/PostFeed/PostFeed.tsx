@@ -8,9 +8,20 @@ function PostFeed({ postFeed, getAllPosts }: any) {
     <div className="post-feed">
       {postFeed &&
         postFeed[0] &&
-        postFeed.map((post: any) => (
-          <Post key={post._id} postObj={post} getAllPosts={getAllPosts} />
-        ))}
+        postFeed.map((post: any, index: any) => {
+          if (post.reposter) {
+            const repostObj = {
+              _id: post._id,
+              reposter: post.reposter,
+              createdAt: post.createdAt,
+              updatedAt: post.updatedAt,
+            }
+            console.log("repostObj", repostObj);
+            return <Post key={post._id} postObj={post.post} repostObj={repostObj} getAllPosts={getAllPosts} postIndex={index} />
+          } else {
+            return <Post key={post._id} postObj={post} getAllPosts={getAllPosts} postIndex={index} />
+          }
+        })}
     </div>
   );
 }
