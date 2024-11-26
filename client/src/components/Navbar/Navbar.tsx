@@ -72,6 +72,7 @@ const PageNavbar: React.FC = () => {
 
             {searchResults && searchResults[0] ? (
               <ListGroup
+                data-bs-theme="light"
                 className="position-absolute top-100 start-0 translate-left px-3"
                 style={{ width: "100%" }}
               >
