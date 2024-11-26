@@ -3,7 +3,7 @@ import { userLoggedIn, isPostCreator } from '../middleware/auth';
 import controller from '../controllers/postController';
 import commentRoutes from './commentRoutes'
 import likeRoutes from './likeRoutes'
-
+import repostRoutes from '../routes/repostRoutes';
 const postRoutes = express.Router();
 
 // GET /posts - Get all posts
@@ -21,5 +21,6 @@ postRoutes.delete('/:id', userLoggedIn, isPostCreator, controller.delete);
 postRoutes.use("/:id/comments", commentRoutes);
 // Like Routes
 postRoutes.use("/:id/likes", likeRoutes);
-
+/**Repost routes*/
+postRoutes.use("/:id/reposts", repostRoutes);
 export default postRoutes;

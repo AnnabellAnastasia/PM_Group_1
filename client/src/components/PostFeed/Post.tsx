@@ -12,8 +12,10 @@ import {
 import { processDate } from "../../utils/tools";
 import Comment from "./Comment";
 import { Form, Button, InputGroup } from "react-bootstrap";
+import { createRepost } from "../../utils/repostAPI";
 
 import "./Post.css";
+import IsLoggedIn from "../Auth/IsLoggedIn";
 
 // interface PostProps {
 //     profileImage: string;
@@ -246,6 +248,12 @@ function Post({ postObj, getAllPosts }: any) {
             <i className="fa-solid fa-share-from-square"></i>
           </Button>
         </InputGroup>
+        <button
+          onClick={(e)=>createRepost(e,postObj._id,user.id)}
+          type="submit"
+        >
+          repost
+        </button>
       </div>
     </div>
   );
