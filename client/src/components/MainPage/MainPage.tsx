@@ -2,9 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import { fetchPosts, submitPost } from "../../utils/postAPI";
 import { UserContext } from "../ContextWrapper";
 import PostFeed from "../PostFeed/PostFeed";
-import "./MainPage.css";
 import OnlineFriends from "./OnlineFriends";
 import { Container, Row, Col, Form, Button, InputGroup } from "react-bootstrap";
+
+import "./MainPage.css";
 
 function MainPage() {
   const [postFeed, setPostFeed] = useState<any>([]);
@@ -40,7 +41,7 @@ function MainPage() {
             <Form.Label className="hidden" htmlFor="postEntry">
               Post Entry
             </Form.Label>
-            <InputGroup>
+            <InputGroup className="create-post">
               <Form.Control
                 type="text"
                 name="postEntry"
