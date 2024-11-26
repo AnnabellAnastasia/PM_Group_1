@@ -212,7 +212,7 @@ function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
           <></>
         )}
       </Card.Header>
-      <Card.Body className="post-content">
+      <Card.Body className="post-content pt-0">
         {editMode ? (
           <InputGroup className="post-edit">
             <Form.Control
