@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../ContextWrapper";
+import { UserContext, AlertContext } from "../ContextWrapper";
 import {
   updatePost,
   deletePost,
@@ -11,7 +11,12 @@ import {
 } from "../../utils/postAPI";
 import { processDate } from "../../utils/tools";
 import Comment from "./Comment";
+import { Form, Button, ButtonGroup, InputGroup, Card } from "react-bootstrap";
+import { createRepost, deleteRepost } from "../../utils/repostAPI";
+import { useNavigate } from "react-router-dom";
+
 import "./Post.css";
+import IsLoggedIn from "../Auth/IsLoggedIn";
 
 // interface PostProps {
 //     profileImage: string;
@@ -25,8 +30,10 @@ import "./Post.css";
 //     repostsCount: number;
 // }
 
-function Post({ postObj, getAllPosts }: any) {
+function Post({ postObj, repostObj, getAllPosts, postIndex, }: any) {
+  const navigate = useNavigate();
   const { user } = useContext(UserContext);
+  const { setPageAlert } = useContext(AlertContext);
   const [editMode, setEditMode] = useState(false);
   const [likeID, setLikeID] = useState("");
   const [likeTotal, setLikeTotal] = useState(0);
@@ -38,10 +45,16 @@ function Post({ postObj, getAllPosts }: any) {
 
   async function processLikes() {
     const likes = await getLikes(postObj._id);
+
+    if (!likes || likes.length < 1) {
+      setLikeTotal(0);
+      setRecentLiker("");
+      setLikeID("");
+      return;
+    }
+    console.log("likes", likes);
     setLikeTotal(likes.length);
-    if (likes[0])
-      setRecentLiker(`${likes[0].liker.firstName} ${likes[0].liker.lastName}`);
-    else setRecentLiker("");
+    setRecentLiker(`${likes[0].liker.firstName} ${likes[0].liker.lastName}`);
 
     let flag = true;
     for (const like of likes) {
@@ -62,6 +75,10 @@ function Post({ postObj, getAllPosts }: any) {
     processComments();
   }, [postObj._id]);
 
+  useEffect(() => {
+    console.log("likeTotal", likeTotal);
+  }, [likeTotal]);
+
   function handleActivateEditMode() {
     setPostEditBody(postObj.body);
     setEditMode(true);
@@ -70,12 +87,17 @@ function Post({ postObj, getAllPosts }: any) {
   async function handleSubmitPostEdits(postID: string, postBody: string) {
     await updatePost(postID, postBody);
     setEditMode(false);
-    getAllPosts();
+    await getAllPosts();
   }
 
   async function handleDeletePost(postID: string) {
     await deletePost(postID);
-    getAllPosts();
+    await getAllPosts();
+  }
+
+  async function handleDeleteRepost(postID: string, repostID: string) {
+    await deleteRepost(postID, repostID);
+    await getAllPosts();
   }
 
   async function handleLikePost(postID: string, userID: string) {
@@ -88,6 +110,11 @@ function Post({ postObj, getAllPosts }: any) {
     await processLikes();
   }
 
+  async function handleCreateRepost(e: any, postID: string, userID: string, setPageAlert: Function, navigate: Function) {
+    await createRepost(e, postID, userID, setPageAlert, navigate)
+    await getAllPosts();
+  }
+
   async function handleLeaveComment(
     postID: string,
     userID: string,
@@ -95,7 +122,9 @@ function Post({ postObj, getAllPosts }: any) {
   ) {
     await leaveComment(postID, userID, commentBody);
     await processComments();
+    setCommentBody("");
     setShowComments(true);
+    await getAllPosts();
   }
 
   function renderLikeCount(likeTotal: number, recentLiker: string) {
@@ -106,52 +135,105 @@ function Post({ postObj, getAllPosts }: any) {
   }
 
   return (
-    <div className="post">
-      <div className="post-header">
-        <img
-          src={`http://localhost:8080/images/${
-            postObj.creator.image
-              ? postObj.creator.image
-              : "blank-profile-picture.png"
-          }`}
-          alt={`${postObj.creator.firstName} ${postObj.creator.lastName}'s profile`}
-          className="profile-image"
-        />
+    <Card className="post">
+      {repostObj ? (
+        <Card.Header className="repost-header">
+          <div className="repost-info">
+            <h4>
+              <img
+                src={`http://localhost:8080/images/${
+                  repostObj.reposter.image ? repostObj.reposter.image : "blank-profile-picture.png"
+                }`}
+                alt={`${repostObj.reposter.firstName} ${repostObj.reposter.lastName}'s profile`}
+                className="reposter-profile-image"
+              />
+              <a
+                className="reposter-name"
+                href={`/account/${repostObj.reposter._id}`}
+              >
+                {repostObj.reposter.firstName}&nbsp;{repostObj.reposter.lastName}
+              </a>
+              <span> reposted this {processDate(repostObj.createdAt)}</span>
+            </h4>
+          </div>
+          {user.id === repostObj.reposter._id && !editMode ? (
+            <span>
+              <Button
+                variant="light"
+                onClick={() => handleDeleteRepost(postObj._id, repostObj._id)}
+              >
+                <i className="fa-solid fa-trash-can"></i>
+              </Button>
+            </span>
+          ) : (
+            <></>
+          )}
+        </Card.Header>
+      ) : (
+        <></>
+      )}
+      <Card.Header className="post-header">
         <div className="post-info">
-          <a
-            className="creator-name"
-            href={`/account/${postObj.creator._id}`}
-          >
-            <h3>
-              {postObj.creator.firstName}&nbsp;{postObj.creator.lastName}
-            </h3>
-          </a>
-          <span>{processDate(postObj.createdAt)}</span>
+          <img
+            src={`http://localhost:8080/images/${
+              postObj.creator.image
+                ? postObj.creator.image
+                : "blank-profile-picture.png"
+            }`}
+            alt={`${postObj.creator.firstName} ${postObj.creator.lastName}'s profile`}
+            className="creator-profile-image"
+          />
+          <div className="creator-info">
+            <a
+              className="creator-name"
+              href={`/account/${postObj.creator._id}`}
+            >
+              <h3>
+                {postObj.creator.firstName}&nbsp;{postObj.creator.lastName}
+              </h3>
+            </a>
+            <span>{processDate(postObj.createdAt)}</span>
+          </div>
         </div>
-      </div>
-      <div className="post-content">
+
+        {user.id === postObj.creator._id && !editMode ? (
+          <ButtonGroup className="post-controls">
+            <Button variant="light" onClick={() => handleActivateEditMode()}>
+              <i className="fa-solid fa-pen-to-square"></i>
+            </Button>
+            <Button
+              variant="light"
+              onClick={() => handleDeletePost(postObj._id)}
+            >
+              <i className="fa-solid fa-trash-can"></i>
+            </Button>
+          </ButtonGroup>
+        ) : (
+          <></>
+        )}
+      </Card.Header>
+      <Card.Body className="post-content">
         {editMode ? (
-          <div className="post-edit">
-            <input
-              className="post-edit-entry"
+          <InputGroup className="post-edit">
+            <Form.Control
               value={postEditBody}
               type="text"
               placeholder="Edit post..."
               onChange={(event) => setPostEditBody(event.target.value)}
             />
-            <button
+            <Button
+              variant="outline-primary"
               onClick={() => setEditMode(false)}
-              className="post-edit-cancel"
             >
-              Cancel
-            </button>
-            <button
+              <i className="fa-solid fa-xmark"></i>
+            </Button>
+            <Button
+              variant="outline-primary"
               onClick={() => handleSubmitPostEdits(postObj._id, postEditBody)}
-              className="post-edit-submit"
             >
-              Submit
-            </button>
-          </div>
+              <i className="fa-solid fa-check"></i>
+            </Button>
+          </InputGroup>
         ) : (
           <p>{postObj.body}</p>
         )}
@@ -166,82 +248,82 @@ function Post({ postObj, getAllPosts }: any) {
                         </a>
                     </div>
                 )} */}
-      </div>
-      <div className="post-reactions">
+      </Card.Body>
+      <Card.Text className="post-reactions my-0">
         <span>
           <i className="fa-regular fa-thumbs-up"></i>{" "}
           {renderLikeCount(likeTotal, recentLiker)}
         </span>
-        {/* <span>{} reposts</span> */}
-      </div>
-      <div className="post-actions">
+        <span>
+          {allComments && allComments.length ? allComments.length : 0} comment
+          {allComments && allComments.length === 1 ? "" : "s"}
+        </span>
+      </Card.Text>
+
+      <Card.Text className="post-actions my-0">
         {likeID ? (
           <button onClick={() => handleUnlikePost(postObj._id, likeID)}>
-            Unlike
+            <i className="fa-regular fa-thumbs-down"></i> Unlike
           </button>
         ) : (
           <button onClick={() => handleLikePost(postObj._id, user.id)}>
-            Like
+            <i className="fa-regular fa-thumbs-up"></i> Like
           </button>
         )}
-        {allComments.length ? (
-          <button onClick={() => setShowComments(!showComments)}>
-            Comments ({allComments.length})
-          </button>
-        ) : (
-          <button
-            onClick={() =>
-              document
-                .getElementById(`post-comment-entry-${postObj._id}`)
-                ?.focus()
-            }
-          >
-            Comment
-          </button>
-        )}
-        {user.id === postObj.creator._id && !editMode ? (
-          <>
-            <button onClick={() => handleActivateEditMode()}>Edit</button>
-            <button onClick={() => handleDeletePost(postObj._id)}>
-              Delete
-            </button>
-          </>
-        ) : (
-          <></>
-        )}
-      </div>
-      <div className="post-comment">
-        {showComments ? (
-          allComments &&
-          allComments.map(function (comment: any) {
-            return (
+        <button
+          onClick={() => {
+            setShowComments(!showComments);
+            document.getElementById(`post-comment-entry-${postIndex}`)?.focus();
+          }}
+        >
+          <i className="fa-regular fa-comment-dots"></i> Comment
+        </button>
+        <button
+          onClick={(e) => handleCreateRepost(e, postObj._id, user.id, setPageAlert, navigate)}
+          type="submit"
+        >
+          <i className="fa-solid fa-repeat"></i> Repost
+        </button>
+      </Card.Text>
+      <Card.Body className="post-comment">
+        {showComments
+          ? allComments &&
+            allComments.map(function (comment: any) {
+              return (
+                <Comment
+                  key={comment._id}
+                  commentObj={comment}
+                  processComments={processComments}
+                />
+              );
+            })
+          : allComments &&
+            allComments[0] && (
               <Comment
-                key={comment._id}
-                commentObj={comment}
+                commentObj={allComments[allComments.length - 1]}
                 processComments={processComments}
               />
-            );
-          })
-        ) : (
-          <></>
-        )}
-        <input
-          id={`post-comment-entry-${postObj._id}`}
-          className="post-comment-entry"
-          value={commentBody}
-          type="text"
-          placeholder="Add a comment..."
-          onChange={(event) => setCommentBody(event.target.value)}
-        />
-        <button
-          onClick={() => handleLeaveComment(postObj._id, user.id, commentBody)}
-          type="submit"
-          className="post-comment-submit"
-        >
-          Comment
-        </button>
-      </div>
-    </div>
+            )}
+        <InputGroup>
+          <Form.Control
+            id={`post-comment-entry-${postIndex}`}
+            size="sm" 
+            value={commentBody}
+            type="text"
+            placeholder="Leave a comment..."
+            onChange={(event) => setCommentBody(event.target.value)}
+          />
+          <Button
+            onClick={() =>
+              handleLeaveComment(postObj._id, user.id, commentBody)
+            }
+            type="submit"
+          >
+            <i className="fa-solid fa-share-from-square"></i>
+          </Button>
+        </InputGroup>
+      </Card.Body>
+    </Card>
   );
 }
 

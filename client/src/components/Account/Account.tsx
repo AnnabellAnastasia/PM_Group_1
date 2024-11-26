@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProfileFromID } from "../../utils/userAPI";
 import { capitalize } from "../../utils/tools";
+import { fetchUserPostsAndReposts } from "../../utils/postAPI";
+
 // Edit Modals
 import BasicInfoModal from "./BasicInfoModal";
 import BiographyModal from "./BiographyModal";
@@ -24,6 +26,7 @@ import {
 } from "react-bootstrap";
 
 import { updateUser, fetchAuth } from "../../utils/userAPI";
+import PostFeed from "../PostFeed/PostFeed";
 
 type ProfileField =
   | "firstName"
@@ -117,6 +120,17 @@ function Account() {
   const [isEditingSocial, setIsEditingSocial] = useState(false);
   const [isEditingPhoto, setIsEditingPhoto] = useState(false);
   const [isEditingProjects, setIsEditingProjects] = useState(false);
+
+  // User post data
+  const [postFeed, setPostFeed] = useState<any>([]);
+
+  async function getAllPosts() {
+    setPostFeed(await fetchUserPostsAndReposts(userID || ""));
+  }
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   // const [projects, setProjects] = useState<Project[]>([
   //   { name: "Web Design", progress: 80 },
@@ -261,9 +275,9 @@ function Account() {
   // };
 
   return (
-    <Container className="py-5">
+    <Container className="py-3">
       <Row>
-        <Col md={4}>
+        <Col md={3}>
           {/* Basic Info Sidebar */}
           <Card className="text-center mb-4">
             <Card.Body>
@@ -340,7 +354,7 @@ function Account() {
               formData.facebookVisibility,
               formData.facebook
             )) && (
-            <Card>
+            <Card className="mb-4">
               <Card.Header>
                 <h5 className="card-heading">
                   Social Links{" "}
@@ -433,7 +447,22 @@ function Account() {
           )}
         </Col>
 
-        <Col md={8}>
+        <Col md={6}>
+          <Card className="mb-4">
+            <Card.Header>
+              <h4>{`${formData.firstName}'s Posts`}</h4>
+            </Card.Header>
+            <Card.Body>
+              {postFeed && postFeed.length > 0 ? (
+                <PostFeed postFeed={postFeed} getAllPosts={getAllPosts} />
+              ) : (
+                <h3>This user has not made any posts yet.</h3>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col md={3}>
           {/* Profile Biography */}
           {checkDisplayField(
             formData.biographyVisibility,
@@ -453,9 +482,7 @@ function Account() {
                   )}
                 </h5>
               </Card.Header>
-              <Card.Body className="mb-2">
-                {formData.biography}
-              </Card.Body>
+              <Card.Body className="mb-2">{formData.biography}</Card.Body>
             </Card>
           )}
 
@@ -636,6 +663,7 @@ function Account() {
           </div> */}
         </Col>
       </Row>
+
       {/* Modals for Editing */}
       {userStatus === userStatuses[0] && (
         <>

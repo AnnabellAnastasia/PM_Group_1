@@ -1,12 +1,13 @@
 import jwt from 'jsonwebtoken';
 import Post from "../models/post";
+import Repost from "../models/repost";
 import Comment from "../models/comment";
 
 export function userLoggedIn(req: any, res: any, next: any) {
   const token = req.cookies ? req.cookies.token : null;
 
   if (!token) {
-    res.status(401).send('Unauthorized: No token provided');
+    res.status(401).send('Unauthorized: User Not Logged In');
   } else {
     jwt.verify(token, process.env.SECRET || "", (err: any, decoded: any) => {
       if (err) {
@@ -53,6 +54,26 @@ export function isPostCreator(req: any, res: any, next: any) {
 				}
 			} else {
 				let err = new Error('Cannot find a post with ID ' + id);
+				next(err);
+			}
+		})
+		.catch((err) => next(err));
+};
+
+// check if user is the reposter of a post
+export function isReposter(req: any, res: any, next: any) {
+	let repostID = req.params.repostID;
+	Repost.findById(repostID)
+		.then((post) => {
+			if (post) {
+				if (req.id && post.reposter == req.id) {
+					return next();
+				} else {
+					let err = new Error('Unauthorized to access this resource.');
+					return next(err);
+				}
+			} else {
+				let err = new Error('Cannot find a repost with ID ' + repostID);
 				next(err);
 			}
 		})

@@ -1,4 +1,6 @@
 import model from "../models/user";
+import post from "../models/post";
+import repost from "../models/repost";
 import jwt from "jsonwebtoken";
 
 const controller: any = {
@@ -68,7 +70,7 @@ const controller: any = {
             phone,
             phoneVisibility,
             address,
-            addressVisibility
+            addressVisibility,
           } = user;
           res.json({
             firstName,
@@ -103,7 +105,7 @@ const controller: any = {
             phone,
             phoneVisibility,
             address,
-            addressVisibility
+            addressVisibility,
           });
         } else {
           res.status(400).send("Invalid User ID");
@@ -236,20 +238,61 @@ const controller: any = {
         }
       })
       .catch((err) => next(err));
-	}, 
-  //TODO: get rid of this
-  everyUserTest: async (req: any, res:any, next:any) => {
-    model.find()
-    .then((response) => {
-      let users: any[] = [];
-      response.forEach((user) => {
-        const { _id: id, firstName, lastName, image } = user;
-        users.push({ _id: id, firstName, lastName, image });
+  },
+  // GET /users/:id/posts - Get all posts and reposts by a user
+  posts: async (req: any, res: any, next: any) => {
+    let id = req.params.id;
+
+    Promise.all([
+      post
+        .find({ creator: id })
+        .populate("creator", "firstName lastName image"),
+      repost.find({ reposter: id }).populate([
+        {
+          path: "post",
+          populate: [
+            {
+              path: "creator",
+              select: "firstName lastName image",
+            },
+          ],
+        },
+        { path: "reposter", select: "firstName lastName image" },
+      ]),
+    ])
+      .then((results) => {
+        const [posts, reposts] = results;
+        if (posts && reposts) {
+          // Sort all by newest
+          let postsAndReposts = [...posts, ...reposts];
+          postsAndReposts.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          res.json(postsAndReposts);
+        } else {
+          res.status(404).json("No Posts Found");
+        }
       })
-      res.json(JSON.stringify(users));
-    })
-    .catch((err) => next(err));
-  }
+      .catch((err: any) => {
+        res.json({ message: err.message });
+      });
+  },
+
+  //TODO: get rid of this
+  everyUserTest: async (req: any, res: any, next: any) => {
+    model
+      .find()
+      .then((response) => {
+        let users: any[] = [];
+        response.forEach((user) => {
+          const { _id: id, firstName, lastName, image } = user;
+          users.push({ _id: id, firstName, lastName, image });
+        });
+        res.json(JSON.stringify(users));
+      })
+      .catch((err) => next(err));
+  },
 };
 
 export default controller;

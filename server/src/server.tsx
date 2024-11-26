@@ -7,6 +7,7 @@ import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
 import commentRoutes from './routes/commentRoutes';
 import cookieParser from "cookie-parser";
+import repostRoutes from './routes/postRoutes';
 import multer from 'multer';
 import { Server } from "socket.io";
 import messageRoutes from "./routes/messageRoutes";
@@ -80,9 +81,11 @@ app.use('/images', express.static('images'))
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/comments',commentRoutes);
-    
+
 // API routes
 app.use("/api/messages", messageRoutes);
+
+app.use('/reposts',repostRoutes);
 
 // Multer file too large error handling
 app.use((err: any, req: any, res: any, next: any) => {

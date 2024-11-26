@@ -1,18 +1,36 @@
 import model from "../models/post";
 import Comment from "../models/comment"
 import Like from "../models/like"
+import Repost from "../models/repost"
 
 const controller = {
   // GET /posts - Get all posts
   all: async (req: any, res: any, next: any) => {
+    Promise.all([
     model
       .find()
-      .populate('creator', 'firstName lastName image')
-      .then((posts) => {
-        if (posts && posts[0]) {
-          // Sort posts by newest
-          posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-          res.json(posts);
+      .populate('creator', 'firstName lastName image'),
+    Repost.find()
+      .populate([
+        {
+          path: "post",
+          populate: [
+            {
+              path: "creator",
+              select: "firstName lastName image",
+            },
+          ],
+        },
+        { path: "reposter", select: "firstName lastName image" },
+      ])
+    ])
+      .then((results) => {
+        const [posts, reposts] = results;
+        if (posts && reposts) {
+          // Sort all by newest
+          let postsAndReposts = [...posts, ...reposts];
+          postsAndReposts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          res.json(postsAndReposts);
         } else {
           res.status(404).json("No Posts Found");
         }
@@ -76,7 +94,12 @@ const controller = {
   delete: async (req: any, res: any, next: any) => {
     let id = req.params.id;
 
-    Promise.all([model.findByIdAndDelete(id, { useFindAndModify: false }), Comment.deleteMany({post : id}), Like.deleteMany({post : id})])
+    Promise.all([
+      model.findByIdAndDelete(id, { useFindAndModify: false }), 
+      Comment.deleteMany({post : id}), 
+      Like.deleteMany({post : id}),
+      Repost.deleteMany({post : id})
+    ])
 			.then(() => {
         res.sendStatus(200);
       })
