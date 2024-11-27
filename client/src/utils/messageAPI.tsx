@@ -25,8 +25,7 @@ export async function fetchMessages(messageId: string) {
 }
 
 //save new messages to db
-export async function closeMessage(event: any, messagesList: any[]) {
-  event.preventDefault();
+export async function closeMessage(messagesList: any[]) {
   console.log(messagesList[0]);
   try {
     const response = await fetch(
@@ -42,6 +41,8 @@ export async function closeMessage(event: any, messagesList: any[]) {
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      return response.status;
     }
   } catch (error) {
     console.error("A problem occurred with your fetch operation: ", error);

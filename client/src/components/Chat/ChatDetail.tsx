@@ -101,6 +101,21 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     }
   }, [chatId, isOpen, socket]);
 
+  //save chats every 30 seconds automatically
+  // useEffect(() => {
+  //   const saveChats = async() => {
+  //     if(newChatList.lenth > 0 && !saved) {
+  //       console.log("saving automatically...");
+  //       const saveStatus = await closeMessage(newChatList);
+  //       if(saveStatus == 200) {
+  //         setSaved(true);
+  //         setNewChatList(null);
+  //       }
+  //     } else return;
+  //   }
+  //   setInterval(saveChats, 30000);
+  // }, []);
+
   useEffect(() => {
     if(chatList && thisChatId) {
       if (convo) {
@@ -154,7 +169,8 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   async function handleBack(event: any) {
     if(!chatId) onClose();
     if (newChatList && newChatList.length && !saved) {
-      await closeMessage(event, newChatList); //save messages b4 leaving
+      const saveStatus = await closeMessage(newChatList); //save messages b4 leaving
+      console.log("save status", saveStatus);
       setSaved(true);
     }
     socket.emit("leave", thisChatId);
