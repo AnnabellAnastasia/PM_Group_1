@@ -14,6 +14,8 @@ import {
   Image,
 } from "react-bootstrap";
 import "./Navbar.css";
+import { socket, SocketContext } from "../SocketContext";
+import { MessageProvider } from "../Chat/messageContext";
 
 const PageNavbar: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
@@ -99,21 +101,35 @@ const PageNavbar: React.FC = () => {
 
           {/* Right Section (Links + Profile Icon) */}
           <Nav className="mr-auto px-2">
-            <Nav.Link className="mt-2" href="/about">About</Nav.Link>
-            <Nav.Link className="mt-2" href="/services">Services</Nav.Link>
-            <Nav.Link className="mt-2" href="/social">Social</Nav.Link>
-            <Nav.Link className="mt-2" href="/contact">Contact</Nav.Link>
-            <Nav.Link className="mt-2" href="/group">Group</Nav.Link>
-            {user.id && 
-            <Nav.Link className="openChatButton" ref={ref} onClick={toggleChat}>
-            <Image
-              className="message"
-              src="/messageIcon.png"
-              alt="message icon"
-            />
-          </Nav.Link>
-            }
-            
+            <Nav.Link className="mt-2" href="/about">
+              About
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/services">
+              Services
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/social">
+              Social
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/contact">
+              Contact
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/group">
+              Group
+            </Nav.Link>
+            {user.id && (
+              <Nav.Link
+                className="openChatButton"
+                ref={ref}
+                onClick={toggleChat}
+              >
+                <Image
+                  className="message"
+                  src="/messageIcon.png"
+                  alt="message icon"
+                />
+              </Nav.Link>
+            )}
+
             <NavDropdown
               className="px-2"
               align={{ xs: "start" }}
@@ -155,12 +171,17 @@ const PageNavbar: React.FC = () => {
           </Nav>
         </Navbar.Collapse>
         {/* ----- CHAT MODAL ----- */}
-        {user.id && 
-        <ChatModal
-          isOpen={isChatOpen}
-          onClose={toggleChat}
-          triggerRef={ref}
-        ></ChatModal> }
+        {user.id && (
+          <SocketContext.Provider value={socket}>
+            <MessageProvider>
+              <ChatModal
+                isOpen={isChatOpen}
+                onClose={toggleChat}
+                triggerRef={ref}
+              ></ChatModal>
+            </MessageProvider>
+          </SocketContext.Provider>
+        )}
       </Navbar>
       {pageAlert.error ? (
         <Alert className="errorAlert" variant="danger">
