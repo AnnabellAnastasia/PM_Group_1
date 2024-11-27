@@ -16,4 +16,14 @@ npm run dev
 ```
 
 ## Team Progress
-Basic MongoDB database functionality and a test front end are complete. 
+The following social networking capabilities are completed:
+* User Account Creation
+* User Authentication
+* Posts (CRUD)
+* Comments (CRUD)
+* Liking and Unliking Posts
+* Reposting Posts
+* User Profile Creation
+* Profile Privacy Settings
+* Friend Requests
+* User Friendship
