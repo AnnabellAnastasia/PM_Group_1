@@ -1,91 +1,212 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './Social.css';
-
-interface User {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  image: string;
-}
+import React, { useEffect, useState } from "react";
+import "./Social.css";
+import {
+  acceptFriendRequest,
+  declineFriendRequest,
+  sendFriendRequest,
+  getFriendRequests,
+  getFriends,
+  getSuggestedConnections,
+} from "../../utils/userAPI";
+import { UserContext, AlertContext } from "../ContextWrapper";
+import { useContext } from "react";
+import { Container, Button, ButtonGroup } from "react-bootstrap";
 
 function Social() {
-  const friends = [
-    { name: "Friend 1", mutualFriends: "714 friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Friend 2", mutualFriends: "502 friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Friend 3", mutualFriends: "273 friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Friend 4", mutualFriends: "533 friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Friend 5", mutualFriends: "725 friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Friend 6", mutualFriends: "77 friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Friend 7", mutualFriends: "6 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-    { name: "Friend 8", mutualFriends: "24 mutual friends", imgSrc: "https://static.thenounproject.com/png/65090-200.png" },
-  ];
+  const { user } = useContext(UserContext);
+  const { setPageAlert } = useContext(AlertContext);
+  const loggedInUserID = user.id ?? "";
 
-  const [suggestedConnections, setSuggestedConnections] = useState<User[]>([]);
+  const [friends, setFriends] = useState([]);
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [suggestedConnections, setSuggestedConnections] = useState([]);
 
-  // Fetch suggested connections from the backend
+  const fetchSuggestedConnections = async () => {
+    setSuggestedConnections(await getSuggestedConnections(loggedInUserID));
+  };
+
+  const fetchFriendRequests = async () => {
+    setFriendRequests(await getFriendRequests(loggedInUserID));
+  };
+
+  const fetchFriends = async () => {
+    setFriends(await getFriends(loggedInUserID));
+  };
+
+  async function handleLoadSocialData() {
+    await fetchFriendRequests();
+    await fetchFriends();
+    await fetchSuggestedConnections();
+  }
+
+  async function handleAcceptFriendRequest(
+    requestID: string,
+    recipientID: string,
+    senderID: string
+  ) {
+    await acceptFriendRequest(requestID, recipientID, senderID);
+    await handleLoadSocialData();
+  }
+
+  async function handleDeclineFriendRequest(requestID: string, userID: string) {
+    await declineFriendRequest(requestID, userID);
+    await handleLoadSocialData();
+  }
+
+  async function handleSendFriendRequest(userID: string, suggestedID: string, setPageAlert: Function) {
+    await sendFriendRequest(
+      userID,
+      suggestedID,
+      setPageAlert
+    )
+    await handleLoadSocialData();
+  }
+
   useEffect(() => {
-    const fetchSuggestedConnections = async () => {
-      try {
-        const response = await axios.get<User[]>('http://localhost:8080/users/all'); // New endpoint for all users
-        setSuggestedConnections(response.data);
-      } catch (error) {
-        console.error("Error fetching suggested connections:", error);
-      }
-    };
+    console.log("suggestedConnections", suggestedConnections);
+  }, [suggestedConnections]);
+  useEffect(() => {
+    console.log("friendRequests", friendRequests);
+  }, [friendRequests]);
+  useEffect(() => {
+    console.log("friends", friends);
+  }, [friends]);
 
-    fetchSuggestedConnections();
-  }, []);
+  useEffect(() => {
+    handleLoadSocialData();
+  }, [loggedInUserID]);
 
   return (
-    <div className="social container py-4">
+    <Container className="social py-4">
       {/* Friend Requests Section */}
-      <div className="friend-requests d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <button className="friend-requests-btn btn btn-secondary position-relative mb-2">
-          Friend Requests <span className="request-badge badge bg-danger position-absolute top-0 start-100 translate-middle">952</span>
-        </button>
-        <button className="find-friends-btn btn btn-primary mb-2">+ Find Friends</button>
-      </div>
-
-      <h1 className="display-6 mb-4">Friends</h1>
-
-      <div className="friend-list row gy-3">
-        {friends.map((friend, index) => (
-          <div key={index} className="col-md-6">
-            <div className="friend-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
-              <div className="friend-info d-flex align-items-center">
-                <img src={friend.imgSrc} alt={friend.name} className="friend-avatar rounded-circle me-3" />
-                <div className="friend-details">
-                  <p className="friend-name h5 mb-1">{friend.name}</p>
-                  <p className="mutual-friends text-muted small">{friend.mutualFriends}</p>
+      {friendRequests && friendRequests.length > 0 ? (
+        <>
+          <h1 className="display-6 mb-4">Friend Requests</h1>
+          <div className="friend-list row my-3">
+            {friendRequests.map((request: any, index: any) => (
+              <div key={index} className="col-md-6">
+                <div className="friend-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
+                  <div className="friend-info d-flex align-items-center">
+                    <img
+                      src={`http://localhost:8080/images/${
+                        request.sender.image
+                          ? request.sender.image
+                          : "blank-profile-picture.png"
+                      }`}
+                      alt={`${request.sender.firstName} ${request.sender.lastName} profile`}
+                      className="friend-avatar rounded-circle me-3"
+                    />
+                    <div className="friend-details">
+                      <p className="friend-name h5 mb-1">{`${request.sender.firstName} ${request.sender.lastName}`}</p>
+                    </div>
+                  </div>
+                  <ButtonGroup>
+                    <Button
+                      onClick={() =>
+                        handleAcceptFriendRequest(
+                          request._id,
+                          loggedInUserID,
+                          request.sender._id
+                        )
+                      }
+                      variant="outline-success"
+                      size="sm"
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        handleDeclineFriendRequest(request._id, loggedInUserID)
+                      }
+                      variant="outline-danger"
+                      size="sm"
+                    >
+                      Decline
+                    </Button>
+                  </ButtonGroup>
                 </div>
               </div>
-              <button className="friend-button btn btn-outline-secondary btn-sm">Friends</button>
-            </div>
+            ))}
           </div>
-        ))}
+        </>
+      ) : (
+        <></>
+      )}
+      <h1 className="display-6 mb-4">Friends</h1>
+
+      <div className="friend-list row my-3">
+        {friends && friends.length > 0 ? (
+          friends.map((friend: any, index: any) => {
+            return (
+              <div key={index} className="col-md-6">
+                <div className="friend-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
+                  <div className="friend-info d-flex align-items-center">
+                    <img
+                      src={`http://localhost:8080/images/${
+                        friend.user.image
+                          ? friend.user.image
+                          : "blank-profile-picture.png"
+                      }`}
+                      alt={`${friend.user.firstName} ${friend.user.lastName} profile`}
+                      className="friend-avatar rounded-circle me-3"
+                    />
+                    <div className="friend-details">
+                      <a href={`/account/${friend.user._id}`}>
+                        <p className="friend-name h5 mb-1">{`${friend.user.firstName} ${friend.user.lastName}`}</p>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p>No friends yet! Send a friend request to make a connection.</p>
+        )}
       </div>
 
       {/* Suggested Connections Section */}
       <h1 className="display-6 mt-5 mb-4">Suggested Connections</h1>
 
-      <div className="suggested-connections row gy-3">
-        {suggestedConnections.map((suggested) => (
-          <div key={suggested._id} className="col-md-6">
-            <div className="suggested-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
-              <div className="suggested-info d-flex align-items-center">
-                <img src={suggested.image || "https://static.thenounproject.com/png/65090-200.png"} alt={suggested.firstName} className="friend-avatar rounded-circle me-3" />
-                <div className="friend-details">
-                  <p className="friend-name h5 mb-1">{suggested.firstName} {suggested.lastName}</p>
-                  <p className="mutual-friends text-muted small">{"0 mutual friends"}</p>
+      <div className="suggested-connections row my-3">
+        {suggestedConnections &&
+          suggestedConnections.map((suggested: any) => (
+            <div key={suggested._id} className="col-md-6">
+              <div className="suggested-item d-flex align-items-center justify-content-between p-3 bg-white rounded shadow-sm">
+                <div className="suggested-info d-flex align-items-center">
+                  <img
+                    src={`http://localhost:8080/images/${
+                      suggested.image
+                        ? suggested.image
+                        : "blank-profile-picture.png"
+                    }`}
+                    alt={`${suggested.firstName} ${suggested.lastName} profile`}
+                    className="friend-avatar rounded-circle me-3"
+                  />
+                  <div className="friend-details">
+                    <a href={`/account/${suggested._id}`}>
+                      {`${suggested.firstName} ${suggested.lastName}`}
+                    </a>
+                  </div>
                 </div>
+                <Button
+                  onClick={() =>
+                    handleSendFriendRequest(
+                      loggedInUserID,
+                      suggested._id,
+                      setPageAlert
+                    )
+                  }
+                  size="sm"
+                  variant="primary"
+                >
+                  <i className="fa-solid fa-user-plus"></i>
+                </Button>
               </div>
-              <button className="connect-button btn btn-outline-primary btn-sm">Connect</button>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
-    </div>
+    </Container>
   );
 }
 

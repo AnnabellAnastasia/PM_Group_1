@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext, AlertContext } from "../ContextWrapper";
 import { useParams } from "react-router-dom";
-import { fetchProfileFromID } from "../../utils/userAPI";
+import { fetchProfileFromID, sendFriendRequest } from "../../utils/userAPI";
 import { capitalize } from "../../utils/tools";
 import { fetchUserPostsAndReposts } from "../../utils/postAPI";
+import { getFriends, removeFriend } from "../../utils/userAPI";
 
 // Edit Modals
 import BasicInfoModal from "./BasicInfoModal";
@@ -71,11 +73,19 @@ interface Project {
 function Account() {
   const { userID } = useParams();
   const accountUserID = userID ?? "";
+  const [friendshipID, setFriendshipID] = useState("");
+
+  const {
+    user: { id: loggedInUserID },
+  } = useContext(UserContext);
+
+  const { setPageAlert } = useContext(AlertContext);
 
   const userStatuses = ["selfProfile", "friendProfile", "nonFriendProfile"];
   const visibilityOptions = ["public", "friends", "hidden"];
 
   const [userStatus, setUserStatus] = useState(userStatuses[2]);
+
   const blankFields = {
     firstName: "",
     lastName: "",
@@ -146,6 +156,9 @@ function Account() {
   useEffect(() => {
     console.log("USER STATUS", userStatus);
   }, [userStatus]);
+  useEffect(() => {
+    console.log("friendshipID", friendshipID);
+  }, [friendshipID]);
 
   const getAccountUserInfo = async () => {
     let user = await fetchProfileFromID(accountUserID);
@@ -166,7 +179,17 @@ function Account() {
       } else {
         console.log("DIFFERENT USER PROFILE");
         setUserStatus(userStatuses[2]);
+        const friendsList = await getFriends(user);
+        console.log("friends", friendsList);
+        friendsList.forEach((friend: any) => {
+          if (friend.user._id === accountUserID) {
+            console.log("FRIEND USER PROFILE");
+            setUserStatus(userStatuses[1]);
+            setFriendshipID(friend._id);
+          }
+        });
       }
+      console.log("auth user", user);
     } else {
       console.log("USER NOT LOGGED IN");
       setUserStatus(userStatuses[2]);
@@ -200,6 +223,16 @@ function Account() {
       [name]: value,
     }));
   };
+
+  async function handleRemoveFriend(
+    userID: string,
+    friendshipID: string,
+    setPageAlert: Function
+  ) {
+    await removeFriend(userID, friendshipID, setPageAlert);
+    checkUserStatus();
+    getAccountUserInfo();
+  }
 
   const renderVisibilityButtons = (field: ProfileField) => {
     return (
@@ -331,9 +364,34 @@ function Account() {
                 </div>
               )}
 
-              <ButtonGroup>
+              <ButtonGroup size="sm">
                 {userStatus === userStatuses[2] && (
-                  <Button variant="primary">+ Add as Friend</Button>
+                  <Button
+                    onClick={() =>
+                      sendFriendRequest(
+                        loggedInUserID,
+                        accountUserID,
+                        setPageAlert
+                      )
+                    }
+                    variant="primary"
+                  >
+                    <i className="fa-solid fa-user-plus"></i>
+                  </Button>
+                )}
+                {userStatus === userStatuses[1] && (
+                  <Button
+                    onClick={() =>
+                      handleRemoveFriend(
+                        loggedInUserID,
+                        friendshipID,
+                        setPageAlert
+                      )
+                    }
+                    variant="outline-primary"
+                  >
+                    <i className="fa-solid fa-user-minus"></i>
+                  </Button>
                 )}
                 {userStatus !== userStatuses[0] && (
                   <Button variant="outline-primary">Message</Button>

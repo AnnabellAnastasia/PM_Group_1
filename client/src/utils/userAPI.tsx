@@ -285,3 +285,187 @@ export async function uploadImage(userID: string, imageData: FormData) {
     console.error("A problem occurred with your fetch operation: ", error);
   }
 }
+
+export async function getFriendRequests(userID: string) {
+  if (!userID) return;
+
+  try {
+    const response = await fetch(`http://localhost:8080/users/${userID}/friendRequests`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      console.error(`An error has occurred: ${response.statusText}`);
+      return;
+    }
+    const requests = await response.json();
+    if (!requests) {
+      console.warn(`No user found`);
+    }
+    return requests;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function sendFriendRequest(
+  senderID: string,
+  recipientID: string,
+  setPageAlert: Function
+) {
+  const request = {
+    sender: senderID,
+    recipient: recipientID,
+  };
+  let response;
+  try {
+    response = await fetch(`http://localhost:8080/users/${senderID}/friendRequests`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+      credentials: "include",
+    });
+    if (!response.ok) {
+      setPageAlert({error: response.status, success: ""})
+      throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      setPageAlert({success: "Friend Request Sent", error: ""})
+    }
+    return;
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
+}
+
+export async function declineFriendRequest(
+  requestID: string,
+  recipientID: string
+) {
+  console.log(requestID, recipientID);
+  let response;
+  try {
+    response = await fetch(`http://localhost:8080/users/${recipientID}/friendRequests/${requestID}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return;
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
+}
+
+export async function acceptFriendRequest(
+  requestID: string,
+  recipientID: string,
+  senderID: string,
+
+) {
+  const friendship = {
+    sender: senderID,
+    recipient: recipientID,
+  };
+  let response;
+  try {
+    response = await fetch(`http://localhost:8080/users/${recipientID}/friendRequests/${requestID}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(friendship),
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return;
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
+}
+
+export async function getFriends(userID: string) {
+  if (!userID) return;
+
+  try {
+    const response = await fetch(`http://localhost:8080/users/${userID}/friendships`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      console.error(`An error has occurred: ${response.statusText}`);
+      return;
+    }
+    const requests = await response.json();
+    if (!requests) {
+      console.warn(`No user found`);
+    }
+    return requests;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function removeFriend(
+  userID: string,
+  friendshipID: string,
+  setPageAlert: Function
+) {
+  let response;
+  try {
+    response = await fetch(`http://localhost:8080/users/${userID}/friendships/${friendshipID}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      setPageAlert({error: response.status, success: ""})
+      throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      setPageAlert({success: "Friend has been removed", error: ""})
+    }
+    return;
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+  }
+}
+
+export async function getSuggestedConnections(userID: string) {
+  if (!userID) return;
+
+  try {
+    const response = await fetch(`http://localhost:8080/users/${userID}/suggestions`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      console.error(`An error has occurred: ${response.statusText}`);
+      return;
+    }
+    const requests = await response.json();
+    if (!requests) {
+      console.warn(`No user found`);
+    }
+    return requests;
+  } catch (err) {
+    console.error(err);
+  }
+}

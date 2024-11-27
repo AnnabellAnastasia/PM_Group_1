@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import model from "../models/friendship";
 
 const controller = {
@@ -6,12 +7,39 @@ const controller = {
     let userID = req.params.id;
     model
       .find({ user1: userID })
+      .populate("user2", "firstName lastName image")
       .then((friendships1) => {
+        const allFriendships: {
+          _id: Types.ObjectId;
+          createdAt: NativeDate;
+          updatedAt: NativeDate;
+          user: Types.ObjectId | null | undefined;
+        }[] = [];
+        friendships1.forEach((friend) => {
+          let newUser = {
+            _id: friend._id,
+            createdAt: friend.createdAt,
+            updatedAt: friend.updatedAt,
+            user: friend.user2,
+          };
+          allFriendships.push(newUser);
+        });
+
         model
           .find({ user2: userID })
+          .populate("user1", "firstName lastName image")
           .then((friendships2) => {
-            const friendships = friendships1.concat(friendships2);
-            res.json(friendships);
+            friendships2.forEach((friend) => {
+              let newUser = {
+                _id: friend._id,
+                createdAt: friend.createdAt,
+                updatedAt: friend.updatedAt,
+                user: friend.user1,
+              };
+              allFriendships.push(newUser);
+            });
+
+            res.json(allFriendships);
           })
           .catch((err: any) => {
             res.json({ message: err.message });

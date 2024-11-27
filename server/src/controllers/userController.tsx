@@ -2,6 +2,8 @@ import model from "../models/user";
 import post from "../models/post";
 import repost from "../models/repost";
 import jwt from "jsonwebtoken";
+import friendship from "../models/friendship";
+import { Types } from "mongoose";
 
 const controller: any = {
   // GET /users - Check auth
@@ -277,6 +279,47 @@ const controller: any = {
       .catch((err: any) => {
         res.json({ message: err.message });
       });
+  },
+
+  suggestions: async (req: any, res: any, next: any) => {
+    let id = req.params.id;
+
+    model
+      .find()
+      .select("firstName lastName image")
+      .then((response) => {
+        // res.json(JSON.stringify(users));
+
+        friendship
+        .find({ user1: id })
+        .then((friendships1) => {
+          const allFriendships: (string | Types.ObjectId | undefined)[] = [];
+          friendships1.forEach((friend) => {
+            allFriendships.push(friend.user2?.toString());
+          });
+  
+          friendship
+            .find({ user2: id })
+            .then((friendships2) => {
+              friendships2.forEach((friend) => {
+                allFriendships.push(friend.user1?.toString());
+              });
+
+              const suggestions = response
+              .filter((user) => (user._id?.toString().localeCompare(id)))
+              .filter((user) => !allFriendships.includes(user._id?.toString()))
+              res.json(suggestions);
+            })
+            .catch((err: any) => {
+              res.json({ message: err.message });
+            });
+        })
+        .catch((err: any) => {
+          res.json({ message: err.message });
+        });
+
+      })
+      .catch((err) => next(err));
   },
 
   //TODO: get rid of this
