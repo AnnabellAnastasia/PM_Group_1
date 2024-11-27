@@ -15,19 +15,17 @@ interface CommonChatDetailProps {
   otherUserId?: string;
   isNew: boolean;
   chatUser?: any;
-  passChatList?: any;
-  onChange?: any; //recent change
 }
-
+//make it justuse the convo object and nothing else to save memory 
+//update the convo document so you dont have to have a separate new messages array. 
+//mama lets research
 const ChatDetail: React.FC<CommonChatDetailProps> = ({
   isOpen,
   onClose,
   chatId,
   otherUserId,
   isNew,
-  chatUser,
-  passChatList,
-  onChange, //recent change
+  chatUser
 }) => {
   const socket = useContext(SocketContext);
   // const [chatList, setChatList] = useState<any>([]);
@@ -49,30 +47,14 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
         console.log("chatList from context", chatList);
 
         const temp = chatList.find((convo) => convo._id == chatId);
-        setConvo(temp);
         if (temp) {
-          console.log("convo found", temp);
+          setConvo(temp);
+          console.log("convo found in first useEffect", temp);
           setThisChatList(temp.messages);
           setChatId(temp._id);
         }
       };
       getAllMessages();
-
-      // if (!isNew && passChatList) {
-      //   const getAllMessages = async () => {
-      //     console.log("passchatlist", passChatList);
-      //     setThisChatList(passChatList.messages);
-      //     setChatId(passChatList._id);
-      //   };
-      //   setHayMessages(true);
-      //   getAllMessages();
-      // socket.emit("join", passChatList.mesages[0].chatId, (response: any) => {
-      //   console.log(response.status);
-      //   if(response.status == "400") {
-      //     setErr(true);
-      //     console.log("Unable to join room");
-      //   }
-      // });
     } else if (isNew && otherUserId) {
       //if is a new chat call api to start a new conversation and get the chat id.
       const startNewChat = async () => {
@@ -81,70 +63,70 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
         if (parsed[0].creator) {
           console.log("there are messages");
           console.log(parsed);
-          // setHayMessages(true);
-          setChatId(parsed[0].chatId);
-          setChatList(parsed || []);
+          const temp = chatList.find((convo) => convo._id == parsed[0].chatId);
+          // setChatList((list:any) => [...list, parsed || []]);
+          if (temp) {
+            console.log("convo found", temp);
+            setThisChatList(temp.messages);
+            setChatId(temp._id);
+
+            socket.emit("join", temp._id, (response: any) => {
+              console.log(response.status);
+              if(response.status == "400") {
+                setErr(true);
+                console.error("unable to join room");
+              }
+            });
+          }
         } else {
           console.log("there are no messages");
           setChatId(parsed);
-        }
-        if (thisChatId) {
-          socket.emit("join", thisChatId, (response: any) => {
+          const convoData = {
+            _id:parsed, 
+            messages: [],
+            user1: user.id,
+            user2: otherUserId
+          }
+          setChatList((list:any) => [...list, convoData]);
+          socket.emit("join", parsed, (response:any) => {
             console.log(response.status);
-            if (response.status == "400") {
+            if(response.status == "400") {
               setErr(true);
-              console.log("Unable to join room");
+              console.error("unable to join room");
             }
-          });
+          })
         }
       };
       startNewChat();
     }
-
-    // return () => {
-    //   socket.emit("leave", thisChatId);
-    // };
   }, [chatId, isOpen, socket]);
 
   useEffect(() => {
-    if(chatList && chatId) {
-      // const convo = chatList.find((convo) => convo._id == chatId);
+    if(chatList && thisChatId) {
       if (convo) {
-        console.log("convo found", convo);
+        console.log("convo on re-fetch", convo.messages);
         setThisChatList(convo.messages);
-        setChatId(convo._id);
+      } else {
+        const temp = chatList.find((convo) => convo.id == thisChatId);
+        if(temp) {
+          setConvo(temp);
+          setThisChatList(temp.messages);
+        }
       }
     }
   }, [chatList]);
 
   useEffect(() => {
     if (!socket) return;
-
     const handleUsrExited = () => {
       setSaved(true);
       setNewChatList(null);
     };
-
-    // const handleReceiveMessage = (data: any) => {
-    //   if(data.chatId == chatId) {
-    //     setChatList((list: any) => [...list, data]);
-    //     setNewChatList((list: any) => [...list, data]);
-    //   }
-    // };
-
     const handleError = (data: any) => {
       console.error("connection error ", data);
     };
-
     socket.on("usrExited", handleUsrExited);
-
-    // socket.on("receive_message", handleReceiveMessage);
-
     socket.on("connect_error", handleError);
-
-    // return () => {
-    //   socket.off("receive_message", handleReceiveMessage);
-    // };
   }, [socket]);
 
   const sendMessage = async (event: any) => {
@@ -155,9 +137,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
         creator: user.id,
         chatId: thisChatId,
       };
-      // const convo = chatList.find((convo) => convo._id == chatId);
       if (convo) {
-        console.log("convo found", convo);
         const newMessages = convo.messages;
         newMessages.push(messageData);
         convo.messages = newMessages;
@@ -167,23 +147,16 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       setChatList((list: any) => [...list, messageData]);
       setThisChatList((list:any) => [...list, messageData]);
       setNewMessage("");
-      // setHayMessages(true);
       setSaved(false);
     }
   };
 
   async function handleBack(event: any) {
+    if(!chatId) onClose();
     if (newChatList && newChatList.length && !saved) {
       await closeMessage(event, newChatList); //save messages b4 leaving
       setSaved(true);
     }
-    // console.log("on change sent back");
-    // const msg = chatList.find((msg) => msg._id == thisChatId);
-    // if(msg) {
-      
-    // }
-    // onChange(msg);
-    // //end of changes
     socket.emit("leave", thisChatId);
     setChatId("");
     onClose();

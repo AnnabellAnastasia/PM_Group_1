@@ -6,9 +6,11 @@ import mongoose, { connection, Types } from "mongoose";
 import { IConversation } from "../models/conversation";
 
 const controller: any = {
-  //TODO: make api return json of conversation object and populate the message fields
-  /*
-   *    Get all messages between user and anyone else
+  /**
+   * return all conversations between user and anyone else
+   * @param req 
+   * @param res 
+   * @param next 
    */
   all: async (req: any, res: any, next: any) => {
     let conversationList: any[];
@@ -66,6 +68,11 @@ const controller: any = {
       typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     let conversationId: any = null;
     let messageIdList: Types.ObjectId[] = [];
+    console.log("messages list", messagesList);
+
+    
+
+
     Promise.all(
       messagesList.map((m) =>
         message

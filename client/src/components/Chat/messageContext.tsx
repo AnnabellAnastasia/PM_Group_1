@@ -2,10 +2,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { SocketContext } from "../SocketContext";
 import { fetchAll } from "../../utils/messageAPI";
 
-// Define the type of the context value
+
 interface MessageContextType {
-  chatList: any[]; // Replace with a more specific type if possible
-  setChatList: React.Dispatch<React.SetStateAction<any[]>>; // State updater function type
+  chatList: any[]; 
+  setChatList: React.Dispatch<React.SetStateAction<any[]>>; 
 }
 
 // Create the context with an initial value of null

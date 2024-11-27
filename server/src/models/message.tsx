@@ -13,7 +13,7 @@ export interface IMessage {
 type MessageSchemaType = Model<IMessage>;
 //define schema 
 const messageSchema = new Schema<IMessage, MessageSchemaType>({
-  body: { type: String, required: [true, "Body is required"] },
+  body: { type: String, required: [true, "Body is required"]},
   creator: { type: Schema.Types.ObjectId, ref: "User" },
   chatId: { type: Schema.Types.ObjectId, ref: "Conversation" },
 }, 

@@ -183,7 +183,6 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
       setSelectedConvo(convo);
       setIsDetailOpen(true);
       setSelectedChatId(convo._id);
-      // setSocketOn(false);
     }
   };
 
@@ -204,9 +203,7 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
               chatId={selectedChatId}
               isOpen={isDetailOpen}
               onClose={closeDetail}
-              passChatList={selectedConvo}
               isNew={false}
-              onChange={changeFromChild}
             ></ChatDetail>
           ) : (
             <>
