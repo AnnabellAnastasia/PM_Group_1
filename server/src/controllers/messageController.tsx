@@ -69,10 +69,6 @@ const controller: any = {
     let conversationId: any = null;
     let messageIdList: Types.ObjectId[] = [];
     console.log("messages list", messagesList);
-
-    
-
-
     Promise.all(
       messagesList.map((m) =>
         message
