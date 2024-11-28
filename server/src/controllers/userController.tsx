@@ -1,5 +1,9 @@
 import model from "../models/user";
+import post from "../models/post";
+import repost from "../models/repost";
 import jwt from "jsonwebtoken";
+import friendship from "../models/friendship";
+import { Types } from "mongoose";
 
 const controller: any = {
   // GET /users - Check auth
@@ -38,6 +42,8 @@ const controller: any = {
           const {
             firstName,
             lastName,
+            title,
+            titleVisibility,
             biography,
             biographyVisibility,
             major,
@@ -71,6 +77,8 @@ const controller: any = {
           res.json({
             firstName,
             lastName,
+            title,
+            titleVisibility,
             biography,
             biographyVisibility,
             major,
@@ -211,7 +219,7 @@ const controller: any = {
         res.json({ message: err.message });
       });
   },
-  // POST /users/:id - Upload image existing post
+  // POST /users/:id - Upload image to existing user
   image: async (req: any, res: any, next: any) => {
     let id = req.params.id;
     if (!req.file) return res.json({ message: "no file found" });
@@ -231,10 +239,88 @@ const controller: any = {
           res.status(404).json(`No Users Found with ID ${req.params.id}`);
         }
       })
+      .catch((err) => next(err));
+  },
+  // GET /users/:id/posts - Get all posts and reposts by a user
+  posts: async (req: any, res: any, next: any) => {
+    let id = req.params.id;
+
+    Promise.all([
+      post
+        .find({ creator: id })
+        .populate("creator", "firstName lastName image"),
+      repost.find({ reposter: id }).populate([
+        {
+          path: "post",
+          populate: [
+            {
+              path: "creator",
+              select: "firstName lastName image",
+            },
+          ],
+        },
+        { path: "reposter", select: "firstName lastName image" },
+      ]),
+    ])
+      .then((results) => {
+        const [posts, reposts] = results;
+        if (posts && reposts) {
+          // Sort all by newest
+          let postsAndReposts = [...posts, ...reposts];
+          postsAndReposts.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          res.json(postsAndReposts);
+        } else {
+          res.status(404).json("No Posts Found");
+        }
+      })
       .catch((err: any) => {
         res.json({ message: err.message });
       });
   },
+  suggestions: async (req: any, res: any, next: any) => {
+    let id = req.params.id;
+
+    model
+      .find()
+      .select("firstName lastName image")
+      .then((response) => {
+        // res.json(JSON.stringify(users));
+
+        friendship
+        .find({ user1: id })
+        .then((friendships1) => {
+          const allFriendships: (string | Types.ObjectId | undefined)[] = [];
+          friendships1.forEach((friend) => {
+            allFriendships.push(friend.user2?.toString());
+          });
+  
+          friendship
+            .find({ user2: id })
+            .then((friendships2) => {
+              friendships2.forEach((friend) => {
+                allFriendships.push(friend.user1?.toString());
+              });
+
+              const suggestions = response
+              .filter((user) => (user._id?.toString().localeCompare(id)))
+              .filter((user) => !allFriendships.includes(user._id?.toString()))
+              res.json(suggestions);
+            })
+            .catch((err: any) => {
+              res.json({ message: err.message });
+            });
+        })
+        .catch((err: any) => {
+          res.json({ message: err.message });
+        });
+
+      })
+      .catch((err) => next(err));
+  },
+
   //TODO: get rid of this
   everyUserTest: async (req: any, res: any, next: any) => {
     model
@@ -245,7 +331,7 @@ const controller: any = {
           const { _id: id, firstName, lastName, image } = user;
           users.push({ _id: id, firstName, lastName, image });
         });
-        res.json(users);
+        res.json(JSON.stringify(users));
       })
       .catch((err) => next(err));
   },

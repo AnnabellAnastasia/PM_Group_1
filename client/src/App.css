@@ -1,15 +1,23 @@
 /* COLORS */
 :root {
 	--niner-green: #005236;
+	--niner-green-emphasis: #388770;
 }
 
 a {
 	color: var(--niner-green);
+	text-decoration: none;
+}
+
+a:hover {
+	cursor: pointer;
+	text-decoration: none;
+	color: var(--niner-green-emphasis);
 }
 
 .form-control:focus{
-	border-color: hsl(160, 100%, 36%);
-	box-shadow: 0 0 0 .25rem hsla(160, 100%, 16%, 0.25);
+	border-color: hsl(160, 88%, 33%);
+	box-shadow: 0 0 0 .25rem hsla(160, 100%, 24%, 0.25);
 }
 
 .form-check-input:checked {
@@ -20,8 +28,8 @@ a {
 .btn-primary {
 	--bs-btn-bg: var(--niner-green);
 	--bs-btn-border-color: var(--niner-green);
-	--bs-btn-hover-bg: var(--niner-green);
-	--bs-btn-hover-border-color: var(--niner-green);
+	--bs-btn-hover-bg: var(--niner-green-emphasis);
+	--bs-btn-hover-border-color: var(--niner-green-emphasis);
 	--bs-btn-active-bg: var(--niner-green);
 	--bs-btn-active-border-color: var(--niner-green);
 	--bs-btn-disabled-bg: var(--niner-green);
@@ -31,8 +39,8 @@ a {
 .btn-outline-primary {
 	--bs-btn-color: var(--niner-green);
 	--bs-btn-border-color: var(--niner-green);
-	--bs-btn-hover-bg: var(--niner-green);
-	--bs-btn-hover-border-color: var(--niner-green);
+	--bs-btn-hover-bg: var(--niner-green-emphasis);
+	--bs-btn-hover-border-color: var(--niner-green-emphasis);
 	--bs-btn-active-bg: var(--niner-green);
 	--bs-btn-active-border-color: var(--niner-green);
 	--bs-btn-disabled-color: var(--niner-green);
@@ -45,6 +53,14 @@ a {
 
 .dropdown-menu {
 	--bs-dropdown-link-active-bg: var(--niner-green);
+}
+
+.dropdown-item:hover {
+  color: var(--niner-green-emphasis);
+}
+
+.dropdown-item:active {
+  color: white;
 }
 
 .App {
@@ -120,81 +136,4 @@ h5 {
 h6 {
   font-size: 1.2rem;
   font-weight: 500;
-}
-
-.post {
-	display: block;
-	margin-left: 30%;
-	margin-right: 30%;
-	margin-top: 20px;
-	border: 2px outset gray;
-	border-radius: 20px;
-	box-shadow: 2px 2px 2px 0 gray;
-}
-
-.post-options {
-	display: inline-block;
-}
-
-.post-user {
-	display: inline-block;
-}
-
-.pic-container {
-	display: inline-block;
-	vertical-align:top
-}
-
-.profile-pic {
-	height: 50px;
-	border-radius: 50%;
-}
-
-.user-display-name {
-	display: inline-block;
-	margin-top: 20px;
-}
-
-.post-entry {
-	height: 100%;
-	width: calc(100% - 100px);
-	padding-left: 1rem;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	margin-bottom: 10px;
-	margin-top: 10px;
-	border-radius: .4rem 0 0 .4rem;
-	border: none;
-	background-color: #E7E7E7;
-}
-
-.post-submit {
-	border-radius: 0 .4rem .4rem 0;
-	padding-left: 1rem;
-	padding-right: 1rem;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	border: none;
-	width: 80px;
-	background-color: #E7E7E7;
-}
-
-.post-submit:hover,
-.post-button:hover {
-	background-color: #9c9c9c;
-}
-
-.post-button {
-	display: inline-block;
-	border-radius: .4rem;
-	padding-left: 1rem;
-	padding-right: 1rem;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	border: none;
-	background-color: #E7E7E7;
-}
-
-.post-options {
-	margin-bottom: 5px;
 }

@@ -1,9 +1,10 @@
 .comment {
-  padding: 5px;
-  margin: 10px;
+  margin: 5px;
+  border-top: 1px solid #e3e3e3;
 }
 
 .comment-header {
+  justify-content: space-between;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
@@ -17,18 +18,14 @@
 }
 
 .comment-info h3 {
+  display: inline-block;
   margin: 0;
   font-size: 0.9em;
 }
 
-.comment-info p {
-  margin: 0;
-  font-size: 0.7em;
-  color: gray;
-}
-
 .comment-info span {
-  font-size: 0.8em;
+  display: block;
+  font-size: 0.7em;
   color: gray;
 }
 
@@ -36,47 +33,22 @@
   margin: 10px 0;
 }
 
-.comment-edit-entry {
-  width: calc(100% - 140px);
-  max-width: 500px; /* Adjust this to your desired maximum width */
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 10px;
-  border: none;
-  border-radius: 0.4rem 0 0 0.4rem;
-  background-color: #e7e7e7;
+.comment-edit button {
+  padding-top: 3px !important;
+  padding-bottom: 0px !important;
 }
 
-.comment-edit-submit {
-  width: 60px;
-  border-radius: 0 0.4rem 0.4rem 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border: none;
-  background-color: #e7e7e7;
+.commenter-profile-image {
+  position: relative;
+  top: -10px;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
-.comment-edit-cancel {
-  width: 60px;
-  border-radius: 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border: none;
-  background-color: #e7e7e7;
-}
-
-.comment-actions {
-  margin-top: -28px;
-  margin-left: 5px;
-}
-
-.comment-actions button {
-  background: none;
-  border: none;
-  color: #0073b1;
-  cursor: pointer;
+.commenter-info {
+  display: inline-block;
+  margin-top: 10px;
 }

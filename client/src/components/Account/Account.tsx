@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext, AlertContext } from "../ContextWrapper";
 import { useParams } from "react-router-dom";
-import { fetchProfileFromID } from "../../utils/userAPI";
+import { fetchProfileFromID, sendFriendRequest } from "../../utils/userAPI";
 import { capitalize } from "../../utils/tools";
+import { fetchUserPostsAndReposts } from "../../utils/postAPI";
+import { getFriends, removeFriend } from "../../utils/userAPI";
+
 // Edit Modals
 import BasicInfoModal from "./BasicInfoModal";
 import BiographyModal from "./BiographyModal";
@@ -24,6 +28,7 @@ import {
 } from "react-bootstrap";
 
 import { updateUser, fetchAuth } from "../../utils/userAPI";
+import PostFeed from "../PostFeed/PostFeed";
 
 type ProfileField =
   | "firstName"
@@ -68,11 +73,19 @@ interface Project {
 function Account() {
   const { userID } = useParams();
   const accountUserID = userID ?? "";
+  const [friendshipID, setFriendshipID] = useState("");
+
+  const {
+    user: { id: loggedInUserID },
+  } = useContext(UserContext);
+
+  const { setPageAlert } = useContext(AlertContext);
 
   const userStatuses = ["selfProfile", "friendProfile", "nonFriendProfile"];
   const visibilityOptions = ["public", "friends", "hidden"];
 
   const [userStatus, setUserStatus] = useState(userStatuses[2]);
+
   const blankFields = {
     firstName: "",
     lastName: "",
@@ -118,6 +131,17 @@ function Account() {
   const [isEditingPhoto, setIsEditingPhoto] = useState(false);
   const [isEditingProjects, setIsEditingProjects] = useState(false);
 
+  // User post data
+  const [postFeed, setPostFeed] = useState<any>([]);
+
+  async function getAllPosts() {
+    setPostFeed(await fetchUserPostsAndReposts(userID || ""));
+  }
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
   // const [projects, setProjects] = useState<Project[]>([
   //   { name: "Web Design", progress: 80 },
   //   { name: "Website Markup", progress: 72 },
@@ -132,6 +156,9 @@ function Account() {
   useEffect(() => {
     console.log("USER STATUS", userStatus);
   }, [userStatus]);
+  useEffect(() => {
+    console.log("friendshipID", friendshipID);
+  }, [friendshipID]);
 
   const getAccountUserInfo = async () => {
     let user = await fetchProfileFromID(accountUserID);
@@ -152,7 +179,17 @@ function Account() {
       } else {
         console.log("DIFFERENT USER PROFILE");
         setUserStatus(userStatuses[2]);
+        const friendsList = await getFriends(user);
+        console.log("friends", friendsList);
+        friendsList.forEach((friend: any) => {
+          if (friend.user._id === accountUserID) {
+            console.log("FRIEND USER PROFILE");
+            setUserStatus(userStatuses[1]);
+            setFriendshipID(friend._id);
+          }
+        });
       }
+      console.log("auth user", user);
     } else {
       console.log("USER NOT LOGGED IN");
       setUserStatus(userStatuses[2]);
@@ -186,6 +223,16 @@ function Account() {
       [name]: value,
     }));
   };
+
+  async function handleRemoveFriend(
+    userID: string,
+    friendshipID: string,
+    setPageAlert: Function
+  ) {
+    await removeFriend(userID, friendshipID, setPageAlert);
+    checkUserStatus();
+    getAccountUserInfo();
+  }
 
   const renderVisibilityButtons = (field: ProfileField) => {
     return (
@@ -261,9 +308,9 @@ function Account() {
   // };
 
   return (
-    <Container className="py-5">
+    <Container className="py-3">
       <Row>
-        <Col md={4}>
+        <Col md={3}>
           {/* Basic Info Sidebar */}
           <Card className="text-center mb-4">
             <Card.Body>
@@ -317,9 +364,34 @@ function Account() {
                 </div>
               )}
 
-              <ButtonGroup>
+              <ButtonGroup size="sm">
                 {userStatus === userStatuses[2] && (
-                  <Button variant="primary">+ Add as Friend</Button>
+                  <Button
+                    onClick={() =>
+                      sendFriendRequest(
+                        loggedInUserID,
+                        accountUserID,
+                        setPageAlert
+                      )
+                    }
+                    variant="primary"
+                  >
+                    <i className="fa-solid fa-user-plus"></i>
+                  </Button>
+                )}
+                {userStatus === userStatuses[1] && (
+                  <Button
+                    onClick={() =>
+                      handleRemoveFriend(
+                        loggedInUserID,
+                        friendshipID,
+                        setPageAlert
+                      )
+                    }
+                    variant="outline-primary"
+                  >
+                    <i className="fa-solid fa-user-minus"></i>
+                  </Button>
                 )}
                 {userStatus !== userStatuses[0] && (
                   <Button variant="outline-primary">Message</Button>
@@ -340,7 +412,7 @@ function Account() {
               formData.facebookVisibility,
               formData.facebook
             )) && (
-            <Card>
+            <Card className="mb-4">
               <Card.Header>
                 <h5 className="card-heading">
                   Social Links{" "}
@@ -433,7 +505,22 @@ function Account() {
           )}
         </Col>
 
-        <Col md={8}>
+        <Col md={6}>
+          <Card className="mb-4">
+            <Card.Header>
+              <h4>{`${formData.firstName}'s Posts`}</h4>
+            </Card.Header>
+            <Card.Body>
+              {postFeed && postFeed.length > 0 ? (
+                <PostFeed postFeed={postFeed} getAllPosts={getAllPosts} />
+              ) : (
+                <h3>This user has not made any posts yet.</h3>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col md={3}>
           {/* Profile Biography */}
           {checkDisplayField(
             formData.biographyVisibility,
@@ -453,9 +540,7 @@ function Account() {
                   )}
                 </h5>
               </Card.Header>
-              <Card.Body className="mb-2">
-                {formData.biography}
-              </Card.Body>
+              <Card.Body className="mb-2">{formData.biography}</Card.Body>
             </Card>
           )}
 
@@ -636,6 +721,7 @@ function Account() {
           </div> */}
         </Col>
       </Row>
+
       {/* Modals for Editing */}
       {userStatus === userStatuses[0] && (
         <>

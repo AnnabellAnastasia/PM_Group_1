@@ -3,11 +3,15 @@ import { userLoggedIn } from '../middleware/auth';
 import { upload } from '../middleware/fileUpload';
 import controller from '../controllers/userController';
 import friendshipRoutes from '../routes/friendshipRoutes';
+import friendRequestRoutes from '../routes/friendRequestRoutes';
+import User from '../models/user';
 
 const userRoutes = express.Router();
 
 // GET /users - Check authentication
 userRoutes.get('/', userLoggedIn, controller.auth);
+
+
 // POST /users - Create new user
 userRoutes.post('/', controller.create);
 // POST /users/login - Authenticate user login
@@ -24,9 +28,15 @@ userRoutes.get('/:id', controller.show);
 userRoutes.put('/:id/', userLoggedIn ,controller.update);
 // POST /users/:id/image - Upload image from user id
 userRoutes.post('/:id/image', userLoggedIn, upload, controller.image);
+// GET /users/:id/posts - Get all posts and reposts from user ID param
+userRoutes.get('/:id/posts', controller.posts);
+// GET /users/:id/suggestions - Fetch suggested connections
+userRoutes.get('/:id/suggestions', controller.suggestions);
 
 // Friendship Routes
 userRoutes.use("/:id/friendships", friendshipRoutes);
+// Friend Request
+userRoutes.use("/:id/friendRequests", friendRequestRoutes);
 
 //TEST - get all users in db
 userRoutes.get('/everyUserTest', controller.everyUserTest);

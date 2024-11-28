@@ -38,7 +38,13 @@ const PageNavbar: React.FC = () => {
 
   return (
     <>
-      <Navbar collapseOnSelect expand="lg" bg="light" data-bs-theme="light">
+      <Navbar
+        collapseOnSelect
+        expand="lg"
+        bg="primary"
+        data-bs-theme="dark"
+        className="bg-gradient p-2"
+      >
         {/* Left Section (Logo + Name) */}
         <Navbar.Brand href="/posts">
           <img
@@ -56,21 +62,23 @@ const PageNavbar: React.FC = () => {
           {/* Center Section (Search Section) */}
           <Container fluid className="position-relative">
             <Form.Control
-              className="mt-2"
+              data-bs-theme="light"
+              className="my-2"
               style={{ width: "100%" }}
               id="search"
               type="text"
               placeholder="Search"
               value={searchTerm}
               onChange={(e) => handleSearchUsers(e, e.target.value)}
-            ></Form.Control>
+            />
 
             {searchResults && searchResults[0] ? (
               <ListGroup
+                data-bs-theme="light"
                 className="position-absolute top-100 start-0 translate-left px-3"
                 style={{ width: "100%" }}
               >
-                <ListGroup.Item disabled style={{ width: "100%" }}>
+                <ListGroup.Item disabled style={{ width: "100%", margin: 0 }}>
                   Users
                 </ListGroup.Item>
                 {searchResults.map((result: any) => (
@@ -78,7 +86,7 @@ const PageNavbar: React.FC = () => {
                     action
                     variant="light"
                     key={result.id}
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", margin: 0 }}
                     href={`/account/${result.id}`}
                   >
                     <Image
@@ -88,7 +96,7 @@ const PageNavbar: React.FC = () => {
                           : "blank-profile-picture.png"
                       }`}
                       roundedCircle
-                      className="profile-icon me-3"
+                      className="search-profile-icon me-3"
                     />
                     {result.firstName}&nbsp;{result.lastName}
                   </ListGroup.Item>
@@ -117,6 +125,27 @@ const PageNavbar: React.FC = () => {
               Group
             </Nav.Link>
             {user.id && (
+              <Nav.Link className="chat-link ms-1" ref={ref} onClick={toggleChat}>
+              {isChatOpen ? (
+                <i className="fa-solid fa-envelope-open-text"></i>
+              ) : (
+                <i className="fa-solid fa-envelope"></i>
+              )}
+            </Nav.Link>
+            )}
+            {/* <Nav.Link className="mt-2" href="/services">
+              Services
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/social">
+              Social
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/contact">
+              Contact
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/group">
+              Group
+            </Nav.Link>
+            {user.id && (
               <Nav.Link
                 className="openChatButton"
                 ref={ref}
@@ -128,9 +157,9 @@ const PageNavbar: React.FC = () => {
                   alt="message icon"
                 />
               </Nav.Link>
-            )}
-
+            )} */}
             <NavDropdown
+              data-bs-theme="light"
               className="px-2"
               align={{ xs: "start" }}
               title={
@@ -184,14 +213,14 @@ const PageNavbar: React.FC = () => {
         )}
       </Navbar>
       {pageAlert.error ? (
-        <Alert className="errorAlert" variant="danger">
+        <Alert className="errorAlert" variant="danger" dismissible>
           {pageAlert.error}
         </Alert>
       ) : (
         <></>
       )}
       {pageAlert.success ? (
-        <Alert className="successAlert" variant="success">
+        <Alert className="successAlert" variant="success" dismissible>
           {pageAlert.success}
         </Alert>
       ) : (
