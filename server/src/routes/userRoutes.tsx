@@ -37,8 +37,4 @@ userRoutes.get('/:id/suggestions', controller.suggestions);
 userRoutes.use("/:id/friendships", friendshipRoutes);
 // Friend Request
 userRoutes.use("/:id/friendRequests", friendRequestRoutes);
-
-//TEST - get all users in db
-userRoutes.get('/everyUserTest', controller.everyUserTest);
-
 export default userRoutes;

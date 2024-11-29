@@ -220,27 +220,38 @@ const ChatPreview: React.FC<ChatMessagePreviewProps> = ({ messages }) => {
                           data-key={convo.messages[0].chatId}
                           onClick={handleOpenChatDetail}
                         >
-                          <div className="senderIcon">
-                            {/* Placeholder for Profile Icon */}
-                          </div>
+                          {user.firstName == convo.user1.firstName? 
+                            <img
+                            src={`http://localhost:8080/images/${
+                              convo.user2.image
+                                ? convo.user2.image
+                                : "blank-profile-picture.png"
+                            }`}
+                            alt={`${convo.user2.firstName} ${convo.user2.lastName}'s profile`}
+                            className="senderIcon"
+                          /> :
+                          <img
+                            src={`http://localhost:8080/images/${
+                              convo.user1.image
+                                ? convo.user1.image
+                                : "blank-profile-picture.png"
+                            }`}
+                            alt={`${convo.user1.firstName} ${convo.user1.lastName}'s profile`}
+                            className="senderIcon"
+                          />
+                          }
                           <div className="chatPreview">
                             {user.firstName == convo.user1.firstName ? (
                               <h6 className="chatSender">
-                                {convo.user2.firstName}{" "}
-                                {convo.user2.lastName}
+                                {convo.user2.firstName} {convo.user2.lastName}
                               </h6>
                             ) : (
                               <h6 className="chatSender">
-                                {convo.user1.firstName}{" "}
-                                {convo.user1.lastName}
+                                {convo.user1.firstName} {convo.user1.lastName}
                               </h6>
                             )}
                             <p className="chatContent">
-                              {
-                                convo.messages[
-                                  convo.messages.length - 1
-                                ].body
-                              }
+                              {convo.messages[convo.messages.length - 1].body}
                             </p>
                           </div>
                           <button className="openChatButton">

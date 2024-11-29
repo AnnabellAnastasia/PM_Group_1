@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { fetchAllUsersTest, getFriends, getSuggestedConnections } from "../../utils/userAPI";
+import { getFriends, getSuggestedConnections } from "../../utils/userAPI";
 import "./NewChat.css";
 import ChatDetail from "./ChatDetail";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
