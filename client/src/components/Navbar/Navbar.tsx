@@ -14,6 +14,8 @@ import {
   Image,
 } from "react-bootstrap";
 import "./Navbar.css";
+import { socket, SocketContext } from "../SocketContext";
+import { MessageProvider } from "../Chat/messageContext";
 
 const PageNavbar: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
@@ -122,13 +124,40 @@ const PageNavbar: React.FC = () => {
             <Nav.Link className="mt-2" href="/group">
               Group
             </Nav.Link>
-            <Nav.Link className="chat-link ms-1" ref={ref} onClick={toggleChat}>
+            {user.id && (
+              <Nav.Link className="chat-link ms-1" ref={ref} onClick={toggleChat}>
               {isChatOpen ? (
                 <i className="fa-solid fa-envelope-open-text"></i>
               ) : (
                 <i className="fa-solid fa-envelope"></i>
               )}
             </Nav.Link>
+            )}
+            {/* <Nav.Link className="mt-2" href="/services">
+              Services
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/social">
+              Social
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/contact">
+              Contact
+            </Nav.Link>
+            <Nav.Link className="mt-2" href="/group">
+              Group
+            </Nav.Link>
+            {user.id && (
+              <Nav.Link
+                className="openChatButton"
+                ref={ref}
+                onClick={toggleChat}
+              >
+                <Image
+                  className="message"
+                  src="/messageIcon.png"
+                  alt="message icon"
+                />
+              </Nav.Link>
+            )} */}
             <NavDropdown
               data-bs-theme="light"
               className="px-2"
@@ -171,11 +200,17 @@ const PageNavbar: React.FC = () => {
           </Nav>
         </Navbar.Collapse>
         {/* ----- CHAT MODAL ----- */}
-        <ChatModal
-          isOpen={isChatOpen}
-          onClose={toggleChat}
-          triggerRef={ref}
-        ></ChatModal>
+        {user.id && (
+          <SocketContext.Provider value={socket}>
+            <MessageProvider>
+              <ChatModal
+                isOpen={isChatOpen}
+                onClose={toggleChat}
+                triggerRef={ref}
+              ></ChatModal>
+            </MessageProvider>
+          </SocketContext.Provider>
+        )}
       </Navbar>
       {pageAlert.error ? (
         <Alert className="errorAlert" variant="danger" dismissible>

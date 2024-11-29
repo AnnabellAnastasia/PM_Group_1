@@ -146,8 +146,10 @@
     flex-direction: column;
     height: 100%;
     gap: 0.3rem;
-    overflow:visible;
+    overflow:auto;
     margin-bottom: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: grey #e7e7e7;
   }
   
   .senderIcon {
@@ -157,9 +159,4 @@
     height: 2.5em;
     align-self: center;
     flex-shrink: 0;
-  }
-  
-  .newChat:hover{
-    transform: scale(1.05);
-    transition: transform 0.2s ease;
   }

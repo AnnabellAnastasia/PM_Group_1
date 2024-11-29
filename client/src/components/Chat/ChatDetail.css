@@ -1,155 +1,160 @@
 .message-detail {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .messageAndEditTextContainer {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    justify-content: space-around;
-    border-radius: 8px;
-    align-self: center;
-  }
-  
-  .chatDetailMessageContainer {
-    width: 100%;
-    height: 31rem;
-    background-color: white;
-    border-bottom: 2px solid #05a56a;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    gap: 0.2rem;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    padding-bottom: 0.5rem;
-    box-sizing: border-box;
-    align-self: center;
-    align-items: space-between;
-  }
-  
-  .chatDetailMessageContainer::-webkit-scrollbar {
-    width: 0.2rem;
-  }
-  
-  .detailSenderName {
-    align-items: start;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .inputContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    align-items: center;
-    background-color: #e7e7e7;
-    border-radius: 8px;
-    margin-top: 8px;
-    padding: 8px;
-    flex-grow: 1;
-    gap: .5rem;
-  }
-  
-  .messageInput {
-    flex: 1;
-    box-sizing: border-box;
-    height: 100%;
-    width: 100%;
-    border-radius: 8px;
-    background-color: white;
-    border: none;
-    color: #282c34;
-    font-size: 1.2rem;
-    font-weight: 800;
-    resize: none;
-    font-family: sans-serif;
-    overflow: hidden;
-    padding: .5rem;
-  }
-  
-  .sendButton {
-    width: 12%;
-    align-self: start;
-    border-radius: 8px;
-    height: 2.5rem;
-    background-color: #05a56a;
-    border: none;
-    color: #ffffff;
-    font-size: 1rem;
-    font-weight: 800;
-    z-index: 2;
-  }
-  
-  textarea:focus {
-    outline: none;
-    box-shadow: 5px 8px 16px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-  }
-  
-  .sendButton:hover {
-    box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.2);
-    transition: box-shadow 0.1s ease-in, background-color 0.2s ease-in,
-      color 0.1s ease-in;
-    background-color: #0be595;
-    color: #333333;
-    z-index: 1;
-  }
-  
-  .messageBoxSender {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: fit-content;
-    max-width: 60%;
-    background-color: #e7e7e7;
-    color: #333333;
-    border-radius: 0.5rem;
-    min-height: 2rem;
-    padding: 0.2rem;
-    flex-direction: row;
-    flex-shrink: 0;
-  }
-  
-  /* .messageBoxClient {
-    display: flex;
-    justify-content: flex-start;
-    align-self: flex-end;
-    align-items: center;
-    max-width: 60%;
-    background-color: #e7e7e7;
-    color: #333333;
-    border-radius: 0.5rem;
-    min-height: 2rem;
-    padding: 0.2rem;
-    flex-direction: row;
-    flex-shrink: 0;
-  }
-   */
-  .content {
-    margin: 0.5rem;
-  }
-  
-  .sendButton:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s ease;
-  }
-/* 
-  "you" : "other" */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
 
-  #you {
-    display: flex;
-    justify-content: flex-start;
-    align-self: flex-end;
-    align-items: center;
-    background-color: #0be595;
-  }
+.messageAndEditTextContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: space-around;
+  border-radius: 8px;
+  /* align-self: center; */
+  overflow: visible;
+}
+
+.chatDetailMessageContainer {
+  width: 100%;
+  height: 30rem;
+  background-color: white;
+  border-bottom: 2px solid #05a56a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  overflow-y: auto;
+  padding-bottom: 0.5rem;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  border-top: 2px solid #e3e3e3;
+  padding-top: .5rem;
+  padding-right: .5rem;
+  scrollbar-width: thin;
+  scrollbar-color: grey #e7e7e7;
+}
+
+.detailSenderName {
+  align-items: start;
+  margin: 0;
+  padding: 0;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
+  background-color: #e7e7e7;
+  border-radius: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  flex-grow: 1;
+  gap: 0.5rem;
+}
+
+.messageInput {
+  flex: 1;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  border-radius: 8px;
+  background-color: white;
+  border: none;
+  color: #282c34;
+  font-size: 1.2rem;
+  font-weight: 800;
+  resize: none;
+  font-family: sans-serif;
+  overflow: hidden;
+  padding: 0.5rem;
+}
+
+.sendButton {
+  width: 12%;
+  align-self: start;
+  border-radius: 8px;
+  height: 2.5rem;
+  background-color: #05a56a;
+  border: none;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+  z-index: 2;
+}
+
+textarea:focus {
+  outline: none;
+  box-shadow: 5px 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.sendButton:hover {
+  box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.1s ease-in, background-color 0.2s ease-in,
+    color 0.1s ease-in;
+  background-color: #0be595;
+  color: #333333;
+  z-index: 1;
+}
+
+.messageBoxSender {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: fit-content;
+  max-width: 60%;
+  background-color: #e7e7e7;
+  color: #333333;
+  border-radius: 0.5rem;
+  min-height: 2rem;
+  padding: 0.2rem;
+  flex-direction: row;
+  flex-shrink: 0;
+}
+
+.content {
+  margin: 0.5rem;
+}
+
+.sendButton:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+#you {
+  display: flex;
+  justify-content: flex-start;
+  align-self: flex-end;
+  align-items: center;
+  background-color: #0be595;
+}
+
+.detail-header {
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+  align-items: center;
+}
+
+.detail-header button {
+  border-radius: 8px;
+  border: none;
+  background-color: #e3e3e3;
+  color: black;
+  margin-bottom: .2rem;
+  height: 1.5rem;
+}
+
+.detail-header button:hover {
+  box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  transition: box-shadow 0.1s ease-in, background-color 0.2s ease-in,
+    color 0.1s ease-in;
+  z-index: 3;
+}
