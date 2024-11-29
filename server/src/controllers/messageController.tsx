@@ -115,20 +115,12 @@ const controller: any = {
           { user1: usr1, user2: usr2 },
           { user1: usr2, user2: usr1 },
         ],
-      });
+      }).populate('messages', 'body creator chatId')
+      .populate('user1', 'firstName lastName image')
+      .populate('user2', 'firstName lastName image');
       if (existingChat.length) {
-        if (existingChat[0].messages && existingChat[0].messages.length) {
-          const mList: any[] = await Promise.all(
-            existingChat[0].messages.map(async (msg: Types.ObjectId) => {
-              return await message.findById(msg);
-            })
-          );
-          if (mList) {
-            return res.json(JSON.stringify(mList)); //send entire chat object
-          }
-        } else {
-          return res.status(200).json({ chatId: existingChat[0]._id });
-        }
+        console.log("chat object returned", existingChat);
+        return res.json(existingChat);
       }
       console.log("No existing chat found, creating a new chat.");
       const newChat = await model.create({
@@ -145,42 +137,3 @@ const controller: any = {
 };
 
 export default controller;
-
-// let cList: any[]; //conversations
-// let mList: any[] = []; //messages (last messages preferrably)
-// console.log("fetch all messages db op called");
-
-// try {
-//   const result = await model.find({
-//     $or: [{user1: req.id}, {user2: req.id}],
-//   }).sort({timestamp: -1});
-
-//   if(!result || result.length === 0) {
-//     console.log("returned 204");
-//     return res.status(204).json("No conversations");
-//   }
-
-//   cList = result;
-//   console.log("results from fetchall", result);
-
-//   const messagePromises = cList.map((element) => {
-//     const len = element.messages.length;
-//     if(len > 0) {
-//       return message.findById(element.messages[len -1]);
-//     }
-//     return null;
-//   });
-
-//   mList = await Promise.all(messagePromises);
-
-//   mList = mList.filter((msg) => msg !== null);
-
-//   if(mList.length > 0) {
-//     res.json({messages: mList});
-//   } else {
-//     res.status(204).json("no messages found");
-//   }
-// } catch (err:any) {
-//   console.error("Error fetching messages", err);
-//   res.status(500).json({message:err.message});
-// }

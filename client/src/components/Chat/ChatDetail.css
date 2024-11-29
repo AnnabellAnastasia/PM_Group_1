@@ -29,16 +29,10 @@
     justify-content: end;
     gap: 0.2rem;
     overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
     padding-bottom: 0.5rem;
     box-sizing: border-box;
     align-self: center;
     align-items: space-between;
-  }
-  
-  .chatDetailMessageContainer::-webkit-scrollbar {
-    width: 0.2rem;
   }
   
   .detailSenderName {

@@ -16,8 +16,8 @@ interface CommonChatDetailProps {
   isNew: boolean;
   chatUser?: any;
 }
-//make it justuse the convo object and nothing else to save memory 
-//update the convo document so you dont have to have a separate new messages array. 
+//make it justuse the convo object and nothing else to save memory
+//update the convo document so you dont have to have a separate new messages array.
 //mama lets research
 const ChatDetail: React.FC<CommonChatDetailProps> = ({
   isOpen,
@@ -25,7 +25,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   chatId,
   otherUserId,
   isNew,
-  chatUser
+  chatUser,
 }) => {
   const socket = useContext(SocketContext);
   // const [chatList, setChatList] = useState<any>([]);
@@ -58,72 +58,64 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     } else if (isNew && otherUserId) {
       //if is a new chat call api to start a new conversation and get the chat id.
       const startNewChat = async () => {
-        const parsed = await newChat(user.id, otherUserId);
-        // const rsponse = await JSON.parse(response);
-        if (parsed[0].creator) {
-          console.log("there are messages");
-          console.log(parsed);
-          const temp = chatList.find((convo) => convo._id == parsed[0].chatId);
-          // setChatList((list:any) => [...list, parsed || []]);
-          if (temp) {
-            console.log("convo found", temp);
-            setThisChatList(temp.messages);
-            setChatId(temp._id);
+        newChat(user.id, otherUserId).then((parsed) => {
+          // console.log(response);
+          // JSON.parse(response).then((parsed:any) => {
+          console.log("new chat returned this", parsed);
+          if (Array.isArray(parsed)) {
+            console.log("there are messages");
+            console.log(parsed);
+            const temp = chatList.find(
+              (convo) => convo._id == parsed[parsed.length -1].chatId
+            );
+            // setChatList((list:any) => [...list, parsed || []]);
+            if (temp) {
+              console.log("convo found", temp);
+              setThisChatList(temp.messages);
+              setChatId(temp._id);
 
-            socket.emit("join", temp._id, (response: any) => {
+              socket.emit("join", temp._id, (response: any) => {
+                console.log(response.status);
+                if (response.status == "400") {
+                  setErr(true);
+                  console.error("unable to join room");
+                }
+              });
+            }
+          } else {
+            console.log("there are no messages");
+            setChatId(parsed);
+            const convoData = {
+              _id: parsed,
+              messages: [],
+              user1: user.id,
+              user2: otherUserId,
+            };
+            setChatList((list: any) => [...list, convoData]);
+            console.log("created new chat");
+            socket.emit("join", parsed, (response: any) => {
               console.log(response.status);
-              if(response.status == "400") {
+              if (response.status == "400") {
                 setErr(true);
                 console.error("unable to join room");
               }
             });
           }
-        } else {
-          console.log("there are no messages");
-          setChatId(parsed);
-          const convoData = {
-            _id:parsed, 
-            messages: [],
-            user1: user.id,
-            user2: otherUserId
-          }
-          setChatList((list:any) => [...list, convoData]);
-          socket.emit("join", parsed, (response:any) => {
-            console.log(response.status);
-            if(response.status == "400") {
-              setErr(true);
-              console.error("unable to join room");
-            }
-          })
-        }
+          // })
+        });
       };
       startNewChat();
     }
   }, [chatId, isOpen, socket]);
 
-  //save chats every 30 seconds automatically
-  // useEffect(() => {
-  //   const saveChats = async() => {
-  //     if(newChatList.lenth > 0 && !saved) {
-  //       console.log("saving automatically...");
-  //       const saveStatus = await closeMessage(newChatList);
-  //       if(saveStatus == 200) {
-  //         setSaved(true);
-  //         setNewChatList(null);
-  //       }
-  //     } else return;
-  //   }
-  //   setInterval(saveChats, 30000);
-  // }, []);
-
   useEffect(() => {
-    if(chatList && thisChatId) {
+    if (chatList && thisChatId) {
       if (convo) {
         console.log("convo on re-fetch", convo.messages);
         setThisChatList(convo.messages);
       } else {
         const temp = chatList.find((convo) => convo.id == thisChatId);
-        if(temp) {
+        if (temp) {
           setConvo(temp);
           setThisChatList(temp.messages);
         }
@@ -156,18 +148,25 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
         const newMessages = convo.messages;
         newMessages.push(messageData);
         convo.messages = newMessages;
+      } else {
+        const temp = chatList.find((convo) => convo.id == thisChatId);
+        if (temp) {
+          setConvo(temp);
+          temp.messages.push(messageData);
+          setThisChatList(temp.messages);
+        }
       }
       socket.emit("message", messageData);
       setNewChatList((list: any) => [...list, messageData]);
       setChatList((list: any) => [...list, messageData]);
-      setThisChatList((list:any) => [...list, messageData]);
+      setThisChatList((list: any) => [...list, messageData]);
       setNewMessage("");
       setSaved(false);
     }
   };
 
   async function handleBack(event: any) {
-    if(!chatId) onClose();
+    if (!chatId) onClose();
     if (newChatList && newChatList.length && !saved) {
       const saveStatus = await closeMessage(newChatList); //save messages b4 leaving
       console.log("save status", saveStatus);

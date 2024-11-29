@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { fetchAllUsersTest } from "../../utils/userAPI";
+import { fetchAllUsersTest, getFriends, getSuggestedConnections } from "../../utils/userAPI";
 import "./NewChat.css";
 import ChatDetail from "./ChatDetail";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
@@ -19,22 +19,23 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
   const closeDetail = () => setIsDetailOpen(false);
   const [selectedUserId, setSelectedUserId] = useState<any>();
   const [friendName, setFriendName] = useState<string>("");
+  const [noFriends, setNoFriends] = useState<boolean>();
 
   useEffect(() => {
-    const getFriends = async () => {
-      fetchAllUsersTest().then((response) => {
-        if(response) {
-          let jsonArray:any;
-          JSON.parse(response)
-          .then((res:any) => {
-            jsonArray = res;
+    const getFriendsList = async () => {
+      getFriends(user.id).then((response) => {
+        console.log("friendsList returned", response);
+        setFriendList(response);
+        if(!response.length) {
+          setNoFriends(true);
+          getSuggestedConnections(user.id).then((suggestedFriends) => {
+            console.log("suggested friends", suggestedFriends);
+            setFriendList(suggestedFriends);
           })
-          setFriendList(jsonArray);
         }
-        
-      });
+      })
     };
-    getFriends();
+    getFriendsList();
   }, []);
   if (!isOpen) return null;
 
@@ -68,7 +69,29 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
             </button>
           </div>
           <div className="newMiddle">
-            {friendList && friendList.map((user: any) => {
+            {Array.isArray(friendList) && friendList.length>0 && noFriends && (
+                <>
+                <h3>Find Friends to Chat With!</h3>
+                <h6>Suggested Connections</h6>
+                {friendList.map((user:any) => {
+                  return (
+                    <div
+                      className="friendContainer"
+                      onClick={handleClick}
+                      data-key={user._id}
+                      friend-name={user.firstName + " " + user.lastName}
+                      key={user.id}
+                    >
+                      <p>
+                        {user.firstName} {user.lastName}
+                      </p>
+                    </div>
+                  );
+                })}
+                </>
+              
+            )}
+            {friendList && !noFriends && friendList.map((user: any) => {
               return (
                 <div
                   className="friendContainer"
@@ -83,7 +106,6 @@ const NewChat: React.FC<INewChat> = ({ isOpen, onClose }) => {
                 </div>
               );
             })}
-            {!(friendList.length > 0) && <h6>there was an error fetching all users! Implement friends list here</h6>}
           </div>
           <div className="newBottom"></div>
         </div>
