@@ -39,19 +39,24 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
   const { chatList, setChatList } = useContext(MessageContext);
   const [thisChatList, setThisChatList] = useState<any[]>([]);
   const [convo, setConvo] = useState<any>();
+  const [ userNames, setUserNames] = useState<String>("");
 
   useEffect(() => {
     if (!isNew && chatList && chatId) {
       const getAllMessages = async () => {
         console.log("chat id sent to message detail", chatId);
         console.log("chatList from context", chatList);
-
         const temp = chatList.find((convo) => convo._id == chatId);
         if (temp) {
           setConvo(temp);
           console.log("convo found in first useEffect", temp);
           setThisChatList(temp.messages);
           setChatId(temp._id);
+          if(temp.user1.firstName == user.firstName) {
+            setUserNames(temp.user2.firstName + " " + temp.user2.lastName);
+          } else {
+            setUserNames(temp.user1.firstName + " " + temp.user1.lastName);
+          }
         }
       };
       getAllMessages();
@@ -181,9 +186,10 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
 
   return (
     <div className="message-detail">
+      <div className="detail-header">
       <button onClick={handleBack}>Back</button>
-      <h6 className="detailSenderName">{chatUser && chatUser}</h6>
-
+      <h6 className="detailSenderName">{chatUser ? chatUser : userNames}</h6>
+      </div>
       <div className="messageAndEditTextContainer">
         <div className="chatDetailMessageContainer">
           {isErr && <h6>There was an error connecting to the chat !</h6>}
