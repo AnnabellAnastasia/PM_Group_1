@@ -120,8 +120,12 @@ const controller = {
       console.log(newPost);
       const post = new model(newPost);
       const savedPost = await post.save();
-      // const groupPost = new groupPosts({ postId: savedPost._id, id });
-      // await groupPost.save();
+      const newSaved = {
+        post: savedPost._id, 
+        group: id
+      }
+      const groupPost = new groupPosts(newSaved);
+      await groupPost.save();
       const groupDoc = await groupModel.findById(id);
       if (groupDoc) {
         console.log('saving to group');
