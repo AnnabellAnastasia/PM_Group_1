@@ -1,7 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import './Group.css';
-import { fetchAllGroups } from '../../utils/groupAPI';
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Modal,
+  Form,
+} from "react-bootstrap";
+import { InputGroup } from "react-bootstrap";
+import "./Group.css";
+import { fetchAllGroups, joinGroup, leaveGroup, newGroup } from "../../utils/groupAPI";
+import { AlertContext, UserContext } from "../ContextWrapper";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // const groups = [
 //   {
@@ -79,54 +90,196 @@ import { fetchAllGroups } from '../../utils/groupAPI';
 // ];
 
 function Group() {
+  const [isNewOpen, setIsNewOpen] = useState<boolean>();
   const [groups, setGroups] = useState<any[]>();
+  const [isDetailOpen, setIsDetailOpen] = useState<boolean>();
+  const { user } = useContext(UserContext);
+  const { setPageAlert } = useContext(AlertContext);
+  const [groupsStateChange, setStateChange] = useState<boolean>(false);
+
   useEffect(() => {
-    const getGroupsList = async() => {
-      fetchAllGroups()
-      .then((response:any) => {
-        if(response) {
+    const getGroupsList = async () => {
+      fetchAllGroups().then((response: any) => {
+        if (response) {
           setGroups(response);
         }
-      })
-    }
+      });
+    };
+    getGroupsList();
+    setStateChange(false);
+  }, [isNewOpen, isDetailOpen, groupsStateChange]);
 
+  const handleOpenNew = () => setIsNewOpen(true);
+  const handleCloseNew = () => setIsNewOpen(false);
+  const handleOpenDetail = () => setIsDetailOpen(true);
+  const handleCloseDetail = () => setIsDetailOpen(false);
 
-  })
+  const navigate = useNavigate();
 
+  const handleJoin = (event: any) => {
+    event.preventDefault();
+    console.log("join called");
+    const id = event.target.getAttribute("data-key");
+    joinGroup(id, user.id).then((res: any) => {
+      if (res == 200) {
+        console.log("joined");
+        navigate(`/group/${id}`);
+      } else {
+      }
+    });
+  };
 
+  const handleLeave = (event:any) => {
+    console.log("leave called");
+    const id = event.target.getAttribute("data-key");
+    leaveGroup(id, user.id)
+    .then((res:any) => {
+      if(res == 200) {
+        console.log("left");
+        setStateChange(true);
+        navigate(`/group`);
+      }
+    })
+  }
 
 
   return (
     <Container className="group-page py-4">
-      <h1 className="mb-4 text-center">Groups</h1>
       <Row>
-        {groups && groups.map((group) => (
-          <Col key={group.id} md={6} lg={4} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
-                <Card.Title>{group.name}</Card.Title>
-                <Card.Text>{group.description}</Card.Text>
-                <Card.Text>
-                  <small className="text-muted">{group.membersCount} members</small>
-                </Card.Text>
-              </Card.Body>
-              <Card.Footer>
-  <Button variant="primary" href={`/group/${group.id}`} className="me-2">
-    View Group
-  </Button>
-  <Button variant="primary" href={`/group/${group.id}`}>
-    Join Group
-  </Button>
-</Card.Footer>
-            </Card>
-          </Col>
-        ))}
-        
+        <h1 className="mb-4 text-center">Groups</h1>
+        <Container>
+          <Button variant="primary" className="me-2 " onClick={handleOpenNew}>
+            Start a Group
+          </Button>
+        </Container>
       </Row>
-      {!groups && <h4 className="mb4 text-center">No Groups Found</h4>}
+      <Row className="pt-3">
+        {groups && groups.length > 0 ? (
+          groups.map((group) => (
+            <Col
+              key={group._id}
+              data-key={group._id}
+              md={6}
+              lg={4}
+              className="mb-4"
+            >
+              <Card className="h-100">
+                <Card.Body>
+                  <Card.Title>{group.name}</Card.Title>
+                  <Card.Text>{group.description}</Card.Text>
+                  <Card.Text>
+                    <small className="text-muted">
+                      {group.members.length} members
+                    </small>
+                  </Card.Text>
+                </Card.Body>
+                <Card.Footer>
+                  <Button
+                    variant="primary"
+                    href={`/group/${group._id}`}
+                    className="me-2"
+                  >
+                    View Group
+                  </Button>
+                  {group.members.includes(user.id) ? (
+                    <Button
+                      variant="primary"
+                      data-key={group._id}
+                      onClick={handleLeave}
+                    >
+                      Leave Group
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="primary"
+                      data-key={group._id}
+                      onClick={handleJoin}
+                    >
+                      Join Group
+                    </Button>
+                  )}
+                </Card.Footer>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          <Container>
+            <h4 className="mb4 text-center">No Groups Found</h4>
+            <Button
+              variant="primary"
+              className="me-2 position-absolute translate-middle top-50 start-50"
+              onClick={handleOpenNew}
+            >
+              Start a Group
+            </Button>
+          </Container>
+        )}
+      </Row>
+      {isNewOpen && <NewGroup isOpen={isNewOpen} onClose={handleCloseNew} />}
     </Container>
-    
   );
 }
+
+interface NewGroupProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const NewGroup: React.FC<NewGroupProps> = ({ isOpen, onClose }) => {
+  const [groupName, setGroupName] = useState("");
+  const [groupDescription, setGroupDescription] = useState("");
+  const { user } = useContext(UserContext);
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    await newGroup(groupName, groupDescription, user.id).then(
+      (response: any) => {
+        console.log(response);
+        if (response.ok) {
+          onClose();
+        }
+      }
+    );
+  };
+  if (!isOpen) return null;
+  return (
+    <Modal show={isOpen} onHide={() => onClose()}>
+      <Form onSubmit={(event) => handleSubmit(event)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Social Links</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Group Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="groupName"
+              value={groupName}
+              placeholder="Group Name"
+              className="mb-2"
+              onChange={(event) => setGroupName(event.target.value)}
+            />
+            <Form.Label>Group Description</Form.Label>
+            <Form.Control
+              type="textarea"
+              name="groupDescription"
+              value={groupDescription}
+              placeholder="Group Description"
+              className="mb-2"
+              onChange={(event) => setGroupDescription(event.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => onClose()}>
+            Close
+          </Button>
+          <Button variant="primary" type="submit">
+            Save
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
+};
 
 export default Group;

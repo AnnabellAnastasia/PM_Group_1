@@ -10,20 +10,20 @@ groupRoutes.get('/', controller.all);
 // //get all groups that a member is a part of
 // groupRoutes.post('/', userLoggedIn, controller.allWithMembership);
 
-// //get a single group page
-// groupRoutes.get('/:id', controller.show);
+//get a single group page
+groupRoutes.get('/:id', controller.show);
 
 // //get membership for a group
 // groupRoutes.get('/membership/:id', controller.membership);
 
-// //join a group
-// groupRoutes.post('/join', userLoggedIn, controller.join);
+//join a group
+groupRoutes.post('/join', userLoggedIn, controller.join);
 
-// //leave a group 
-// groupRoutes.post('/leave', userLoggedIn, controller.leave);
+//leave a group 
+groupRoutes.post('/leave', userLoggedIn, controller.leave);
 
-// //create a group
-// groupRoutes.post('/create', userLoggedIn, controller.create);
+//create a group
+groupRoutes.post('/create', userLoggedIn, controller.new);
 
 // //delete a group
 // groupRoutes.delete('/:id', userLoggedIn, controller.delete);
