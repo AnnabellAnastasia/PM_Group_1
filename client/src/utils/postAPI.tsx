@@ -276,3 +276,33 @@ export async function deleteComment(
     console.error("A problem occurred with your fetch operation: ", error);
   }
 }
+
+export async function submitGroupPost(
+  newPost: string,
+  loggedInUser: any,
+  groupId: any
+) {
+  const post = {
+    body: newPost,
+    usr: loggedInUser,
+    id: groupId,
+  };
+  let response;
+  console.log("api called for group post");
+  try {
+    response = await fetch(`http://localhost:8080/posts/group`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(post),
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("A problem occurred with your fetch operation: ", error);
+    
+  }
+  }

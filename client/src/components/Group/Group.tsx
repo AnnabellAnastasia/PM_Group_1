@@ -101,6 +101,7 @@ function Group() {
     const getGroupsList = async () => {
       fetchAllGroups().then((response: any) => {
         if (response) {
+          console.log(response);
           setGroups(response);
         }
       });

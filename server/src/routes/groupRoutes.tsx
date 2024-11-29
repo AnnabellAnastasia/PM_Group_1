@@ -1,6 +1,7 @@
 import express from 'express';
 import controller from '../controllers/groupController';
 import { userLoggedIn } from '../middleware/auth';
+import { isMember } from '../middleware/groupAux';
 
 const groupRoutes = express.Router();
 
@@ -20,7 +21,7 @@ groupRoutes.get('/:id', controller.show);
 groupRoutes.post('/join', userLoggedIn, controller.join);
 
 //leave a group 
-groupRoutes.post('/leave', userLoggedIn, controller.leave);
+groupRoutes.post('/leave', userLoggedIn, isMember, controller.leave);
 
 //create a group
 groupRoutes.post('/create', userLoggedIn, controller.new);

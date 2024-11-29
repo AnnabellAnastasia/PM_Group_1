@@ -2,6 +2,8 @@ import model from "../models/post";
 import Comment from "../models/comment"
 import Like from "../models/like"
 import Repost from "../models/repost"
+import groupPosts from "../models/groupPosts";
+import groupModel from "../models/group";
 
 const controller = {
   // GET /posts - Get all posts
@@ -107,6 +109,33 @@ const controller = {
         res.json({ message: err.message });
       });
   },
+  group: async (req: any, res: any, next: any) => {
+    try {
+      console.log("group in controller");
+      const { body, usr, id } = req.body;
+      const newPost = {
+        body: body, 
+        creator: usr
+      }
+      console.log(newPost);
+      const post = new model(newPost);
+      const savedPost = await post.save();
+      // const groupPost = new groupPosts({ postId: savedPost._id, id });
+      // await groupPost.save();
+      const groupDoc = await groupModel.findById(id);
+      if (groupDoc) {
+        console.log('saving to group');
+        groupDoc.posts.push(savedPost._id);
+        await groupDoc.save();
+      } else {
+        return res.status(404).json({ message: "Group not found" });
+      }
+      res.json(savedPost);
+    } catch (err: any) {
+      console.error("Error creating group post:", err);
+      res.status(500).json({ message: err.message });
+    }
+  }
 };
 
 export default controller;

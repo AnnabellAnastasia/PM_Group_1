@@ -42,6 +42,17 @@ const controller = {
         .populate("mods", "_id firstName lastName image")
         .populate("members", "_id firstName lastName image")
         .populate("posts", "body creator")
+        .populate(
+            {
+                path: "posts",
+                populate: [
+                  {
+                    path: "creator",
+                    select: "firstName lastName image",
+                  },
+                ],
+              },
+        )
         .then((response) => {
             if(!response) {
                 return res.status(204).json({error: "nothing found"});

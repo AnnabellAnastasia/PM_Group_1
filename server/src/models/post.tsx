@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const postSchema = new Schema({
 	body: { type: String, required: [true, 'Body is requred']},
-	creator: { type: Schema.Types.ObjectId, ref: 'User' }
+	creator: { type: Schema.Types.ObjectId, ref: 'User', required:true }
 },
 	{timestamps: true}
 );
