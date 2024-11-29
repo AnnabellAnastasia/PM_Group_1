@@ -5,6 +5,7 @@ import { fetchProfileFromID, sendFriendRequest } from "../../utils/userAPI";
 import { capitalize } from "../../utils/tools";
 import { fetchUserPostsAndReposts } from "../../utils/postAPI";
 import { getFriends, removeFriend } from "../../utils/userAPI";
+import FriendsList from "./FriendsList";
 
 // Edit Modals
 import BasicInfoModal from "./BasicInfoModal";
@@ -778,7 +779,12 @@ function Account() {
           />
         </>
       )}
+
+
+{userID && <FriendsList userID={userID} />}
     </Container>
+
+    
   );
 }
 
