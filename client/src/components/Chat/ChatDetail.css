@@ -28,7 +28,6 @@
   border-bottom: 2px solid #05a56a;
   display: flex;
   flex-direction: column;
-  /* justify-content: flex-end; */
   gap: 0.2rem;
   overflow-y: auto;
   padding-bottom: 0.5rem;
@@ -37,6 +36,8 @@
   border-top: 2px solid #e3e3e3;
   padding-top: .5rem;
   padding-right: .5rem;
+  scrollbar-width: thin;
+  scrollbar-color: grey #e7e7e7;
 }
 
 .detailSenderName {
