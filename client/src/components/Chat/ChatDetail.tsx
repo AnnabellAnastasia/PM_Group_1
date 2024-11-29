@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Message from "./ChatRoom";
 import "./ChatDetail.css";
 import { useState, useEffect, useContext } from "react";
@@ -113,6 +113,16 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
     }
   }, [chatId, isOpen, socket]);
 
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to the bottom whenever messages change
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [chatList, thisChatList, convo, isOpen, newChatList]);
+
   useEffect(() => {
     if (chatList && thisChatId) {
       if (convo) {
@@ -191,7 +201,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
       <h6 className="detailSenderName">{chatUser ? chatUser : userNames}</h6>
       </div>
       <div className="messageAndEditTextContainer">
-        <div className="chatDetailMessageContainer">
+        <div className="chatDetailMessageContainer" ref={containerRef}>
           {isErr && <h6>There was an error connecting to the chat !</h6>}
           {Array.isArray(thisChatList) &&
             thisChatList.length > 0 &&
@@ -213,7 +223,7 @@ const ChatDetail: React.FC<CommonChatDetailProps> = ({
             placeholder="Message"
           ></textarea>
           <button type="submit" className="sendButton">
-            send
+            Send
           </button>
         </form>
       </div>

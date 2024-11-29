@@ -7,6 +7,7 @@
   border-radius: 8px;
   margin: 0;
   padding: 0;
+  overflow: visible;
 }
 
 .messageAndEditTextContainer {
@@ -16,7 +17,8 @@
   width: 100%;
   justify-content: space-around;
   border-radius: 8px;
-  align-self: center;
+  /* align-self: center; */
+  overflow: visible;
 }
 
 .chatDetailMessageContainer {
@@ -26,13 +28,15 @@
   border-bottom: 2px solid #05a56a;
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  /* justify-content: flex-end; */
   gap: 0.2rem;
   overflow-y: auto;
   padding-bottom: 0.5rem;
   box-sizing: border-box;
-  align-self: center;
-  align-items: space-between;
+  scroll-behavior: smooth;
+  border-top: 2px solid #e3e3e3;
+  padding-top: .5rem;
+  padding-right: .5rem;
 }
 
 .detailSenderName {
@@ -114,21 +118,6 @@ textarea:focus {
   flex-shrink: 0;
 }
 
-/* .messageBoxClient {
-    display: flex;
-    justify-content: flex-start;
-    align-self: flex-end;
-    align-items: center;
-    max-width: 60%;
-    background-color: #e7e7e7;
-    color: #333333;
-    border-radius: 0.5rem;
-    min-height: 2rem;
-    padding: 0.2rem;
-    flex-direction: row;
-    flex-shrink: 0;
-  }
-   */
 .content {
   margin: 0.5rem;
 }
@@ -137,9 +126,6 @@ textarea:focus {
   transform: scale(1.05);
   transition: transform 0.2s ease;
 }
-/* 
-  "you" : "other" */
-
 #you {
   display: flex;
   justify-content: flex-start;
@@ -151,16 +137,17 @@ textarea:focus {
 .detail-header {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: .5rem;
   align-items: center;
 }
 
 .detail-header button {
   border-radius: 8px;
-  height: 2rem;
   border: none;
   background-color: #e3e3e3;
   color: black;
+  margin-bottom: .2rem;
+  height: 1.5rem;
 }
 
 .detail-header button:hover {
