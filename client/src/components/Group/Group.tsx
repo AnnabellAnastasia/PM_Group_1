@@ -234,8 +234,8 @@ const NewGroup: React.FC<NewGroupProps> = ({ isOpen, onClose }) => {
     event.preventDefault();
     await newGroup(groupName, groupDescription, user.id).then(
       (response: any) => {
-        console.log(response);
-        if (response.ok) {
+        if(response) {
+          console.log(response);
           onClose();
         }
       }
