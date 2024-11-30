@@ -10,9 +10,13 @@ import {
   Form,
 } from "react-bootstrap";
 import "./GroupPage.css";
-import { joinGroup, leaveGroup, showGroup } from "../../utils/groupAPI";
+import {
+  deleteGroup,
+  joinGroup,
+  leaveGroup,
+  showGroup,
+} from "../../utils/groupAPI";
 import { UserContext } from "../ContextWrapper";
-import PostFeed from "../PostFeed";
 import Post from "../Post";
 import { submitGroupPost, submitPost } from "../../utils/postAPI";
 
@@ -21,6 +25,8 @@ const GroupPage = () => {
   const { groupId } = useParams(); // Get groupId from URL
   const { user } = useContext(UserContext);
   const [newPost, setNewPost] = useState("");
+  const [isModerator, setIsModerator] = useState<boolean>();
+  const [isMember, setIsMember] = useState<boolean>();
 
   useEffect(() => {
     console.log("get all details called");
@@ -35,6 +41,14 @@ const GroupPage = () => {
     };
     getDetails();
   }, []);
+
+  useEffect(() => {
+    if(!group) return;
+    const isMember = group.members.some((mem: any) => mem._id == user.id);
+    const isMod = group.mods.some((mod: any) => mod._id === user.id);
+    if (isMod) setIsModerator(true);
+    if (isMember) setIsMember(true);
+  }, [group]);
 
   const navigate = useNavigate();
 
@@ -81,6 +95,11 @@ const GroupPage = () => {
     );
   }
 
+  const handleDelete = async () => {
+    await deleteGroup(groupId, user.id);
+    navigate("/group");
+  };
+
   return (
     <Container className="mt-4">
       <Row className="justify-content-center">
@@ -109,6 +128,32 @@ const GroupPage = () => {
                   <li key={member._id}>{member.firstName}</li>
                 ))}
               </ul>
+              {isModerator && (
+                <Button
+                  variant="primary"
+                  className="me-2 "
+                  onClick={handleDelete}
+                >
+                  Delete Group
+                </Button>
+              )}
+              {isMember ? (
+                <Button
+                  variant="primary"
+                  data-key={group._id}
+                  onClick={handleLeave}
+                >
+                  Leave Group
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  data-key={group._id}
+                  onClick={handleJoin}
+                >
+                  Join Group
+                </Button>
+              )}
               <Card.Text>
                 <h5 className="mt-4">Posts</h5>
                 <Form

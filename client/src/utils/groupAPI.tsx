@@ -117,3 +117,28 @@ export async function showGroup(id: any) {
     console.error(err);
   }
 }
+
+export async function deleteGroup(id:any, usr:any) {
+    const deleteData = {
+        id: id,
+        usr: usr
+      };
+      try {
+        const response = await fetch(`http://localhost:8080/api/groups/delete`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(deleteData),
+            credentials: "include",
+          });
+          if(!response.ok) {
+            console.error('there was an error in the delete api');
+          } else {
+            return await response.json();
+          }
+
+      } catch (err) {
+        console.error(err);
+      }
+}
