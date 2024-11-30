@@ -8,7 +8,6 @@ import groupModel from "../models/group";
 const controller = {
   // GET /posts - Get all posts
   all: async (req: any, res: any, next: any) => {
-    const excludedPosts = await groupPosts.find();
     Promise.all([
     model
       .find()

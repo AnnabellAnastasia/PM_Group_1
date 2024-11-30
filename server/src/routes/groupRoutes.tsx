@@ -1,7 +1,7 @@
 import express from 'express';
 import controller from '../controllers/groupController';
 import { userLoggedIn } from '../middleware/auth';
-import { isMember } from '../middleware/groupAux';
+import { isMember, isMod } from '../middleware/groupAux';
 
 const groupRoutes = express.Router();
 
@@ -26,8 +26,8 @@ groupRoutes.post('/leave', userLoggedIn, isMember, controller.leave);
 //create a group
 groupRoutes.post('/create', userLoggedIn, controller.new);
 
-// //delete a group
-// groupRoutes.delete('/:id', userLoggedIn, controller.delete);
+//delete a group
+groupRoutes.post('/delete', userLoggedIn, isMod, controller.delete);
 
 // //edit a group
 // groupRoutes.get('/edit/:id', userLoggedIn, controller.edit);
