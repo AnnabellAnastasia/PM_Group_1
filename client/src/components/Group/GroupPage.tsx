@@ -82,72 +82,74 @@ const GroupPage = () => {
   }
 
   return (
-    <Container className="mt-4">
-      <Row className="justify-content-center">
-        <Col md={8}>
-          <Card>
-            <Card.Body>
-              <Card.Title className="text-center display-4">
-                {group.name}
-              </Card.Title>
-              <Card.Subtitle className="mb-2 text-muted text-center">
-                {group.description}
-              </Card.Subtitle>
-              <hr />
-              <Card.Text>
-                <strong>Administrators:</strong>{" "}
-                {group.mods.map((mod: any) => {
-                  return mod.firstName + " " + mod.lastName;
-                })}
-              </Card.Text>
-              <Card.Text>
-                <strong>Members Count:</strong> {group.members.length}
-              </Card.Text>
-              <h5 className="mt-4">Members</h5>
-              <ul>
-                {group.members.map((member: any) => (
-                  <li key={member._id}>{member.firstName}</li>
-                ))}
-              </ul>
-              <Card.Text>
-                <h5 className="mt-4">Posts</h5>
-                <Form
-                  className="post-form mt-3"
-                  onSubmit={(event) => handlePostSubmit(event)}
-                >
-                  <Form.Label className="hidden" htmlFor="postEntry">
-                    Post Entry
-                  </Form.Label>
-                  <InputGroup className="create-post">
-                    <Form.Control
-                      type="text"
-                      name="postEntry"
-                      placeholder="Create A Post!"
-                      value={newPost}
-                      onChange={(event) => setNewPost(event.target.value)}
-                    />
-                    <Button type="submit">
-                      <i className="fa-solid fa-share-from-square"></i>
-                    </Button>
-                  </InputGroup>
-                </Form>
-                {group.posts &&
-                  group.posts.map((post: any, index: any) => {
-                    return (
-                      <Post
-                        postObj={post}
-                        key={post._id}
-                        index={index}
-                        getAllPosts={getAllPosts}
-                      ></Post>
-                    );
-                  })}
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+<Container className="group-page-container mt-4">
+  <Row className="justify-content-center">
+    <Col md={8}>
+      <Card className="group-card">
+        <Card.Body className="group-card-content">
+          <Card.Title className="text-center group-card-title">
+            {group.name}
+          </Card.Title>
+          <Card.Subtitle className="text-muted text-center group-card-subtitle">
+            {group.description}
+          </Card.Subtitle>
+          <div className="group-card-separator"></div>
+          <div>
+            <p className="group-admin">
+              <strong>Administrators:</strong>{" "}
+              {group.mods.map((mod: any) => mod.firstName + " " + mod.lastName).join(", ")}
+            </p>
+            <p className="group-members-count">
+              <strong>Members Count:</strong> {group.members.length}
+            </p>
+            <h5 className="mt-4">Members</h5>
+            <ul className="group-members-list">
+              {group.members.map((member: any) => (
+                <li key={member._id}>{member.firstName + " " + member.lastName}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="group-card-separator"></div>
+          <h5 className="mt-4">Posts</h5>
+          <Form
+            className="post-form mt-3"
+            onSubmit={(event) => handlePostSubmit(event)}
+          >
+            <Form.Label htmlFor="postEntry" className="hidden">
+              Post Entry
+            </Form.Label>
+            <InputGroup className="create-post">
+              <Form.Control
+                type="text"
+                name="postEntry"
+                placeholder="Create A Post!"
+                value={newPost}
+                onChange={(event) => setNewPost(event.target.value)}
+              />
+              <Button type="submit">
+                <i className="fa-solid fa-share-from-square"></i>
+              </Button>
+            </InputGroup>
+          </Form>
+          <div className="mt-4">
+            {group.posts && group.posts.length > 0 ? (
+              group.posts.map((post: any, index: any) => (
+                <Post
+                  postObj={post}
+                  key={post._id}
+                  index={index}
+                  getAllPosts={getAllPosts}
+                />
+              ))
+            ) : (
+              <p className="text-muted">No posts yet. Be the first to post!</p>
+            )}
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+  </Row>
+</Container>
   );
 };
 
