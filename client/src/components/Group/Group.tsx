@@ -246,7 +246,7 @@ const NewGroup: React.FC<NewGroupProps> = ({ isOpen, onClose }) => {
     <Modal show={isOpen} onHide={() => onClose()}>
       <Form onSubmit={(event) => handleSubmit(event)}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Social Links</Modal.Title>
+          <Modal.Title>Start a Group</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group>
