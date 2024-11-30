@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const Schema = mongoose.Schema;
@@ -29,6 +29,8 @@ const userSchema = new Schema({
 	secondaryEmail: { type: String },
 	phone: { type: String },
 	address: { type: String },
+	members: [{type: Types.ObjectId, ref: "Group"}],
+	groupVisibility: { type: String, default:visibilityDefault, enum: visibilityOptions},
 	emailVisibility: { type: String, default: visibilityDefault, enum: visibilityOptions},
 	biographyVisibility: { type: String, default: visibilityDefault, enum: visibilityOptions},
 	titleVisibility: { type: String, default: visibilityDefault, enum: visibilityOptions},

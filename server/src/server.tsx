@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
+import groupRoutes from "./routes/groupRoutes";
 import commentRoutes from './routes/commentRoutes';
 import cookieParser from "cookie-parser";
 import repostRoutes from './routes/postRoutes';
@@ -94,6 +95,7 @@ app.use('/comments',commentRoutes);
 
 // API routes
 app.use("/api/messages", messageRoutes);
+app.use("/api/groups", groupRoutes);
 
 app.use('/reposts',repostRoutes);
 

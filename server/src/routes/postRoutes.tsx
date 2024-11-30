@@ -4,6 +4,7 @@ import controller from '../controllers/postController';
 import commentRoutes from './commentRoutes'
 import likeRoutes from './likeRoutes'
 import repostRoutes from '../routes/repostRoutes';
+import { isMember } from '../middleware/groupAux';
 const postRoutes = express.Router();
 
 // GET /posts - Get all posts
@@ -23,4 +24,8 @@ postRoutes.use("/:id/comments", commentRoutes);
 postRoutes.use("/:id/likes", likeRoutes);
 /**Repost routes*/
 postRoutes.use("/:id/reposts", repostRoutes);
+
+//create post in a group
+postRoutes.post('/group', userLoggedIn, isMember, controller.group);
+
 export default postRoutes;

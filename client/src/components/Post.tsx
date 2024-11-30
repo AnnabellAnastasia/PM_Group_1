@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 function Post({ postObj }: any) {
   const [editMode, setEditMode] = useState(false);
@@ -13,9 +13,8 @@ function Post({ postObj }: any) {
     const post = {
       body: newPost,
     };
-    let response;
     try {
-      response = await fetch(`http://localhost:8080/posts/${id}`, {
+      const response = await fetch(`http://localhost:8080/posts/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -32,9 +31,8 @@ function Post({ postObj }: any) {
 
   // Delete post function
   async function postDelete(id: any) {
-    let response;
     try {
-      response = await fetch(`http://localhost:8080/posts/${id}`, {
+      const response = await fetch(`http://localhost:8080/posts/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -67,32 +65,74 @@ function Post({ postObj }: any) {
           <input
             type="text"
             name="postEdit"
-            className=""
             value={postBody}
             onChange={(event) => setPostBody(event.target.value)}
+            style={{
+              marginBottom: "10px",
+              padding: "8px",
+              width: "100%",
+              fontSize: "16px",
+            }}
           />
           <input
-            className="post-submit"
             type="submit"
             value="Submit Changes"
-          ></input>
+            style={{
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              padding: "8px 12px",
+              borderRadius: "4px",
+              cursor: "pointer",
+              marginTop: "10px",
+            }}
+          />
         </form>
       ) : (
         <div className="post-body">{postObj.body}</div>
       )}
-      {editMode ? (
-        <></>
-      ) : (
-        <div className="post-options">
-          <button className="post-button" onClick={() => setEditMode(true)}>
+      {!editMode && (
+        <div
+          className="post-options"
+          style={{
+            margin: "20px",
+            display: "flex",
+            gap: "20px", // Adds spacing between buttons
+          }}
+        >
+          <button
+            style={{
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              padding: "10px 16px", // Padding added here
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+            onClick={() => setEditMode(true)}
+          >
             Edit
           </button>
           <form onSubmit={() => postDelete(postObj._id)}>
-            <input className="post-button" type="submit" value="Delete"></input>
+            <input
+              type="submit"
+              value="Delete"
+              style={{
+                backgroundColor: "#dc3545",
+                color: "white",
+                border: "none",
+                padding: "10px 16px", // Padding added here
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
+            />
           </form>
         </div>
       )}
     </div>
   );
 }
+
 export default Post;
